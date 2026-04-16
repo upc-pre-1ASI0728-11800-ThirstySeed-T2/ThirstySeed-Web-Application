@@ -1,0 +1,165 @@
+{
+  "plots": [
+    {
+      "id": "1",
+      "name": "Pucará",
+      "location": "Pucará, Peru",
+      "extension": "100",
+      "status": "Supplied",
+      "size": "100",
+      "installedNodes": 4,
+      "lastIrrigationDate": "15th September 2024, 02:45 pm",
+      "imageUrl": "https://i.pinimg.com/564x/41/52/e2/4152e208971ee40322e0dffbc94b2436.jpg"
+    },
+    {
+      "id": "2",
+      "name": "Loreto Plot",
+      "size": 100,
+      "location": "lima",
+      "extension": "100",
+      "status": "Supplied",
+      "imageUrl": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRsqO0KsZxIcbsz4Bm5fUjHuIisAo2Z4N3uknNAo6_BH1305p1T"
+    },
+    {
+      "id": "3",
+      "name": "Puno Plot",
+      "location": "west",
+      "extension": "200",
+      "status": "Not Supplied",
+      "size": "200",
+      "imageUrl": "https://i.ytimg.com/vi/CTdTC4fO89I/maxresdefault.jpg"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "1",
+      "plotId": 1,
+      "location": "prueba",
+      "moisture": 20,
+      "indicator": "Water",
+      "status": "Error",
+      "statusClass": "status-error",
+      "iconClass": "pi pi-exclamation-triangle",
+      "isActive": true
+    },
+    {
+      "id": "2",
+      "plotId": 2,
+      "location": "prrueba2",
+      "moisture": 30,
+      "indicator": "Water",
+      "status": "Correct",
+      "statusClass": "status-correct",
+      "iconClass": "pi pi-check",
+      "isActive": true
+    },
+    {
+      "id": "3",
+      "plotId": 3,
+      "location": "pueba3",
+      "moisture": 50,
+      "indicator": "Water",
+      "status": "Correct",
+      "statusClass": "status-correct",
+      "iconClass": "pi pi-check",
+      "isActive": true
+    },
+    {
+      "id": "4",
+      "plotId": 4,
+      "location": "prueba4",
+      "moisture": 70,
+      "indicator": "Water",
+      "status": "Correct",
+      "statusClass": "status-correct",
+      "iconClass": "pi pi-check",
+      "isActive": false
+    },
+    {
+      "id": "5",
+      "plotId": 5,
+      "location": "prueba1",
+      "moisture": 40,
+      "indicator": "Water",
+      "status": "Correct",
+      "statusClass": "status-correct",
+      "iconClass": "pi pi-check",
+      "isActive": false
+    },
+    {
+      "id": 6,
+      "plotId": 6,
+      "location": "kurt1",
+      "moisture": 30,
+      "indicator": "Water",
+      "status": "Correct",
+      "statusClass": "status-correct",
+      "iconClass": "pi pi-check",
+      "isActive": false
+    },
+    {
+      "id": 7,
+      "plotId": 7,
+      "location": "prueba6",
+      "moisture": 200,
+      "indicator": "Water",
+      "status": "Correct",
+      "statusClass": "status-correct",
+      "iconClass": "pi pi-check",
+      "isActive": false
+    }
+  ],
+  "irrigationSchedules": [
+    {
+      "id": "7e9f",
+      "expectedMoisture": "40%",
+      "plotSize": "100 m2",
+      "estimatedTime": "3 horas",
+      "setTime": "08:15 pm",
+      "requiredWaterAmount": "500 cm3 (500 l)",
+      "sprinklerRadius": "7 m",
+      "angle": "30 grados",
+      "pressure": "50 psi",
+      "isAutomatic": true,
+      "plotId": "1"
+    },
+    {
+      "id": "8a2b",
+      "expectedMoisture": "45%",
+      "plotSize": "150 m2",
+      "estimatedTime": "4 horas",
+      "setTime": "07:30 pm",
+      "requiredWaterAmount": "600 cm3 (600 l)",
+      "sprinklerRadius": "8 m",
+      "angle": "45 grados",
+      "pressure": "55 psi",
+      "isAutomatic": false,
+      "plotId": "2",
+      "isActive": true
+    }
+  ],
+  "user": {
+    "id": 1,
+    "name": "Sam Elioth Quispe Ramos",
+    "phone": "+51 974837226",
+    "email": "sam.farmer40@outlook.com",
+    "location": "Puno",
+    "profileImage": "https://us.123rf.com/450wm/stockbroker/stockbroker2306/stockbroker230600044/207473089-retrato-de-un-hombre-mayor-sonriente-parado-al-aire-libre-en-el-parque-jard%C3%ADn-o-en-el-campo.jpg?ver=6",
+    "waterSupplier": {
+      "name": "Sedapal",
+      "logo": "https://pbs.twimg.com/profile_images/1557423579599446016/yC3WRAP6_200x200.jpg"
+    },
+    "plots": [
+      {
+        "id": 1,
+        "name": "Loreto Plot",
+        "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSS6lwsRARp6AIliaP06qi4WokbeHKNPcyArMB2rwpOSHFDPAyd"
+      },
+      {
+        "id": 2,
+        "name": "Puno Plot",
+        "image": "https://economiasustentable.com/wp-content/uploads/2020/04/cultivos-300x170.jpg"
+      }
+    ]
+  }
+}
