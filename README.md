@@ -1,1 +1,0 @@
-# ThirstySeed-Web-Application
