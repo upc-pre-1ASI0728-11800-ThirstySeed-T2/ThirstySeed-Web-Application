@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "XXX": {
+    "ThirstySeed-WebApp": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -26,7 +26,15 @@
             ],
             "styles": [
               "src/styles.css"
-            ]
+            ],
+            "server": "src/main.server.ts",
+            "outputMode": "server",
+            "security": {
+              "allowedHosts": []
+            },
+            "ssr": {
+              "entry": "src/server.ts"
+            }
           },
           "configurations": {
             "production": {
@@ -56,10 +64,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "XXX:build:production"
+              "buildTarget": "ThirstySeed-WebApp:build:production"
             },
             "development": {
-              "buildTarget": "XXX:build:development"
+              "buildTarget": "ThirstySeed-WebApp:build:development"
             }
           },
           "defaultConfiguration": "development"
