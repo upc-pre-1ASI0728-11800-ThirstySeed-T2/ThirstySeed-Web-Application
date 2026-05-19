@@ -1,0 +1,550 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+.signin-page {
+  --deep-green: #14763d;
+  --field-green: #1d9148;
+  --fresh-green: #39a950;
+  --ink: #252b31;
+
+  align-items: center;
+  background:
+    radial-gradient(circle at 2% 95%, rgba(232, 216, 91, 0.38), transparent 28%),
+    radial-gradient(circle at 98% 90%, rgba(235, 221, 107, 0.4), transparent 30%),
+    linear-gradient(115deg, #fbfbed 0%, #f7fbf4 47%, #f9fcf4 100%);
+  color: var(--ink);
+  display: flex;
+  font-family: "Poppins", system-ui, sans-serif;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 32px 24px;
+  width: 100%;
+}
+
+/* ────────────────────────────────────────────
+   MAIN CONTAINER
+   overflow: hidden → recorta AMBOS paneles con
+   el border-radius del shell, manteniéndolos
+   como un único bloque visual conectado.
+   ──────────────────────────────────────────── */
+
+.signin-shell {
+  border-radius: 28px;
+  box-shadow: 0 32px 80px rgba(27, 92, 45, 0.16);
+  display: flex;
+  height: 600px;
+  max-width: 980px;
+  overflow: hidden;
+  position: relative;
+  width: min(96vw, 980px);
+}
+
+/* ────────────────────────────────────────────
+   LEFT PANEL — verde
+   ──────────────────────────────────────────── */
+
+.brand-panel {
+  background:
+    radial-gradient(circle at 108% 96%, rgba(244, 230, 114, 0.28) 0 16%, transparent 17%),
+    radial-gradient(ellipse at 85% 18%, rgba(72, 185, 88, 0.22), transparent 42%),
+    linear-gradient(165deg, var(--field-green) 0%, #1d9048 44%, var(--deep-green) 100%);
+  color: #ffffff;
+  display: flex;
+  flex: 0 0 44%;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 48px 44px 44px;
+  position: relative;
+}
+
+.brand-panel::before {
+  background:
+    linear-gradient(122deg, transparent 0 28%, rgba(255,255,255,0.05) 28.3% 28.8%, transparent 29.1%),
+    linear-gradient(111deg, transparent 0 49%, rgba(255,255,255,0.05) 49.4% 50%, transparent 50.4%),
+    linear-gradient(102deg, transparent 0 68%, rgba(255,255,255,0.045) 68.2% 68.7%, transparent 69%);
+  bottom: -86px;
+  content: "";
+  height: 280px;
+  left: 0;
+  position: absolute;
+  right: -20px;
+}
+
+.brand-panel::after {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 50%;
+  content: "";
+  height: 320px;
+  position: absolute;
+  right: -92px;
+  top: -64px;
+  width: 360px;
+}
+
+.brand-badge,
+.brand-copy,
+.insight-grid {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── LOGO BADGE ── */
+
+.brand-badge {
+  align-items: center;
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 700;
+  gap: 10px;
+  padding: 8px 16px 8px 8px;
+}
+
+.seed-mark {
+  background: #ffffff;
+  border-radius: 50%;
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 30px;
+  position: relative;
+  width: 30px;
+}
+
+.seed-mark::before,
+.seed-mark::after {
+  background: #7fc75d;
+  border-radius: 14px 14px 2px 14px;
+  content: "";
+  height: 11px;
+  position: absolute;
+  top: 9px;
+  width: 13px;
+}
+
+.seed-mark::before {
+  left: 6px;
+  transform: rotate(-28deg);
+}
+
+.seed-mark::after {
+  background: #62b84f;
+  right: 6px;
+  transform: rotate(38deg);
+}
+
+.seed-stem {
+  background: #58a943;
+  border-radius: 999px;
+  bottom: 7px;
+  height: 8px;
+  left: 14px;
+  position: absolute;
+  transform: rotate(16deg);
+  width: 2px;
+}
+
+/* ── COPY ── */
+
+.brand-copy {
+  padding-top: 4px;
+}
+
+.brand-copy h1 {
+  color: #ffffff;
+  font-size: clamp(1.9rem, 2.4vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.16;
+  margin: 0 0 20px;
+}
+
+.brand-copy p {
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 13.5px;
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* ── INSIGHT CARDS ── */
+
+.insight-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.insight-card {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 12px;
+  padding: 14px 12px;
+}
+
+.insight-card strong {
+  display: block;
+  font-size: 19px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.insight-card span {
+  color: rgba(255, 255, 255, 0.8);
+  display: block;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* ────────────────────────────────────────────
+   RIGHT PANEL — fondo mint
+   padding: 28px en todos lados para que la card
+   blanca no toque el borde del shell y sus
+   border-radius sean completamente visibles.
+   ──────────────────────────────────────────── */
+
+.form-stage {
+  align-items: center;
+  background: #dff1e3;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  overflow: hidden;
+  padding: 28px 32px;
+  position: relative;
+}
+
+.form-stage::before {
+  background: rgba(183, 226, 195, 0.5);
+  border-radius: 50%;
+  content: "";
+  height: 150px;
+  position: absolute;
+  right: -30px;
+  top: -40px;
+  width: 150px;
+  pointer-events: none;
+}
+
+.form-stage::after {
+  background: rgba(226, 218, 113, 0.3);
+  border-radius: 50%;
+  bottom: -50px;
+  content: "";
+  height: 170px;
+  left: -44px;
+  position: absolute;
+  width: 170px;
+  pointer-events: none;
+}
+
+/* ────────────────────────────────────────────
+   WHITE CARD
+   Totalmente contenida en form-stage.
+   border-radius + sombra son visibles porque
+   el padding del form-stage los aleja del borde
+   del shell que tiene overflow: hidden.
+   ──────────────────────────────────────────── */
+
+.signin-card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow:
+    0 8px 32px rgba(26, 73, 44, 0.1),
+    0 1px 4px rgba(26, 73, 44, 0.06);
+  display: flex;
+  flex-direction: column;
+  padding: 30px 30px 24px;
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  z-index: 2;
+}
+
+/* ── SECURE BADGE ── */
+
+.secure-badge {
+  align-items: center;
+  background: #ecf7ed;
+  border-radius: 999px;
+  color: #13743b;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 800;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 7px 13px;
+  width: fit-content;
+}
+
+.secure-badge span {
+  background: var(--fresh-green);
+  border-radius: 50%;
+  height: 6px;
+  width: 6px;
+}
+
+/* ── TEXTS ── */
+
+.eyebrow {
+  color: #f2711c;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin: 0 0 7px;
+  text-transform: uppercase;
+}
+
+.signin-card h2 {
+  color: #2b3138;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0 0 9px;
+}
+
+.intro {
+  color: #86909e;
+  font-size: 12.5px;
+  line-height: 1.65;
+  margin: 0 0 18px;
+}
+
+/* ── FORM ── */
+
+.login-form {
+  display: grid;
+  gap: 13px;
+}
+
+.form-field {
+  display: grid;
+  gap: 5px;
+}
+
+.form-field label {
+  color: #2f3540;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.input-frame {
+  align-items: center;
+  background: #ffffff;
+  border: 1.5px solid #cdddd4;
+  border-radius: 10px;
+  display: flex;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-frame:focus-within {
+  border-color: #2b9846;
+  box-shadow: 0 0 0 3px rgba(43, 152, 70, 0.1);
+}
+
+.input-frame i {
+  color: #8a97a5;
+  flex: 0 0 auto;
+  font-size: 14px;
+}
+
+.input-frame input {
+  background: transparent;
+  border: 0;
+  color: #2a3037;
+  flex: 1;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  min-width: 0;
+  outline: none;
+}
+
+.input-frame input::placeholder {
+  color: #aab3be;
+}
+
+/* ── PASSWORD TOGGLE ── */
+
+.password-toggle {
+  background: transparent;
+  border: 0;
+  color: #13743b;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 0;
+}
+
+/* ── OPTIONS ROW ── */
+
+.form-options {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.remember-control {
+  align-items: center;
+  color: #8a95a2;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 12px;
+  gap: 7px;
+}
+
+.remember-control input {
+  accent-color: #1d8244;
+  height: 13px;
+  width: 13px;
+}
+
+.form-options a {
+  color: #16733f;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+/* ── BUTTONS ── */
+
+.login-button,
+.create-account-button {
+  align-items: center;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  height: 46px;
+  justify-content: center;
+  transition: background-color 0.18s ease, transform 0.15s ease;
+  width: 100%;
+}
+
+.login-button {
+  background: #157c3d;
+  border: none;
+  color: #ffffff;
+  margin-top: 2px;
+}
+
+.login-button:hover {
+  background: #106c34;
+  transform: translateY(-1px);
+}
+
+.create-account-button {
+  background: #ffffff;
+  border: 1.5px solid #1f8b4b;
+  color: #16733f;
+}
+
+.create-account-button:hover {
+  background: #f1faf3;
+  transform: translateY(-1px);
+}
+
+/* ── DIVIDER ── */
+
+.divider {
+  align-items: center;
+  color: #a1a9b3;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr auto 1fr;
+  margin: 12px 0;
+}
+
+.divider span {
+  background: #d4ddd8;
+  height: 1px;
+}
+
+.divider small {
+  font-size: 11px;
+}
+
+/* ── FOOTNOTE ── */
+
+.footnote {
+  color: #8a95a2;
+  font-size: 10.5px;
+  line-height: 1.65;
+  margin: 12px auto 0;
+  max-width: 210px;
+  text-align: center;
+}
+
+/* ────────────────────────────────────────────
+   RESPONSIVE
+   ──────────────────────────────────────────── */
+
+@media (max-width: 860px) {
+  .signin-page {
+    padding: 20px 16px;
+    align-items: flex-start;
+  }
+
+  .signin-shell {
+    display: grid;
+    grid-template-columns: 1fr;
+    height: auto;
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .brand-panel {
+    flex: none;
+    min-height: 280px;
+  }
+
+  .form-stage {
+    padding: 28px 24px;
+  }
+}
+
+@media (max-width: 520px) {
+  .signin-shell {
+    border-radius: 20px;
+  }
+
+  .brand-panel {
+    padding: 30px 22px 26px;
+  }
+
+  .brand-copy h1 {
+    font-size: 1.8rem;
+  }
+
+  .signin-card {
+    padding: 24px 20px 20px;
+  }
+
+  .signin-card h2 {
+    font-size: 1.55rem;
+  }
+
+  .form-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
