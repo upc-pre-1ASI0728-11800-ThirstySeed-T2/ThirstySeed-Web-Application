@@ -1,1 +1,184 @@
-<p>register works!</p>
+<main class="signin-page">
+  <section class="signin-shell">
+    <aside class="brand-panel">
+      <div class="brand-badge">
+        <span class="seed-mark">
+          <span class="seed-stem"></span>
+        </span>
+        <span>Thirsty Seed</span>
+      </div>
+
+      <div class="brand-copy">
+        <h1>Start managing your water smarter from day one.</h1>
+        <p>
+          Create your account to register plots, connect sensors and receive
+          irrigation recommendations powered by IoT and climate data.
+        </p>
+      </div>
+
+      <div class="insight-grid">
+        <div class="insight-card">
+          <strong>Plots</strong>
+          <span>Organize your farms and parcels</span>
+        </div>
+
+        <div class="insight-card">
+          <strong>Alerts</strong>
+          <span>Detect risk before it becomes critical</span>
+        </div>
+
+        <div class="insight-card">
+          <strong>Water</strong>
+          <span>Use water more efficiently</span>
+        </div>
+      </div>
+    </aside>
+
+    <section class="form-stage">
+      <article class="signin-card register-card">
+        <p class="eyebrow">Create Account</p>
+        <h2>Join Thirsty Seed</h2>
+
+        <form class="login-form" (ngSubmit)="handleRegister()">
+          <div class="form-field">
+            <label for="fullName">Full name</label>
+            <div class="input-frame">
+              <i class="pi pi-user"></i>
+              <input
+                id="fullName"
+                type="text"
+                [(ngModel)]="fullName"
+                name="fullName"
+                placeholder="Full name"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="email">Email address</label>
+            <div class="input-frame">
+              <i class="pi pi-envelope"></i>
+              <input
+                id="email"
+                type="email"
+                [(ngModel)]="email"
+                name="email"
+                placeholder="name@example.com"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="username">Username</label>
+            <div class="input-frame">
+              <i class="pi pi-at"></i>
+              <input
+                id="username"
+                type="text"
+                [(ngModel)]="username"
+                name="username"
+                placeholder="yourusername"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="accountType">Account type</label>
+            <div class="input-frame select-frame">
+              <i class="pi pi-building"></i>
+
+              <select
+                id="accountType"
+                [(ngModel)]="accountType"
+                name="accountType"
+                required
+              >
+                <option value="" disabled hidden>Select account type</option>
+                <option value="Agricultural Producer">Agricultural Producer</option>
+                <option value="Water Management Entity">Water Management Entity</option>
+                <option value="Administrator">Administrator</option>
+              </select>
+
+              <i class="pi pi-chevron-down select-arrow"></i>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="password">Password</label>
+            <div class="input-frame">
+              <i class="pi pi-lock"></i>
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                [(ngModel)]="password"
+                name="password"
+                placeholder="Create a password"
+                required
+              />
+
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="showPassword = !showPassword"
+              >
+                {{ showPassword ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+          </div>
+
+<div class="form-field">
+  <label for="confirmPassword">Confirm password</label>
+
+  <div class="input-frame">
+    <i class="pi pi-lock"></i>
+
+    <input
+      id="confirmPassword"
+      [type]="showConfirmPassword ? 'text' : 'password'"
+      [(ngModel)]="confirmPassword"
+      name="confirmPassword"
+      placeholder="Confirm your password"
+      required
+    />
+
+    <button
+      type="button"
+      class="password-toggle"
+      (click)="showConfirmPassword = !showConfirmPassword"
+    >
+      {{ showConfirmPassword ? 'Hide' : 'Show' }}
+    </button>
+
+  </div>
+</div>
+
+          <label class="remember-control terms-control">
+            <input
+              type="checkbox"
+              [(ngModel)]="acceptedTerms"
+              name="acceptedTerms"
+            />
+            <span>I agree to the terms and privacy policy.</span>
+          </label>
+
+          <div class="register-actions">
+            <button class="login-button" type="submit">
+              Create account
+            </button>
+                      
+            <button
+              class="create-account-button"
+              type="button"
+              (click)="goToLogin()"
+            >
+              Already have an account?
+            </button>
+          </div>
+        </form>
+      </article>
+    </section>
+  </section>
+</main>
