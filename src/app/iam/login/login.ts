@@ -32,7 +32,7 @@ export class LoginComponent {
   }
 
   goToSignUp(): void {
-    this.router.navigate(['/sign-up']);
+  this.router.navigate(['/register']);
   }
 
   goToForgotPassword(event: Event): void {
