@@ -2,15 +2,6 @@
   box-sizing: border-box;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
-  overflow-x: hidden;
-}
-
 .signin-page {
   --deep-green: #14763d;
   --field-green: #1d9148;
@@ -27,31 +18,21 @@ body {
   font-family: "Poppins", system-ui, sans-serif;
   justify-content: center;
   min-height: 100vh;
-  padding: 32px 24px;
+  overflow: hidden;
+  padding: 24px;
   width: 100%;
 }
-
-/* ────────────────────────────────────────────
-   MAIN CONTAINER
-   overflow: hidden → recorta AMBOS paneles con
-   el border-radius del shell, manteniéndolos
-   como un único bloque visual conectado.
-   ──────────────────────────────────────────── */
 
 .signin-shell {
   border-radius: 28px;
   box-shadow: 0 32px 80px rgba(27, 92, 45, 0.16);
   display: flex;
-  min-height: 600px;
-  max-width: 980px;
+  min-height: 620px;
+  max-width: 1080px;
   overflow: hidden;
   position: relative;
-  width: min(96vw, 980px);
+  width: min(95vw, 1080px);
 }
-
-/* ────────────────────────────────────────────
-   LEFT PANEL — verde
-   ──────────────────────────────────────────── */
 
 .brand-panel {
   background:
@@ -60,7 +41,7 @@ body {
     linear-gradient(165deg, var(--field-green) 0%, #1d9048 44%, var(--deep-green) 100%);
   color: #ffffff;
   display: flex;
-  flex: 0 0 44%;
+  flex: 0 0 42%;
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
@@ -94,12 +75,10 @@ body {
 
 .brand-badge,
 .brand-copy,
-.insight-grid {
+.insight-stack {
   position: relative;
   z-index: 1;
 }
-
-/* ── LOGO BADGE ── */
 
 .brand-badge {
   align-items: center;
@@ -112,6 +91,12 @@ body {
   font-weight: 700;
   gap: 10px;
   padding: 8px 16px 8px 8px;
+}
+
+.insight-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .seed-mark {
@@ -157,40 +142,33 @@ body {
   width: 2px;
 }
 
-/* ── COPY ── */
-
-.brand-copy {
-  padding-top: 4px;
-}
-
 .brand-copy h1 {
   color: #ffffff;
-  font-size: clamp(1.9rem, 2.4vw, 2.5rem);
+  font-size: 4.3rem;
+  line-height: .95;
   font-weight: 800;
-  line-height: 1.16;
-  margin: 0 0 20px;
+  max-width: 340px;
+  margin: 0 0 28px;
 }
 
 .brand-copy p {
-  color: rgba(255, 255, 255, 0.84);
+  color: rgba(255, 255, 255, 0.86);
   font-size: 13.5px;
   line-height: 1.75;
   margin: 0;
 }
 
-/* ── INSIGHT CARDS ── */
-
 .insight-grid {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .insight-card {
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 12px;
-  padding: 14px 12px;
+  padding: 16px;
 }
 
 .insight-card strong {
@@ -201,27 +179,39 @@ body {
 }
 
 .insight-card span {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.82);
   display: block;
   font-size: 11px;
   line-height: 1.5;
 }
 
-/* ────────────────────────────────────────────
-   RIGHT PANEL — fondo mint
-   padding: 28px en todos lados para que la card
-   blanca no toque el borde del shell y sus
-   border-radius sean completamente visibles.
-   ──────────────────────────────────────────── */
+.subscription-card {
+  min-height: 680px;
+}
+
+.secure-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #157c3d;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.secure-badge span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #28a745;
+}
 
 .form-stage {
   align-items: center;
-  background: #dff1e3;
-  display: flex;
-  flex: 1;
   justify-content: center;
-  overflow: visible;
-  padding: 28px 32px;
+  flex: 1;
+  padding: 34px;
+  background: #edf7ef;
   position: relative;
 }
 
@@ -230,11 +220,11 @@ body {
   border-radius: 50%;
   content: "";
   height: 150px;
+  pointer-events: none;
   position: absolute;
   right: -30px;
   top: -40px;
   width: 150px;
-  pointer-events: none;
 }
 
 .form-stage::after {
@@ -244,100 +234,69 @@ body {
   content: "";
   height: 170px;
   left: -44px;
+  pointer-events: none;
   position: absolute;
   width: 170px;
-  pointer-events: none;
 }
 
-/* ────────────────────────────────────────────
-   WHITE CARD
-   Totalmente contenida en form-stage.
-   border-radius + sombra son visibles porque
-   el padding del form-stage los aleja del borde
-   del shell que tiene overflow: hidden.
-   ──────────────────────────────────────────── */
-
-.signin-card {
+.subscription-card {
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 30px;
   box-shadow:
-    0 8px 32px rgba(26, 73, 44, 0.1),
-    0 1px 4px rgba(26, 73, 44, 0.06);
+    0 20px 50px rgba(26,73,44,.08),
+    0 2px 6px rgba(26,73,44,.04);
+  width: 100%;
+  max-width: 780px;
+  padding: 42px;
   display: flex;
   flex-direction: column;
-  padding: 30px 30px 24px;
   position: relative;
-  width: 100%;
-  max-width: 400px;
   z-index: 2;
-  height: fit-content;
 }
 
-/* ── SECURE BADGE ── */
-
-.secure-badge {
-  align-items: center;
-  background: #ecf7ed;
-  border-radius: 999px;
-  color: #13743b;
-  display: inline-flex;
-  font-size: 11px;
-  font-weight: 800;
-  gap: 6px;
-  margin-bottom: 12px;
-  padding: 7px 13px;
-  width: fit-content;
+.intro {
+  color: #707b86;
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 520px;
+  margin: 0 0 12px;
 }
 
-.secure-badge span {
-  background: var(--fresh-green);
-  border-radius: 50%;
-  height: 6px;
-  width: 6px;
+.register-card {
+  max-width: 470px;
 }
-
-/* ── TEXTS ── */
 
 .eyebrow {
   color: #f2711c;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.05em;
-  margin: 0 0 7px;
+  margin: 0 0 6px;
   text-transform: uppercase;
 }
 
-.signin-card h2 {
+.subscription-card h2 {
   color: #2b3138;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 800;
-  line-height: 1.15;
-  margin: 0 0 9px;
+  line-height: 1.12;
+  margin: 0 0 12px;
 }
-
-.intro {
-  color: #86909e;
-  font-size: 12.5px;
-  line-height: 1.65;
-  margin: 0 0 18px;
-}
-
-/* ── FORM ── */
 
 .login-form {
   display: grid;
-  gap: 13px;
+  gap: 9px;
 }
 
 .form-field {
   display: grid;
-  gap: 5px;
+  gap: 4px;
 }
 
 .form-field label {
   color: #2f3540;
-  font-size: 11.5px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .input-frame {
@@ -347,8 +306,8 @@ body {
   border-radius: 10px;
   display: flex;
   gap: 10px;
-  min-height: 46px;
-  padding: 0 14px;
+  min-height: 39px;
+  padding: 0 13px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -363,14 +322,16 @@ body {
   font-size: 14px;
 }
 
-.input-frame input {
+.input-frame input,
+.input-frame select {
   background: transparent;
   border: 0;
   color: #2a3037;
   flex: 1;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 500;
+  height: 100%;
   min-width: 0;
   outline: none;
 }
@@ -379,50 +340,64 @@ body {
   color: #aab3be;
 }
 
-/* ── PASSWORD TOGGLE ── */
-
 .password-toggle {
   background: transparent;
   border: 0;
   color: #13743b;
   cursor: pointer;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   padding: 0;
 }
 
-/* ── OPTIONS ROW ── */
-
-.form-options {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
+.select-frame {
+  overflow: visible;
+  position: relative;
 }
 
-.remember-control {
+.select-frame select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  padding-right: 34px;
+}
+
+.select-frame select:invalid {
+  color: #aab3be;
+}
+
+.select-arrow {
+  color: #13743b !important;
+  font-size: 13px !important;
+  pointer-events: none;
+  position: absolute;
+  right: 15px;
+}
+
+.terms-control {
   align-items: center;
   color: #8a95a2;
   cursor: pointer;
   display: inline-flex;
-  font-size: 12px;
-  gap: 7px;
+  font-size: 11px;
+  gap: 8px;
+  margin-top: 2px;
 }
 
-.remember-control input {
+.terms-control input {
   accent-color: #1d8244;
   height: 13px;
   width: 13px;
 }
 
-.form-options a {
-  color: #16733f;
-  font-size: 12px;
-  font-weight: 800;
-  text-decoration: none;
+.register-actions {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 8px;
 }
-
-/* ── BUTTONS ── */
 
 .login-button,
 .create-account-button {
@@ -431,10 +406,12 @@ body {
   cursor: pointer;
   display: inline-flex;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 800;
-  height: 46px;
+  height: 42px;
   justify-content: center;
+  line-height: 1.15;
+  text-align: center;
   transition: background-color 0.18s ease, transform 0.15s ease;
   width: 100%;
 }
@@ -443,7 +420,6 @@ body {
   background: #157c3d;
   border: none;
   color: #ffffff;
-  margin-top: 2px;
 }
 
 .login-button:hover {
@@ -462,96 +438,186 @@ body {
   transform: translateY(-1px);
 }
 
-/* ── DIVIDER ── */
-
-.divider {
-  align-items: center;
-  color: #a1a9b3;
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 1fr auto 1fr;
-  margin: 12px 0;
-}
-
-.divider span {
-  background: #d4ddd8;
-  height: 1px;
-}
-
-.divider small {
-  font-size: 11px;
-}
-
-/* ── FOOTNOTE ── */
-
-.footnote {
-  color: #8a95a2;
-  font-size: 10.5px;
-  line-height: 1.65;
-  margin: 12px auto 0;
-  max-width: 210px;
-  text-align: center;
-}
-
-.error-message,
-.success-message {
-  width: 100%;
-  box-sizing: border-box;
-
-  margin: 0.75rem 0;
-  padding: 0.75rem;
-
-  border-radius: 12px;
-
-  line-height: 1.4;
-
-  word-break: break-word;
-  overflow-wrap: break-word;
-}
-
 .error-message {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  border-radius: 12px;
   border: 1px solid #fecaca;
   background: #fef2f2;
   color: #b91c1c;
+  font-size: 0.9rem;
 }
 
 .success-message {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  border-radius: 12px;
   border: 1px solid #bbf7d0;
   background: #f0fdf4;
   color: #166534;
+  font-size: 0.9rem;
 }
 
-.validation-container {
-  min-height: 70px;
+.plans-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-top: 28px;
 }
 
-/* ────────────────────────────────────────────
-   RESPONSIVE
-   ──────────────────────────────────────────── */
+.plan-box {
+  background: #fff;
+  border: 1px solid #dbe7dd;
+  border-radius: 24px;
+  padding: 22px;
+  min-height: 430px;
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-box.premium {
+  background: #fffaf7;
+  border: 1px solid #f0c6a7;
+}
+
+.plan-icon {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #eef8ee;
+  margin-bottom: 18px;
+}
+
+.premium .plan-icon {
+  background: #fff0e5;
+}
+
+.plan-box h3 {
+  margin: 0;
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #1f2937;
+}
+
+.recommended {
+  display: inline-flex;
+  align-self: flex-start;
+  background: #ffe6d5;
+  color: #f2711c;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+
+.primary-button {
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: 10px;
+  background: #157c3d;
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.secondary-button {
+  width: 100%;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid #157c3d;
+  background: white;
+  color: #157c3d;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.plan-price {
+  margin: 18px 0 20px;
+  font-size: 4.2rem;
+  line-height: 1;
+  font-weight: 800;
+  color: #172b4d;
+}
+
+.plan-price small {
+  font-size: .9rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.plan-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+}
+
+.plan-box li {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 12px;
+  color: #4b5563;
+}
+
+.plan-box li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #6ac17a;
+  font-weight: 700;
+}
+
+.back-link {
+  margin-top: 20px;
+  background: transparent;
+  border: none;
+  color: #157c3d;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  width: fit-content;
+  padding: 0;
+}
+
+@media (max-width: 980px) {
+  .plans-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .subscription-card {
+    max-width: 620px;
+  }
+}
 
 @media (max-width: 860px) {
   .signin-page {
-    padding: 20px 16px;
     align-items: flex-start;
+    overflow-y: auto;
+    padding: 20px 16px;
   }
 
   .signin-shell {
     display: grid;
-    grid-template-columns: 1fr;
     height: auto;
     max-width: 480px;
-    margin: 0 auto;
     width: 100%;
   }
 
   .brand-panel {
     flex: none;
-    min-height: 280px;
+    min-height: 300px;
   }
 
   .form-stage {
     padding: 28px 24px;
   }
+
 }
 
 @media (max-width: 520px) {
@@ -567,17 +633,15 @@ body {
     font-size: 1.8rem;
   }
 
-  .signin-card {
+  .subscription-card {
     padding: 24px 20px 20px;
   }
 
-  .signin-card h2 {
+  .subscription-card h2 {
     font-size: 1.55rem;
   }
 
-  .form-options {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+  .register-actions {
+    grid-template-columns: 1fr;
   }
 }

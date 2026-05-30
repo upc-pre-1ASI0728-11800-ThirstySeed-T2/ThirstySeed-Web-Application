@@ -1,0 +1,132 @@
+<main class="signin-page">
+  <section class="signin-shell">
+
+    <aside class="brand-panel">
+      <div class="brand-badge">
+        <span class="seed-mark">
+          <span class="seed-stem"></span>
+        </span>
+        <span>Thirsty Seed</span>
+      </div>
+
+      <div class="brand-copy">
+        <h1>Choose the right plan for your crops.</h1>
+
+        <p>
+          Select a plan based on the number of nodes,
+          monitoring needs and irrigation intelligence
+          your operation requires.
+        </p>
+      </div>
+
+      <div class="insight-stack">
+
+        <div class="insight-card">
+          <strong>IoT nodes</strong>
+          <span>
+            Connect field sensors according to your plan capacity.
+          </span>
+        </div>
+
+        <div class="insight-card">
+          <strong>Water insights</strong>
+          <span>
+            Track risk, alerts and smart irrigation recommendations.
+          </span>
+        </div>
+
+      </div>
+    </aside>
+
+    <section class="form-stage">
+
+      <article class="subscription-card">
+
+        <div class="secure-badge">
+          <span></span>
+          Subscription setup
+        </div>
+
+        <p class="eyebrow">Choose plan</p>
+
+        <h2>Select your subscription</h2>
+
+        <p class="intro">
+          Start with a plan that matches your field size and monitoring
+          needs. You can update it later as your operation grows.
+        </p>
+
+        <div class="plans-grid">
+
+          <div class="plan-box">
+
+            <div class="plan-icon">🌿</div>
+
+            <h3>Plus</h3>
+
+            <div class="plan-price">
+              $19 <small>/ month</small>
+            </div>
+
+            <ul>
+              <li>Up to 3 IoT nodes</li>
+              <li>Basic plot monitoring</li>
+              <li>Water stress alerts</li>
+              <li>Sensor history access</li>
+            </ul>
+
+            <button
+              class="secondary-button"
+              (click)="selectPlan('Plus')"
+            >
+              Select Plus
+            </button>
+
+          </div>
+
+          <div class="plan-box premium">
+
+            <span class="recommended">
+              Recommended
+            </span>
+
+            <div class="plan-icon">🚀</div>
+
+            <h3>Premium</h3>
+
+            <div class="plan-price">
+              $39 <small>/ month</small>
+            </div>
+
+            <ul>
+              <li>Up to 10 IoT nodes</li>
+              <li>Predictive irrigation</li>
+              <li>Weather support</li>
+              <li>Priority alerts & reports</li>
+            </ul>
+
+            <button
+              class="primary-button"
+              (click)="selectPlan('Premium')"
+            >
+              Select Premium
+            </button>
+
+          </div>
+
+        </div>
+
+        <button
+          class="back-link"
+          type="button"
+          (click)="goBack()"
+        >
+          ← Back to account
+        </button>
+
+      </article>
+
+    </section>
+
+  </section>
+</main>

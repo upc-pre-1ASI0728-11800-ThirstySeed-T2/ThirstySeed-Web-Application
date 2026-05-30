@@ -102,7 +102,25 @@
             <a href="#" (click)="goToForgotPassword($event)">Forgot password?</a>
           </div>
 
-          <button class="login-button" type="submit">Log In</button>
+          <div class="validation-container">
+
+            @if (errorMessage) {
+              <div class="error-message">
+                {{ errorMessage }}
+              </div>
+            }
+
+            @if (successMessage) {
+              <div class="success-message">
+                {{ successMessage }}
+              </div>
+            }
+
+          </div>
+
+          <button class="login-button" type="submit">
+            Log In
+          </button>
         </form>
 
         <div class="divider">
