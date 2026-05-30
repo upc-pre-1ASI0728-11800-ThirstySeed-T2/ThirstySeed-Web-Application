@@ -1,0 +1,142 @@
+<main class="signin-page">
+  <section class="signin-shell" aria-label="Thirsty Seed sign in">
+    <aside class="brand-panel">
+      <div class="brand-badge">
+        <span class="seed-mark">
+          <span class="seed-stem"></span>
+        </span>
+        <span>Thirsty Seed</span>
+      </div>
+
+      <div class="brand-copy">
+        <h1>Smart irrigation decisions for healthier crops.</h1>
+        <p>
+          Monitor your plots, understand water stress and receive predictive irrigation
+          recommendations powered by IoT and climate data.
+        </p>
+      </div>
+
+      <div class="insight-grid">
+        <div class="insight-card">
+          <strong>IoT</strong>
+          <span>Real-time field monitoring</span>
+        </div>
+        <div class="insight-card">
+          <strong>AI</strong>
+          <span>Predictive water alerts</span>
+        </div>
+        <div class="insight-card">
+          <strong>24/7</strong>
+          <span>Crop risk visibility</span>
+        </div>
+      </div>
+    </aside>
+
+    <section class="form-stage">
+      <article class="signin-card">
+        <div class="secure-badge">
+          <span></span>
+          Secure access
+        </div>
+
+        <p class="eyebrow">Welcome back</p>
+        <h2>Sign in to your account</h2>
+
+        <p class="intro">
+          Access your plots, sensor data and irrigation recommendations from one secure
+          dashboard.
+        </p>
+
+        <form class="login-form" (ngSubmit)="handleSignIn()">
+          <div class="form-field">
+            <label for="email">Email address</label>
+            <div class="input-frame">
+              <i class="pi pi-envelope"></i>
+              <input
+                id="email"
+                name="email"
+                [(ngModel)]="username"
+                autocomplete="email"
+                placeholder="name@example.com"
+                required
+                type="email"
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="password">Password</label>
+            <div class="input-frame">
+              <i class="pi pi-lock"></i>
+              <input
+                id="password"
+                name="password"
+                [(ngModel)]="password"
+                [type]="showPassword ? 'text' : 'password'"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                required
+              />
+
+              <button
+                class="password-toggle"
+                type="button"
+                (click)="showPassword = !showPassword"
+              >
+                {{ showPassword ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+          </div>
+
+          <div class="form-options">
+            <label class="remember-control" for="remember">
+              <input
+                id="remember"
+                name="remember"
+                [(ngModel)]="rememberMe"
+                type="checkbox"
+              />
+              <span>Remember me</span>
+            </label>
+
+            <a href="#" (click)="goToForgotPassword($event)">Forgot password?</a>
+          </div>
+
+          <div class="validation-container">
+
+            @if (errorMessage) {
+              <div class="error-message">
+                {{ errorMessage }}
+              </div>
+            }
+
+            @if (successMessage) {
+              <div class="success-message">
+                {{ successMessage }}
+              </div>
+            }
+
+          </div>
+
+          <button class="login-button" type="submit">
+            Log In
+          </button>
+        </form>
+
+        <div class="divider">
+          <span></span>
+          <small>or</small>
+          <span></span>
+        </div>
+
+        <button class="create-account-button" type="button" (click)="goToSignUp()">
+          Create new account
+        </button>
+
+        <p class="footnote">
+          Access depends on your assigned role and active subscription plan.
+        </p>
+      </article>
+    </section>
+  </section>
+</main>
