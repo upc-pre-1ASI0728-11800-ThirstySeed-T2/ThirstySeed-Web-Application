@@ -99,7 +99,6 @@
                 <option value="" disabled hidden>Select account type</option>
                 <option value="Agricultural Producer">Agricultural Producer</option>
                 <option value="Water Management Entity">Water Management Entity</option>
-                <option value="Administrator">Administrator</option>
               </select>
 
               <i class="pi pi-chevron-down select-arrow"></i>
@@ -164,11 +163,23 @@
             <span>I agree to the terms and privacy policy.</span>
           </label>
 
+          @if (errorMessage) {
+            <div class="error-message">
+              {{ errorMessage }}
+            </div>
+          }
+
+          @if (successMessage) {
+            <div class="success-message">
+              {{ successMessage }}
+            </div>
+          }
+
           <div class="register-actions">
             <button class="login-button" type="submit">
               Create account
             </button>
-                      
+
             <button
               class="create-account-button"
               type="button"
