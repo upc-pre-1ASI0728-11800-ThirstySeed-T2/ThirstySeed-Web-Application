@@ -78,7 +78,7 @@ export class LoginComponent implements OnInit {
 
     console.log('Logged user:', user);
 
-    this.router.navigate(['/account']);
+    this.router.navigate(['/dashboard']);
   }
 
   goToSignUp(): void {
