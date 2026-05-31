@@ -132,4 +132,26 @@ export class AuthService {
 
     return subscriptions.find((s: any) => s.userId === userId);
   }
+
+  updatePassword(email: string, newPassword: string): boolean {
+    const users = this.getUsers();
+
+    const user = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+
+    if (!user) {
+      return false;
+    }
+
+    user.password = newPassword;
+
+    localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
+
+    const currentUser = this.getCurrentUser();
+
+    if (currentUser && currentUser.id === user.id) {
+      localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(user));
+    }
+
+    return true;
+  }
 }

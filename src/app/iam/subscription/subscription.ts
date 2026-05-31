@@ -18,6 +18,7 @@ export class SubscriptionComponent {
     const user = this.authService.getCurrentUser();
 
     console.log('Current user:', user);
+    console.log('Selected plan:', plan);
 
     if (!user) {
       this.router.navigate(['/login']);
@@ -27,6 +28,8 @@ export class SubscriptionComponent {
     this.authService.saveSubscription(user.id, plan);
 
     console.log('Users after update:', this.authService.getUsers());
+
+    this.router.navigate(['/login']);
   }
 
   goBack(): void {
