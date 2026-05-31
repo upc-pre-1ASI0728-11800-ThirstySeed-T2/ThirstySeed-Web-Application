@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 import { AuthService } from '../services/auth.service';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -25,14 +26,17 @@ export class LoginComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
   ngOnInit(): void {
-    const rememberedEmail = localStorage.getItem('rememberedEmail');
+    if (isPlatformBrowser(this.platformId)) {
+      const rememberedEmail = localStorage.getItem('rememberedEmail');
 
-    if (rememberedEmail) {
-      this.username = rememberedEmail;
-      this.rememberMe = true;
+      if (rememberedEmail) {
+        this.username = rememberedEmail;
+        this.rememberMe = true;
+      }
     }
   }
 
