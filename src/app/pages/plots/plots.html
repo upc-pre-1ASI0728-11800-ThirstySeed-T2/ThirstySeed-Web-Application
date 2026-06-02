@@ -3,13 +3,13 @@
     <span class="page-badge">● Plot management</span>
     <h1>Plots by farm</h1>
     <p>Select a farm to review and manage only the productive plots registered inside it.</p>
-    <button type="button" class="add-button">+ Add plot</button>
+    <button type="button" class="add-button" (click)="createPlot()">+ Add plot</button>
   </header>
 
   <section *ngIf="loading">Loading plots...</section>
   <section *ngIf="errorMessage">{{ errorMessage }}</section>
 
-  <section class="summary-cards" *ngIf="!loading && !errorMessage">
+  <section class="summary-cards" *ngIf="!loading && !errorMessage && plots.length > 0">
     <div class="card">
       <span>🎯</span>
       <strong>{{ totalPlots }}</strong>
@@ -27,7 +27,7 @@
     </div>
   </section>
 
-  <section class="plots-list" *ngIf="!loading && !errorMessage">
+  <section class="plots-list" *ngIf="!loading && !errorMessage && plots.length > 0">
     <div *ngFor="let plot of plots" class="plot-card">
       <h3>{{ plot.name }}</h3>
       <p>{{ plot.location }}</p>
@@ -39,5 +39,9 @@
         <button>Open</button>
       </div>
     </div>
+  </section>
+
+  <section *ngIf="!loading && !errorMessage && plots.length === 0">
+    <p>No plots registered yet.</p>
   </section>
 </section>

@@ -31,33 +31,33 @@ export class SidebarComponent implements OnInit {
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    const user = this.authService.getCurrentUser();
-    if (!user) return;
+const user = this.authService.getCurrentUser();
+if (!user) return;
 
-    if (user.accountType === 'Agricultural Producer') {
-      this.menuItems = [
-        { label: 'Dashboard',    route: '/dashboard'    },
-        { label: 'Farms',        route: '/farms'        },
-        { label: 'Plots',        route: '/plots'        },
-        { label: 'Telemetry',    route: '/telemetry'    },
-        { label: 'Irrigation',   route: '/irrigation'   },
-        { label: 'Alerts',       route: '/alerts'       },
-        { label: 'Subscription', route: '/subscription' },
-        { label: 'Settings',     route: '/settings'     },
-      ];
-      this.showPremiumCard = true;
+if (user.roles?.includes('ROLE_PRODUCER')) {
+  this.menuItems = [
+    { label: 'Dashboard',    route: '/dashboard'    },
+    { label: 'Farms',        route: '/farms'        },
+    { label: 'Plots',        route: '/plots'        },
+    { label: 'Telemetry',    route: '/telemetry'    },
+    { label: 'Irrigation',   route: '/irrigation'   },
+    { label: 'Alerts',       route: '/alerts'       },
+    { label: 'Subscription', route: '/subscription' },
+    { label: 'Settings',     route: '/settings'     },
+  ];
+  this.showPremiumCard = true;
 
-    } else {
-      this.menuItems = [
-        { label: 'Dashboard',      route: '/dashboard'       },
-        { label: 'Zones',          route: '/zones'           },
-        { label: 'Water Demand',   route: '/water-demand'    },
-        { label: 'Critical Areas', route: '/critical-areas'  },
-        { label: 'Reports',        route: '/reports'         },
-        { label: 'Regional Alerts',route: '/regional-alerts' },
-        { label: 'Settings',       route: '/settings'        },
-      ];
-      this.showPremiumCard = false;
-    }
+} else if (user.roles?.includes('ROLE_WATER_MANAGER')) {
+  this.menuItems = [
+    { label: 'Dashboard',      route: '/dashboard'       },
+    { label: 'Zones',          route: '/zones'           },
+    { label: 'Water Demand',   route: '/water-demand'    },
+    { label: 'Critical Areas', route: '/critical-areas'  },
+    { label: 'Reports',        route: '/reports'         },
+    { label: 'Regional Alerts',route: '/regional-alerts' },
+    { label: 'Settings',       route: '/settings'        },
+  ];
+  this.showPremiumCard = false;
+}
   }
 }

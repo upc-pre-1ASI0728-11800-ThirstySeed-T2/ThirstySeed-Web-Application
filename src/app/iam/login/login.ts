@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-
 import { AuthService } from '../services/auth.service';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, NgIf],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -31,10 +30,9 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      const rememberedEmail = localStorage.getItem('rememberedEmail');
-
-      if (rememberedEmail) {
-        this.username = rememberedEmail;
+      const rememberedUsername = localStorage.getItem('rememberedUsername');
+      if (rememberedUsername) {
+        this.username = rememberedUsername;
         this.rememberMe = true;
       }
     }
@@ -44,41 +42,34 @@ export class LoginComponent implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
+    if (!this.username.trim() || !this.password.trim()) {
+      this.errorMessage = 'Username and password are required.';
+      return;
+    }
+
+    // Ya no validamos como email
     if (!this.username.trim()) {
-      this.errorMessage = 'Email is required.';
+      this.errorMessage = 'Username is required.';
       return;
     }
 
-    if (!this.password.trim()) {
-      this.errorMessage = 'Password is required.';
-      return;
-    }
+    this.authService.signIn(this.username, this.password).subscribe({
+      next: (user) => {
+        if (this.rememberMe) {
+          localStorage.setItem('rememberedUsername', this.username);
+        } else {
+          localStorage.removeItem('rememberedUsername');
+        }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        this.successMessage = 'Login successful.';
+        console.log('Logged user:', user);
 
-    if (!emailRegex.test(this.username)) {
-      this.errorMessage = 'Please enter a valid email address.';
-      return;
-    }
-
-    const user = this.authService.login(this.username, this.password);
-
-    if (!user) {
-      this.errorMessage = 'Invalid email or password.';
-      return;
-    }
-
-    if (this.rememberMe) {
-      localStorage.setItem('rememberedEmail', this.username);
-    } else {
-      localStorage.removeItem('rememberedEmail');
-    }
-
-    this.successMessage = 'Login successful.';
-
-    console.log('Logged user:', user);
-
-    this.router.navigate(['/dashboard']);
+        this.router.navigate(['/dashboard']);
+      },
+      error: () => {
+        this.errorMessage = 'Invalid username or password.';
+      }
+    });
   }
 
   goToSignUp(): void {

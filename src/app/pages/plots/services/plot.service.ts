@@ -7,7 +7,7 @@ import { Plot } from '../model/plot.model';
   providedIn: 'root'
 })
 export class PlotService {
-  private baseUrl = 'http://localhost:8080/api/v1/plot';
+private baseUrl = 'https://thirstyseed-api.onrender.com/api/v1/plot';
 
   constructor(private http: HttpClient) {}
 
