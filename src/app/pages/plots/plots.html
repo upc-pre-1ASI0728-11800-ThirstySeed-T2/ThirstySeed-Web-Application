@@ -1,47 +1,174 @@
 <section class="plots-page">
-  <header class="plots-header">
-    <span class="page-badge">● Plot management</span>
-    <h1>Plots by farm</h1>
-    <p>Select a farm to review and manage only the productive plots registered inside it.</p>
-    <button type="button" class="add-button" (click)="createPlot()">+ Add plot</button>
+
+  <!-- TOP NAV -->
+  <header class="top-nav">
+    <div class="top-nav-left">
+      <span class="page-badge">● Plot management</span>
+      <h1>Plots by farm</h1>
+      <p class="subtitle">Select a farm to review and manage only the productive plots registered inside it.</p>
+    </div>
+    <div class="top-nav-right">
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" placeholder="Search plots" />
+      </div>
+      <button class="icon-btn notif">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>
+        </svg>
+        <span class="badge-dot"></span>
+      </button>
+      <button class="icon-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+        </svg>
+      </button>
+      <button class="user-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>Producer</span>
+      </button>
+      <button class="add-button" (click)="goToCreatePlot()">+ Add plot</button>
+    </div>
   </header>
 
-  <section *ngIf="loading">Loading plots...</section>
-  <section *ngIf="errorMessage">{{ errorMessage }}</section>
-
-  <section class="summary-cards" *ngIf="!loading && !errorMessage && plots.length > 0">
-    <div class="card">
-      <span>🎯</span>
-      <strong>{{ totalPlots }}</strong>
-      <p>Registered plots</p>
-    </div>
-    <div class="card">
-      <span>📡</span>
-      <strong>{{ plotsWithNodes }}</strong>
-      <p>Plots with IoT nodes</p>
-    </div>
-    <div class="card">
-      <span>⚠️</span>
-      <strong>{{ plotsAtRisk }}</strong>
-      <p>Plots at risk</p>
-    </div>
-  </section>
-
-  <section class="plots-list" *ngIf="!loading && !errorMessage && plots.length > 0">
-    <div *ngFor="let plot of plots" class="plot-card">
-      <h3>{{ plot.name }}</h3>
-      <p>{{ plot.location }}</p>
-      <p>Extension: {{ plot.extension }} ha</p>
-      <p>Status: {{ plot.status }}</p>
-      <img *ngIf="plot.imageUrl" [src]="plot.imageUrl" alt="Plot image" />
-      <div class="actions">
-        <button>Edit</button>
-        <button>Open</button>
+  <!-- FARM SELECTOR BAR -->
+  <div class="farm-bar">
+    <div class="farm-select-wrap">
+      <label>SELECTED FARM</label>
+      <div class="farm-select">
+        <span>🌾</span>
+        <span class="farm-name">{{ selectedFarmName }}</span>
       </div>
     </div>
-  </section>
+    <div class="farm-bar-actions">
+      <button class="outline-btn">Sort by risk</button>
+      <button class="outline-btn">Connected nodes</button>
+    </div>
+    <p class="farm-info-text">Showing plots registered only inside {{ selectedFarmName }}.</p>
+  </div>
 
-  <section *ngIf="!loading && !errorMessage && plots.length === 0">
-    <p>No plots registered yet.</p>
-  </section>
+  <!-- LOADING / ERROR -->
+  <div *ngIf="loading" class="state-msg">Loading plots...</div>
+  <div *ngIf="errorMessage" class="state-msg error">{{ errorMessage }}</div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content" *ngIf="!loading && !errorMessage">
+
+    <!-- LEFT COLUMN -->
+    <div class="left-col">
+
+      <!-- STAT CARDS -->
+      <div class="summary-cards">
+        <div class="stat-card">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-body">
+            <strong>{{ totalPlots }}</strong>
+            <p>Registered plots in this farm</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📡</div>
+          <div class="stat-body">
+            <strong>{{ plotsWithNodes }}</strong>
+            <p>Plots with IoT nodes</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💧</div>
+          <div class="stat-body">
+            <strong>—</strong>
+            <p>Average soil moisture</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-body">
+            <strong>{{ plotsAtRisk }}</strong>
+            <p>Plots at risk in this farm</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLOTS LIST -->
+      <div class="plots-section" *ngIf="plots.length > 0">
+        <h2>Plots in {{ selectedFarmName }}</h2>
+        <p class="section-sub">Only plots belonging to the selected farm are displayed here.</p>
+        <div class="plots-grid">
+          <div *ngFor="let plot of plots" class="plot-card">
+            <div class="plot-card-header">
+              <div class="plot-thumb">
+                <img *ngIf="plot.imageUrl" [src]="plot.imageUrl" alt="plot" />
+                <span *ngIf="!plot.imageUrl">🌿</span>
+              </div>
+              <div class="plot-title">
+                <h3>{{ plot.name }}</h3>
+                <p>{{ plot.location }} · {{ plot.extension }} ha</p>
+              </div>
+              <span class="risk-badge" [ngClass]="plot.status.toLowerCase()">
+                {{ plot.status || 'No data' }}
+              </span>
+            </div>
+            <div class="plot-metrics">
+              <div class="metric">
+                <label>LOCATION</label>
+                <span>{{ plot.location || '--' }}</span>
+              </div>
+              <div class="metric">
+                <label>EXTENSION</label>
+                <span>{{ plot.extension ? plot.extension + ' ha' : '--' }}</span>
+              </div>
+              <div class="metric">
+                <label>STATUS</label>
+                <span [ngClass]="plot.status.toLowerCase()">{{ plot.status || '--' }}</span>
+              </div>
+            </div>
+            <div class="plot-actions">
+              <button class="btn-edit">Edit</button>
+              <button class="btn-open">Open</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && !errorMessage && plots.length === 0" class="state-msg">
+        No plots registered yet.
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-col">
+      <div class="farm-summary-card">
+        <h3>Selected farm summary</h3>
+        <p class="section-sub">Farm data connected to the selected plots.</p>
+        <div class="summary-row">
+          <span>Farm</span><strong>{{ selectedFarmName }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Total plots</span><strong>{{ totalPlots }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Plots at risk</span>
+          <strong [ngClass]="plotsAtRisk > 0 ? 'moderate' : 'safe'">
+            {{ plotsAtRisk > 0 ? plotsAtRisk + ' at risk' : 'None' }}
+          </strong>
+        </div>
+      </div>
+
+      <div class="other-farms-card" *ngIf="plots.length > 0">
+        <h3>Plots overview</h3>
+        <p class="section-sub">Quick status of all registered plots.</p>
+        <div *ngFor="let plot of plots" class="other-farm-row">
+          <span>{{ plot.name }}</span>
+          <span class="plots-count" [ngClass]="plot.status.toLowerCase()">
+            {{ plot.status || 'No data' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </section>

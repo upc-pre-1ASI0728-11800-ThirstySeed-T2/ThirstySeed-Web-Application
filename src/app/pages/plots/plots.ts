@@ -1,15 +1,15 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { PlotService } from '../../pages/plots/services/plot.service';
 import { Plot } from '../../pages/plots/model/plot.model';
 import { AuthService } from '../../iam/services/auth.service';
 import { HttpHeaders } from '@angular/common/http';
 
-
 @Component({
   selector: 'app-plots',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './plots.html',
   styleUrl: './plots.css',
 })
@@ -19,11 +19,12 @@ export class PlotsComponent implements OnInit {
   errorMessage = '';
   selectedFarmName = 'All farms';
 
-constructor(
-  private plotService: PlotService,
-  private authService: AuthService,
-  private cd: ChangeDetectorRef   // <- agregar esto
-) {}
+  constructor(
+    private plotService: PlotService,
+    private authService: AuthService,
+    private cd: ChangeDetectorRef,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadPlots();
@@ -33,28 +34,58 @@ constructor(
     const user = this.authService.getCurrentUser();
     const token = this.authService.getToken();
 
-    if (!user || !token) return;
+    if (!user || !token) {
+      this.errorMessage = 'User not logged in or token missing.';
+      return;
+    }
 
     this.loading = true;
     this.errorMessage = '';
 
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    // Trae plots solo del usuario logueado
-    this.plotService.getPlotsByUser(user.id).subscribe({
-      next: (plots) => {
-        this.plots = plots;
-        this.loading = false;
-        if (plots.length > 0) this.selectedFarmName = plots[0].name;
+this.plotService.getPlotsByUser(user.id).subscribe({
+  next: (plots) => {
+    this.plots = plots;
+    this.loading = false;
+    if (plots.length > 0) this.selectedFarmName = plots[0].name;
 
-        // Forzar detección de cambios para que se renderice inmediatamente
-        this.cd.detectChanges();
+    // Fuerza detección de cambios sin que NG0100 se dispare
+    setTimeout(() => this.cd.detectChanges());
+  },
+  error: (err) => {
+    this.errorMessage = 'No se pudieron cargar los plots';
+    this.loading = false;
+    console.error(err);
+    setTimeout(() => this.cd.detectChanges());
+  },
+});
+  }
+
+  createPlot(): void {
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      this.errorMessage = 'User not logged in.';
+      return;
+    }
+
+    const newPlot: Partial<Plot> = {
+      userId: user.id,
+      name: 'New Plot',
+      location: 'Farm Example',
+      extension: 5,
+      imageUrl: '',
+      status: 'Active'
+    };
+
+    this.plotService.createPlot(newPlot).subscribe({
+      next: () => {
+        // Recargar la lista completa desde el backend
+        this.loadPlots();
       },
       error: (err) => {
-        this.errorMessage = 'No se pudieron cargar los plots';
-        this.loading = false;
+        this.errorMessage = 'Failed to create plot.';
         console.error(err);
-        this.cd.detectChanges();
       },
     });
   }
@@ -71,28 +102,7 @@ constructor(
     return this.plots.filter(p => p.status === 'Moderate' || p.status === 'High').length;
   }
 
-  createPlot(): void {
-    const user = this.authService.getCurrentUser();
-    const token = this.authService.getToken();
-    if (!user || !token) return;
-
-    const newPlot: Partial<Plot> = {
-      userId: user.id,
-      name: 'New Plot',
-      location: 'Farm Example',
-      extension: 5,
-      imageUrl: ''
-    };
-
-    this.plotService.createPlot(newPlot).subscribe({
-      next: (plot) => {
-        this.plots.push(plot);
-        this.selectedFarmName = plot.name;
-
-        // Forzar detección de cambios para que aparezca en la UI
-        this.cd.detectChanges();
-      },
-      error: (err) => console.error('Failed to create plot', err)
-    });
+  goToCreatePlot() {
+    this.router.navigate(['/plots/create']);
   }
 }
