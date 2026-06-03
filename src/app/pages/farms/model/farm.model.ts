@@ -3,10 +3,10 @@ export interface Farm {
   name: string;
   totalArea: number;
   producerId: number;
-  // Campos opcionales (el backend no los exige pero el HTML los usa)
+  createdAt?: string;
+  // Campos solo visuales (no vienen del backend)
   location?: string;
   initialStatus?: string;
   description?: string;
   productionType?: string;
-  userId?: number;
 }
