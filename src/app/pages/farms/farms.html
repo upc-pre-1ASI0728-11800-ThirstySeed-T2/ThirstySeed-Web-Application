@@ -1,0 +1,175 @@
+<section class="farms-page">
+
+  <!-- TOP NAV -->
+  <header class="top-nav">
+    <div class="top-nav-left">
+      <span class="page-badge">● Farm management</span>
+      <h1>Your registered farms</h1>
+      <p class="subtitle">Review your farms, monitor their active plots and manage the agricultural spaces connected to Thirsty Seed.</p>
+    </div>
+    <div class="top-nav-right">
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" placeholder="Search farms" />
+      </div>
+      <button class="icon-btn notif">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>
+        </svg>
+        <span class="badge-dot"></span>
+      </button>
+      <button class="user-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>Producer</span>
+      </button>
+      <button class="add-button" (click)="goToCreate()">+ Add farm</button>
+    </div>
+  </header>
+
+  <!-- LOADING / ERROR -->
+  <div *ngIf="loading" class="state-msg">Loading farms...</div>
+  <div *ngIf="errorMessage" class="state-msg error">{{ errorMessage }}</div>
+
+  <div class="main-content" *ngIf="!loading && !errorMessage">
+
+    <!-- STAT CARDS -->
+    <div class="summary-cards">
+      <div class="stat-card">
+        <div class="stat-icon">🌾</div>
+        <div class="stat-body">
+          <strong>{{ totalFarms }}</strong>
+          <p>Registered farms</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🌱</div>
+        <div class="stat-body">
+          <strong>{{ totalActivePlots }}</strong>
+          <p>Total active plots</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📡</div>
+        <div class="stat-body">
+          <strong>{{ farmsWithNodes }}</strong>
+          <p>Farms with IoT nodes</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-body">
+          <strong>{{ farmsWithRisk }}</strong>
+          <p>Farm with critical risk</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TWO COLUMN LAYOUT -->
+    <div class="two-col">
+
+      <!-- LEFT: FARMS LIST -->
+      <div class="left-col">
+        <div class="section-header">
+          <div>
+            <h2>Farms list</h2>
+            <p class="section-sub">Manage your farms and access to plot distribution.</p>
+          </div>
+          <button class="outline-btn">Sort by risk</button>
+        </div>
+
+        <div *ngIf="farms.length === 0" class="state-msg">No farms registered yet.</div>
+
+        <div class="farms-grid">
+          <div *ngFor="let farm of farms" class="farm-card">
+            <div class="farm-card-header">
+              <div class="farm-thumb">🌾</div>
+              <div class="farm-title">
+                <h3>{{ farm.name }}</h3>
+                <p>{{ farm.location }}</p>
+              </div>
+              <span class="status-badge" [ngClass]="farm.initialStatus?.toLowerCase()">
+                {{ farm.initialStatus }}
+              </span>
+            </div>
+
+            <div class="farm-metrics">
+              <div class="metric">
+                <label>PLOTS</label>
+                <span>—</span>
+              </div>
+              <div class="metric">
+                <label>NODES</label>
+                <span>—</span>
+              </div>
+              <div class="metric">
+                <label>RISK</label>
+                <span>—</span>
+              </div>
+            </div>
+
+            <p class="farm-meta">Updated just now</p>
+
+            <div class="farm-actions">
+              <button class="btn-edit">Edit</button>
+              <button class="btn-open" (click)="openFarm(farm.id)">Open</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADD FARM CARD -->
+        <div class="add-farm-card">
+          <div class="add-farm-icon">🌿</div>
+          <h3>Farm management</h3>
+          <p>Register your farms, assign plots and manage the agricultural spaces connected to it.</p>
+          <button class="add-button-sm" (click)="goToCreate()">Add farm</button>
+        </div>
+      </div>
+
+      <!-- RIGHT COL -->
+      <div class="right-col">
+
+        <!-- MAP PLACEHOLDER -->
+        <div class="map-card">
+          <h3>Farm locations</h3>
+          <p class="section-sub">Geographic overview of all registered farms.</p>
+          <div class="map-placeholder">
+            <div class="map-pin pin-1">
+              <span class="pin-dot moderate"></span>
+              <span class="pin-label">F1</span>
+            </div>
+            <div class="map-pin pin-2">
+              <span class="pin-dot low"></span>
+              <span class="pin-label">F2</span>
+            </div>
+            <p class="map-legend">
+              <span class="dot moderate"></span> Moderate / Critical
+            </p>
+          </div>
+        </div>
+
+        <!-- RECENT ACTIVITY -->
+        <div class="activity-card">
+          <h3>Recent farm activity</h3>
+          <p class="section-sub">Last updates from your farms.</p>
+
+          <div *ngIf="farms.length === 0" class="activity-empty">No recent activity.</div>
+
+          <div class="activity-list">
+            <div *ngFor="let farm of farms.slice(0, 3)" class="activity-row">
+              <div class="activity-icon">🌾</div>
+              <div class="activity-body">
+                <strong>{{ farm.name }}</strong>
+                <p>{{ farm.description || 'Farm registered and added successfully.' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

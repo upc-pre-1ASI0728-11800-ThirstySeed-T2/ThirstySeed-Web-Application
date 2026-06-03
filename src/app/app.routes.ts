@@ -7,6 +7,8 @@ import { MainLayoutComponent } from './main-layout/main-layout';
 import { DashboardComponent } from './pages/dashboard/dashboard';
 import { PlotsComponent } from './pages/plots/plots';
 import { CreatePlotComponent } from './pages/plots/create_plots/create-plot';
+import { FarmsComponent } from './pages/farms/farms';
+import { FarmCreateComponent } from './pages/farms/create_farms/farm-create';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -17,6 +19,12 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
-    children: [{ path: 'dashboard', component: DashboardComponent }, {path: 'plots', component: PlotsComponent}, {path: 'plots/create', component: CreatePlotComponent}],
+    children: [
+      { path: 'dashboard', component: DashboardComponent }, 
+      {path: 'plots', component: PlotsComponent}, 
+      {path: 'plots/create', component: CreatePlotComponent}, 
+      {path: 'farms', component: FarmsComponent},
+      { path: 'farms/create', component: FarmCreateComponent }
+    ],
   },
 ];
