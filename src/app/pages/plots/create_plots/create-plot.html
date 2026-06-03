@@ -1,0 +1,27 @@
+<section class="create-plot-page">
+  <h1>Create a new plot</h1>
+  <form (ngSubmit)="createPlot()">
+    <label>Plot name</label>
+    <input [(ngModel)]="plotName" name="name" required />
+
+    <label>Farm</label>
+    <input [(ngModel)]="location" name="location" required />
+
+    <label>Plot area (hectares)</label>
+    <input type="number" [(ngModel)]="extension" name="extension" required />
+
+    <label>Status</label>
+    <select [(ngModel)]="status" name="status">
+      <option>Active</option>
+      <option>REQUESTED</option>
+    </select>
+
+    <label>Image URL (optional)</label>
+    <input [(ngModel)]="imageUrl" name="imageUrl" />
+
+    <button type="submit">Create plot</button>
+  </form>
+
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+</section>
