@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FarmService } from './services/farm.service';
@@ -20,27 +20,42 @@ export class FarmsComponent implements OnInit {
   constructor(
     private farmService: FarmService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loadFarms();
   }
 
-loadFarms(): void {
-  const user = this.authService.getCurrentUser();
-  if (!user) { this.errorMessage = 'User not logged in.'; return; }
+  loadFarms(): void {
+    const user = this.authService.getCurrentUser();
+    if (!user) { this.errorMessage = 'User not logged in.'; return; }
 
-  this.loading = true;
-  this.farmService.getFarmsByProducer(user.id).subscribe({
-    next: (farms) => { this.farms = farms; this.loading = false; },
-    error: (err) => { this.errorMessage = 'Could not load farms.'; this.loading = false; }
-  });
-}
+    const ids = this.farmService.getSavedFarmIds();
 
-  // Stats calculados
+    if (ids.length === 0) {
+      this.loading = false;
+      return;
+    }
+
+    this.loading = true;
+    this.farmService.getFarmsByIds(ids).subscribe({
+      next: (farms) => {
+        this.farms = farms;
+        this.loading = false;
+        setTimeout(() => this.cd.detectChanges());
+      },
+      error: () => {
+        this.errorMessage = 'Could not load farms.';
+        this.loading = false;
+        setTimeout(() => this.cd.detectChanges());
+      }
+    });
+  }
+
   get totalFarms()       { return this.farms.length; }
-  get totalActivePlots() { return 0; } // conectar cuando tengas plots por farm
+  get totalActivePlots() { return 0; }
   get farmsWithNodes()   { return this.farms.filter(f => f.initialStatus === 'Active').length; }
   get farmsWithRisk()    { return this.farms.filter(f => f.initialStatus === 'Moderate' || f.initialStatus === 'High').length; }
 

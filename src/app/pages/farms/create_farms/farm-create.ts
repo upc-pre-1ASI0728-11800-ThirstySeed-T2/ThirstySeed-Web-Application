@@ -13,14 +13,15 @@ import { AuthService } from '../../../iam/services/auth.service';
   styleUrl: './farm-create.css',
 })
 export class FarmCreateComponent {
-farm = {
-  name: '',
-  totalArea: undefined as number | undefined,
-  location: '',
-  productionType: '',
-  initialStatus: '',
-  description: '',
-};
+
+  farm = {
+    name: '',
+    totalArea: undefined as number | undefined,
+    location: '',
+    productionType: '',
+    initialStatus: '',
+    description: '',
+  };
 
   loading = false;
   errorMessage = '';
@@ -31,23 +32,33 @@ farm = {
     private router: Router
   ) {}
 
-createFarm(): void {
-  const user = this.authService.getCurrentUser();
-  if (!user) { this.errorMessage = 'User not logged in.'; return; }
-  if (!this.farm.name) { this.errorMessage = 'Name is required.'; return; }
+  createFarm(): void {
+    const user = this.authService.getCurrentUser();
+    if (!user) { this.errorMessage = 'User not logged in.'; return; }
+    if (!this.farm.name) { this.errorMessage = 'Name is required.'; return; }
 
-  this.loading = true;
-  const payload = {
-    name: this.farm.name,
-    totalArea: this.farm.totalArea ?? 0,
-    producerId: user.id   // ← usa el id del usuario logueado
-  };
+    this.loading = true;
+    this.errorMessage = '';
 
-  this.farmService.createFarm(payload).subscribe({
-    next: () => { this.loading = false; this.router.navigate(['/farms']); },
-    error: (err) => { this.errorMessage = 'Failed to create farm.'; this.loading = false; }
-  });
-}
+    const payload = {
+      name: this.farm.name,
+      totalArea: this.farm.totalArea ?? 0,
+      producerId: user.id,
+    };
+
+    this.farmService.createFarm(payload).subscribe({
+      next: (farmId: number) => {
+        this.farmService.saveFarmId(farmId); // ← guarda el ID en localStorage
+        this.loading = false;
+        this.router.navigate(['/farms']);
+      },
+      error: (err) => {
+        this.errorMessage = 'Failed to create farm.';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
 
   cancel(): void {
     this.router.navigate(['/farms']);
