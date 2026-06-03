@@ -5,6 +5,8 @@ import { SubscriptionComponent } from './iam/subscription/subscription';
 import { ForgetPasswordComponent } from './iam/forget-password/forget-password';
 import { MainLayoutComponent } from './main-layout/main-layout';
 import { DashboardComponent } from './pages/dashboard/dashboard';
+import { PlotsComponent } from './pages/plots/plots';
+import { CreatePlotComponent } from './pages/plots/create_plots/create-plot';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -15,6 +17,6 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
-    children: [{ path: 'dashboard', component: DashboardComponent }],
+    children: [{ path: 'dashboard', component: DashboardComponent }, {path: 'plots', component: PlotsComponent}, {path: 'plots/create', component: CreatePlotComponent}],
   },
 ];
