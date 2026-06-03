@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component } from '@angular/core'; 
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-forget-password',
   standalone: true,
-  imports: [FormsModule, NgIf, RouterLink],
+  imports: [FormsModule, NgIf],
   templateUrl: './forget-password.html',
   styleUrl: './forget-password.css',
 })
@@ -19,23 +20,17 @@ export class ForgetPasswordComponent {
   errorMessage = '';
   successMessage = '';
 
+  private backendUrl = 'https://thirstyseed-api.onrender.com/api/v1/profiles';
+
   constructor(
     private authService: AuthService,
     private router: Router,
+    private http: HttpClient
   ) {}
 
   resetPassword(): void {
     this.errorMessage = '';
     this.successMessage = '';
-
-    const users = this.authService.getUsers();
-
-    const user = users.find((u) => u.email.toLowerCase() === this.email.toLowerCase());
-
-    if (!user) {
-      this.errorMessage = 'No account was found with that email.';
-      return;
-    }
 
     if (!this.newPassword.trim()) {
       this.errorMessage = 'Password is required.';
@@ -49,29 +44,41 @@ export class ForgetPasswordComponent {
 
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#_-])[A-Za-z\d@$!%*?&.#_-]{8,}$/;
-
     if (!passwordRegex.test(this.newPassword)) {
       this.errorMessage =
         'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character.';
       return;
     }
 
-    if (user.password === this.newPassword) {
-      this.errorMessage = 'The new password must be different from the current password.';
-      return;
-    }
+    // Traer profile por email
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    const updated = this.authService.updatePassword(this.email, this.newPassword);
+    // Buscar el profile del usuario por email
+    this.http.get<any[]>(`${this.backendUrl}`).subscribe({
+      next: (profiles) => {
+        const profile = profiles.find(p => p.email.toLowerCase() === this.email.toLowerCase());
+        if (!profile) {
+          this.errorMessage = 'No account was found with that email.';
+          return;
+        }
 
-    if (!updated) {
-      this.errorMessage = 'Unable to update password.';
-      return;
-    }
-
-    this.successMessage = 'Password updated successfully.';
-
-    setTimeout(() => {
-      this.router.navigate(['/login']);
-    }, 1500);
+        // Actualizar la contraseña en backend
+        this.http.put(`${this.backendUrl}/${profile.id}/password`, { newPassword: this.newPassword }, { headers }).subscribe({
+          next: () => {
+            this.successMessage = 'Password updated successfully.';
+            setTimeout(() => {
+              this.router.navigate(['/login']);
+            }, 1500);
+          },
+          error: () => {
+            this.errorMessage = 'Unable to update password.';
+          }
+        });
+      },
+      error: () => {
+        this.errorMessage = 'Unable to fetch profiles.';
+      }
+    });
   }
 }

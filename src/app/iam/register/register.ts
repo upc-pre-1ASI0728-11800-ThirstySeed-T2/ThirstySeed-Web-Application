@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -21,7 +20,6 @@ export class RegisterComponent {
   confirmPassword = '';
 
   acceptedTerms = false;
-
   showPassword = false;
   showConfirmPassword = false;
 
@@ -30,37 +28,27 @@ export class RegisterComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   handleRegister(): void {
     this.errorMessage = '';
     this.successMessage = '';
 
+    // Validaciones
     if (this.fullName.trim().length < 3) {
       this.errorMessage = 'Full name must contain at least 3 characters.';
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     if (!emailRegex.test(this.email)) {
       this.errorMessage = 'Please enter a valid email address.';
       return;
     }
 
-    if (this.authService.emailExists(this.email)) {
-      this.errorMessage = 'Email already registered.';
-      return;
-    }
-
     if (this.username.trim().length < 4) {
       this.errorMessage = 'Username must contain at least 4 characters.';
-      return;
-    }
-
-    if (this.authService.usernameExists(this.username)) {
-      this.errorMessage = 'Username already exists.';
       return;
     }
 
@@ -70,7 +58,6 @@ export class RegisterComponent {
     }
 
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-
     if (!passwordRegex.test(this.password)) {
       this.errorMessage =
         'Password must have at least 8 characters, one uppercase letter and one number.';
@@ -87,19 +74,27 @@ export class RegisterComponent {
       return;
     }
 
-    this.authService.register({
-      fullName: this.fullName.trim(),
-      email: this.email.trim(),
+    // Llamada al backend
+    this.authService.signUp({
       username: this.username.trim(),
-      accountType: this.accountType,
-      password: this.password,
+      password: [this.password],
+      roles: [this.accountType === 'Producer' ? 'Agricultural Producer' : 'Other'],
+    }).subscribe({
+      next: (user) => {
+        this.successMessage = 'Account created successfully. Redirecting to dashboard...';
+        // Guardar token y usuario
+        this.authService.setCurrentUser(user);
+        this.authService.setToken(user.token);
+
+        setTimeout(() => {
+          this.router.navigate(['/dashboard']);
+        }, 1500);
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMessage = 'Failed to create account. Email or username may already exist.';
+      }
     });
-
-    this.successMessage = 'Account created successfully. Redirecting to subscription...';
-
-    setTimeout(() => {
-      this.router.navigate(['/subscription']);
-    }, 1500);
   }
 
   goToLogin(): void {

@@ -49,17 +49,17 @@
 
         <form class="login-form" (ngSubmit)="handleSignIn()">
           <div class="form-field">
-            <label for="email">Email address</label>
+            <label for="username">Username</label>
             <div class="input-frame">
-              <i class="pi pi-envelope"></i>
+              <i class="pi pi-user"></i>
               <input
-                id="email"
-                name="email"
+                id="username"
+                name="username"
                 [(ngModel)]="username"
-                autocomplete="email"
-                placeholder="name@example.com"
+                autocomplete="username"
+                placeholder="Username"
                 required
-                type="email"
+                type="text"
               />
             </div>
           </div>
@@ -101,23 +101,13 @@
 
             <a href="#" (click)="goToForgotPassword($event)">Forgot password?</a>
           </div>
+<div class="error-message" *ngIf="errorMessage">
+  {{ errorMessage }}
+</div>
 
-          <div class="validation-container">
-
-            @if (errorMessage) {
-              <div class="error-message">
-                {{ errorMessage }}
-              </div>
-            }
-
-            @if (successMessage) {
-              <div class="success-message">
-                {{ successMessage }}
-              </div>
-            }
-
-          </div>
-
+<div class="success-message" *ngIf="successMessage">
+  {{ successMessage }}
+</div>
           <button class="login-button" type="submit">
             Log In
           </button>
