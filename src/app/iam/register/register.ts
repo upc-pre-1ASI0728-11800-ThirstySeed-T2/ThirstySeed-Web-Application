@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { ProfileService } from '../services/profile.service';
 
 @Component({
   selector: 'app-register',
@@ -28,7 +29,8 @@ export class RegisterComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private profileService: ProfileService,
   ) {}
 
   handleRegister(): void {
@@ -75,26 +77,84 @@ export class RegisterComponent {
     }
 
     // Llamada al backend
-    this.authService.signUp({
-      username: this.username.trim(),
-      password: [this.password],
-      roles: [this.accountType === 'Producer' ? 'Agricultural Producer' : 'Other'],
-    }).subscribe({
-      next: (user) => {
-        this.successMessage = 'Account created successfully. Redirecting to dashboard...';
-        // Guardar token y usuario
-        this.authService.setCurrentUser(user);
-        this.authService.setToken(user.token);
+    const fullNameParts = this.fullName.trim().split(' ');
 
-        setTimeout(() => {
-          this.router.navigate(['/dashboard']);
-        }, 1500);
-      },
-      error: (err) => {
-        console.error(err);
-        this.errorMessage = 'Failed to create account. Email or username may already exist.';
-      }
-    });
+    const firstName = fullNameParts[0];
+
+    const lastName = fullNameParts.length > 1 ? fullNameParts.slice(1).join(' ') : '';
+
+    const roleMap: Record<string, string> = {
+      'Agricultural Producer': 'ROLE_PRODUCER',
+      'Water Management Entity': 'ROLE_WATER_MANAGER',
+    };
+
+    const role = roleMap[this.accountType];
+
+    this.authService
+      .signUp({
+        username: this.username.trim(),
+        password: this.password,
+        roles: [role],
+      })
+      .subscribe({
+        next: () => {
+          this.authService.signIn(this.username.trim(), this.password).subscribe({
+            next: (user) => {
+              const profilePayload = {
+                userId: user.id,
+                firstName,
+                lastName,
+                email: this.email,
+                phoneNumber: '',
+                profileImage: '',
+                location: '',
+              };
+              console.log('PROFILE PAYLOAD', profilePayload);
+              this.profileService.createProfile(profilePayload);
+
+              this.profileService
+                .createProfile({
+                  userId: user.id,
+                  firstName,
+                  lastName,
+                  email: this.email,
+                  phoneNumber: '',
+                  profileImage: '',
+                  location: '',
+                })
+                .subscribe({
+                  next: () => {
+                    this.authService.setCurrentUser(user);
+
+                    this.successMessage = 'Account created successfully.';
+
+                    setTimeout(() => {
+                      this.router.navigate(['/subscription']);
+                    }, 1000);
+                  },
+
+                  error: (err) => {
+                    console.error(err);
+
+                    this.errorMessage = 'Profile creation failed.';
+                  },
+                });
+            },
+
+            error: (err) => {
+              console.error(err);
+
+              this.errorMessage = 'Automatic login failed.';
+            },
+          });
+        },
+
+        error: (err) => {
+          console.error(err);
+
+          this.errorMessage = err?.error?.message ?? 'Failed to create account.';
+        },
+      });
   }
 
   goToLogin(): void {

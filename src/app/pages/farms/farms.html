@@ -5,6 +5,12 @@
     <div class="top-nav-left">
       <span class="page-badge">● Farm management</span>
       <h1>Your registered farms</h1>
+      <p class="subscription-info">
+        {{ subscriptionPlan }}
+        Plan ·
+        {{ farms.length }}/{{ maxFarms }}
+        farms used
+      </p>
       <p class="subtitle">Review your farms, monitor their active plots and manage the agricultural spaces connected to Thirsty Seed.</p>
     </div>
     <div class="top-nav-right">
@@ -26,7 +32,11 @@
         </svg>
         <span>Producer</span>
       </button>
-      <button class="add-button" (click)="goToCreate()">+ Add farm</button>
+      <button
+        class="add-button"
+        (click)="goToCreate()"
+        [disabled]="farms.length >= maxFarms"
+      >+ Add farm</button>
     </div>
   </header>
 
@@ -64,6 +74,13 @@
         <div class="stat-body">
           <strong>{{ farmsWithRisk }}</strong>
           <p>Farm with critical risk</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-body">
+          <strong>{{ farms.length }}/{{ maxFarms }}</strong>
+          <p>{{ subscriptionPlan }} Farm Usage</p>
         </div>
       </div>
     </div>
@@ -125,7 +142,12 @@
           <div class="add-farm-icon">🌿</div>
           <h3>Farm management</h3>
           <p>Register your farms, assign plots and manage the agricultural spaces connected to it.</p>
-          <button class="add-button-sm" (click)="goToCreate()">Add farm</button>
+          <button
+            class="add-button-sm"
+            (click)="goToCreate()"
+            [disabled]="farms.length >= maxFarms">
+            Add farm
+          </button>
         </div>
       </div>
 
