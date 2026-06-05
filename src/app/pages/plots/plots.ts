@@ -5,6 +5,7 @@ import { PlotService } from '../../pages/plots/services/plot.service';
 import { Plot } from '../../pages/plots/model/plot.model';
 import { AuthService } from '../../iam/services/auth.service';
 import { HttpHeaders } from '@angular/common/http';
+import { SubscriptionService } from '../../iam/services/subscription.service';
 
 @Component({
   selector: 'app-plots',
@@ -18,15 +19,26 @@ export class PlotsComponent implements OnInit {
   loading = false;
   errorMessage = '';
   selectedFarmName = 'All farms';
+  maxNodes = 0;
+  planType = '';
 
   constructor(
     private plotService: PlotService,
     private authService: AuthService,
     private cd: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private subscriptionService: SubscriptionService,
   ) {}
 
   ngOnInit(): void {
+    const user = this.authService.getCurrentUser();
+
+    if (user) {
+      this.subscriptionService.getByUserId(user.id).subscribe((sub) => {
+        this.maxNodes = sub.maxNodes;
+        this.planType = sub.planType;
+      });
+    }
     this.loadPlots();
   }
 
@@ -44,48 +56,20 @@ export class PlotsComponent implements OnInit {
 
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-this.plotService.getPlotsByUser(user.id).subscribe({
-  next: (plots) => {
-    this.plots = plots;
-    this.loading = false;
-    if (plots.length > 0) this.selectedFarmName = plots[0].name;
+    this.plotService.getPlotsByUser(user.id).subscribe({
+      next: (plots) => {
+        this.plots = plots;
+        this.loading = false;
+        if (plots.length > 0) this.selectedFarmName = plots[0].name;
 
-    // Fuerza detección de cambios sin que NG0100 se dispare
-    setTimeout(() => this.cd.detectChanges());
-  },
-  error: (err) => {
-    this.errorMessage = 'No se pudieron cargar los plots';
-    this.loading = false;
-    console.error(err);
-    setTimeout(() => this.cd.detectChanges());
-  },
-});
-  }
-
-  createPlot(): void {
-    const user = this.authService.getCurrentUser();
-    if (!user) {
-      this.errorMessage = 'User not logged in.';
-      return;
-    }
-
-    const newPlot: Partial<Plot> = {
-      userId: user.id,
-      name: 'New Plot',
-      location: 'Farm Example',
-      extension: 5,
-      imageUrl: '',
-      status: 'Active'
-    };
-
-    this.plotService.createPlot(newPlot).subscribe({
-      next: () => {
-        // Recargar la lista completa desde el backend
-        this.loadPlots();
+        // Fuerza detección de cambios sin que NG0100 se dispare
+        setTimeout(() => this.cd.detectChanges());
       },
       error: (err) => {
-        this.errorMessage = 'Failed to create plot.';
+        this.errorMessage = 'No se pudieron cargar los plots';
+        this.loading = false;
         console.error(err);
+        setTimeout(() => this.cd.detectChanges());
       },
     });
   }
@@ -95,12 +79,16 @@ this.plotService.getPlotsByUser(user.id).subscribe({
   }
 
   get plotsWithNodes() {
-    return this.plots.filter(p => p.status === 'Online').length;
+    return this.plots.filter((p) => p.status === 'Online').length;
   }
 
   get plotsAtRisk() {
-    return this.plots.filter(p => p.status === 'Moderate' || p.status === 'High').length;
+    return this.plots.filter((p) => p.status === 'Moderate' || p.status === 'High').length;
   }
+  get nodesUsed(): number {
+    return this.plots.length;
+  }
+
 
   goToCreatePlot() {
     this.router.navigate(['/plots/create']);

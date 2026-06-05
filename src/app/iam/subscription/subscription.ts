@@ -10,12 +10,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   styleUrl: './subscription.css',
 })
 export class SubscriptionComponent {
-  private backendUrl = 'https://thirstyseed-api.onrender.com/api/v1/profiles';
+  private backendUrl = 'https://thirstyseed-api.onrender.com/api/v1/subscriptions';
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
   ) {}
 
   selectPlan(plan: 'Plus' | 'Premium'): void {
@@ -39,16 +39,33 @@ export class SubscriptionComponent {
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     // Llamada al backend para actualizar la suscripción
-    this.http
-      .put(`${this.backendUrl}/${user.id}/subscription`, { plan }, { headers })
-      .subscribe({
+    this.http.post(this.backendUrl, { userId: user.id, planType: plan === 'Plus' ? 'PLUS' : 'PREMIUM', }, { headers },).subscribe({
         next: (res) => {
           console.log('Subscription updated successfully', res);
 
           // Actualizar usuario local con plan (opcional)
-          user.subscription = plan === 'Plus'
-            ? { name: 'Plus', price: 19, maxNodes: 3, features: ['Basic plot monitoring', 'Water stress alerts', 'Sensor history access'] }
-            : { name: 'Premium', price: 39, maxNodes: 10, features: ['Predictive irrigation', 'Weather support', 'Priority alerts & reports'] };
+          user.subscription =
+            plan === 'Plus'
+              ? {
+                  name: 'Plus',
+                  price: 19,
+                  maxNodes: 3,
+                  features: [
+                    'Basic plot monitoring',
+                    'Water stress alerts',
+                    'Sensor history access',
+                  ],
+                }
+              : {
+                  name: 'Premium',
+                  price: 39,
+                  maxNodes: 10,
+                  features: [
+                    'Predictive irrigation',
+                    'Weather support',
+                    'Priority alerts & reports',
+                  ],
+                };
           this.authService.setCurrentUser(user);
 
           this.router.navigate(['/dashboard']); // Redirigir al dashboard
@@ -56,7 +73,7 @@ export class SubscriptionComponent {
         error: (err) => {
           console.error('Failed to update subscription', err);
           alert('Unable to update subscription. Please try again.');
-        }
+        },
       });
   }
 
