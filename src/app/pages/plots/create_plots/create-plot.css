@@ -1,0 +1,302 @@
+.create-page {
+  padding: 2rem;
+  background: #f6faf7;
+  min-height: 100vh;
+}
+
+/* HEADER */
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-badge {
+  display: inline-block;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.subtitle {
+  margin-top: 0.5rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+  max-width: 700px;
+}
+
+.plan-chip {
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .7rem 1rem;
+  border-radius: 14px;
+  background: #eef2ff;
+  color: #4338ca;
+  font-weight: 600;
+}
+
+/* LAYOUT */
+
+.layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* CARDS */
+
+.form-card,
+.summary-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow:
+    0 2px 6px rgba(0,0,0,.03),
+    0 10px 30px rgba(0,0,0,.04);
+}
+
+/* CARD HEADER */
+
+.card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.card-title h2 {
+  margin: 0;
+  color: #111827;
+}
+
+.step {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* FORM GRID */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+/* FIELDS */
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field label {
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  color: #374151;
+  font-size: 0.92rem;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+  background: white;
+  font-size: 0.95rem;
+  transition: all .2s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34,197,94,.15);
+}
+
+.field small {
+  margin-top: .5rem;
+  color: #dc2626;
+  font-size: .85rem;
+}
+
+/* ACTIONS */
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn-primary {
+  border: none;
+  background: #15803d;
+  color: white;
+  padding: .95rem 1.6rem;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.btn-primary:hover {
+  background: #166534;
+}
+
+.btn-primary:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  border: 1px solid #d1d5db;
+  background: white;
+  padding: .95rem 1.6rem;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #f9fafb;
+}
+
+/* SUMMARY CARD */
+
+.summary-card h3 {
+  margin-top: 0;
+  color: #111827;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .9rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-row span {
+  color: #6b7280;
+}
+
+.summary-row strong {
+  color: #111827;
+}
+
+/* STATUS */
+
+.limit-ok {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.limit-warning {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* ALERTS */
+
+.error {
+  margin-top: 1rem;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  padding: 1rem;
+  border-radius: 14px;
+}
+
+.success {
+  margin-top: 1rem;
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  padding: 1rem;
+  border-radius: 14px;
+}
+
+/* INFO BOX */
+
+.info-box {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.info-box p {
+  margin: 0;
+  color: #64748b;
+  font-size: .9rem;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .create-page {
+    padding: 1rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+}

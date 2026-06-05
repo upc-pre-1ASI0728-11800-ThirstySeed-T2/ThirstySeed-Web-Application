@@ -8,4 +8,5 @@ export interface Plot {
   imageUrl: string;
   createdAt: string;
   updatedAt: string;
+  nodes?: number;
 }
