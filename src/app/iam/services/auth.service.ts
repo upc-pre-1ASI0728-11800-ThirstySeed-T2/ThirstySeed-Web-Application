@@ -32,7 +32,7 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   // ------------------ BACKEND SIGN-UP ------------------
-  signUp(userData: { username: string; password: string[]; roles: string[] }): Observable<User> {
+  signUp(userData: { username: string; password: string; roles: string[] }): Observable<User> {
     return this.http.post<User>(`${this.baseUrl}/sign-up`, userData);
   }
 

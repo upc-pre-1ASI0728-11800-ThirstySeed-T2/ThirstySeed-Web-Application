@@ -5,6 +5,12 @@
     <div class="top-nav-left">
       <span class="page-badge">● Plot management</span>
       <h1>Plots by farm</h1>
+      <p class="subscription-info">
+        {{ planType }}
+        Plan ·
+        {{ nodesUsed }}/{{ maxNodes }}
+        nodes used
+      </p>
       <p class="subtitle">Select a farm to review and manage only the productive plots registered inside it.</p>
     </div>
     <div class="top-nav-right">
@@ -89,6 +95,13 @@
           <div class="stat-body">
             <strong>{{ plotsAtRisk }}</strong>
             <p>Plots at risk in this farm</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-body">
+            <strong>{{ nodesUsed }}/{{ maxNodes }}</strong>
+            <p>{{ planType }} Node Usage</p>
           </div>
         </div>
       </div>
