@@ -9,4 +9,6 @@ export interface Plot {
   createdAt: string;
   updatedAt: string;
   nodes?: number;
+
+  farmId?: number;
 }

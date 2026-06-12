@@ -9,6 +9,7 @@ import { PlotsComponent } from './pages/plots/plots';
 import { CreatePlotComponent } from './pages/plots/create_plots/create-plot';
 import { FarmsComponent } from './pages/farms/farms';
 import { FarmCreateComponent } from './pages/farms/create_farms/farm-create';
+import { authGuard } from './iam/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -19,12 +20,14 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
+    canActivate: [authGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent }, 
-      {path: 'plots', component: PlotsComponent}, 
-      {path: 'plots/create', component: CreatePlotComponent}, 
-      {path: 'farms', component: FarmsComponent},
-      { path: 'farms/create', component: FarmCreateComponent }
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'plots', component: PlotsComponent },
+      { path: 'plots/create', component: CreatePlotComponent },
+      { path: 'farms', component: FarmsComponent },
+      { path: 'farms/create', component: FarmCreateComponent },
     ],
   },
+  { path: '**', redirectTo: 'login' }
 ];

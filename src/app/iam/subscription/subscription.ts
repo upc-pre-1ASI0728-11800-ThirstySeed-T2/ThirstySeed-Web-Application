@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-subscription',
@@ -10,7 +11,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   styleUrl: './subscription.css',
 })
 export class SubscriptionComponent {
-  private backendUrl = 'https://thirstyseed-api.onrender.com/api/v1/subscriptions';
+  private backendUrl = `${environment.apiBaseUrl}/api/v1/subscriptions`;
 
   constructor(
     private authService: AuthService,
@@ -39,7 +40,13 @@ export class SubscriptionComponent {
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     // Llamada al backend para actualizar la suscripción
-    this.http.post(this.backendUrl, { userId: user.id, planType: plan === 'Plus' ? 'PLUS' : 'PREMIUM', }, { headers },).subscribe({
+    this.http
+      .post(
+        this.backendUrl,
+        { userId: user.id, planType: plan === 'Plus' ? 'PLUS' : 'PREMIUM' },
+        { headers },
+      )
+      .subscribe({
         next: (res) => {
           console.log('Subscription updated successfully', res);
 

@@ -3,10 +3,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { forkJoin } from 'rxjs';
 import { Farm } from '../model/farm.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class FarmService {
-  private baseUrl = 'https://thirstyseed-api.onrender.com/api/v1/farms';
+  private baseUrl = `${environment.apiBaseUrl}/api/v1/farms`;
 
   constructor(private http: HttpClient) {}
 
@@ -26,23 +27,25 @@ export class FarmService {
   }
 
   // Guarda el ID de la farm en localStorage
-  saveFarmId(farmId: number): void {
-    const ids = this.getSavedFarmIds();
+  saveFarmId(userId: number, farmId: number): void {
+    const key = `farmIds_${userId}`;
+    const raw = localStorage.getItem(key);
+    const ids: number[] = raw ? JSON.parse(raw) : [];
     if (!ids.includes(farmId)) {
       ids.push(farmId);
-      localStorage.setItem('farmIds', JSON.stringify(ids));
+      localStorage.setItem(key, JSON.stringify(ids));
     }
   }
 
   // Recupera los IDs guardados
-  getSavedFarmIds(): number[] {
-    const raw = localStorage.getItem('farmIds');
+  getSavedFarmIds(userId: number): number[] {
+    const raw = localStorage.getItem(`farmIds_${userId}`);
     return raw ? JSON.parse(raw) : [];
   }
 
   // Carga todas las farms guardadas por ID
   getFarmsByIds(ids: number[]): Observable<Farm[]> {
-    const requests = ids.map(id => this.getFarmById(id));
+    const requests = ids.map((id) => this.getFarmById(id));
     return forkJoin(requests);
   }
 }

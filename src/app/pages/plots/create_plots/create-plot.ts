@@ -69,7 +69,7 @@ export class CreatePlotComponent implements OnInit {
       });
     });
 
-    const farmIds = this.farmService.getSavedFarmIds();
+    const farmIds = this.farmService.getSavedFarmIds(user.id);
 
     if (farmIds.length > 0) {
       this.farmService.getFarmsByIds(farmIds).subscribe({
@@ -110,6 +110,7 @@ export class CreatePlotComponent implements OnInit {
 
             const newPlot = {
               userId: user.id,
+              farmId: this.selectedFarmId,
               name: this.plotName,
               location: selectedFarm?.name ?? '',
               extension: this.extension,
@@ -121,13 +122,14 @@ export class CreatePlotComponent implements OnInit {
             console.log(JSON.stringify(newPlot, null, 2));
 
             this.plotService.createPlot(newPlot).subscribe({
-              next: () => {
-                this.successMessage = 'Plot created successfully!';
+              next: (createdPlot: any) => {
+                console.log('✅ CREATED PLOT:', createdPlot);
 
-                this.plotName = '';
-                this.extension = 0;
-                this.status = 'Active';
-                this.imageUrl = '';
+                const plotId = createdPlot.id;
+
+                this.plotService.savePlotId(user.id, plotId);
+
+                this.successMessage = 'Plot created successfully!';
 
                 this.router.navigate(['/plots']);
               },
