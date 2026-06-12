@@ -36,8 +36,11 @@ export class FarmCreateComponent {
   createFarm(): void {
     const user = this.authService.getCurrentUser();
 
-    if (!user) {
-      this.errorMessage = 'User not logged in.';
+    console.log('RAW USER FROM AUTH:', user);
+
+    if (!user || !user.id) {
+      this.errorMessage = 'Session expired. Please login again.';
+      this.router.navigate(['/login']);
       return;
     }
 
@@ -46,7 +49,7 @@ export class FarmCreateComponent {
       return;
     }
 
-    const ids = this.farmService.getSavedFarmIds();
+    const ids = this.farmService.getSavedFarmIds(user.id);
 
     this.subscriptionService.getByUserId(user.id).subscribe({
       next: (subscription) => {
@@ -61,19 +64,27 @@ export class FarmCreateComponent {
         const payload = {
           name: this.farm.name,
           totalArea: this.farm.totalArea ?? 0,
-          producerId: user.id,
+          location: this.farm.location,
+          productionType: this.farm.productionType,
+          initialStatus: this.farm.initialStatus,
+          mainCrop: '', // o lo que uses
+          description: this.farm.description,
+          waterManagementZoneId: 1,
         };
+
+        console.log('📦 CREATE FARM PAYLOAD:', payload);
 
         this.farmService.createFarm(payload).subscribe({
           next: (farmId: number) => {
-            this.farmService.saveFarmId(farmId);
+            this.farmService.saveFarmId(user.id, farmId);
             this.loading = false;
+            console.log('✅ FARM CREATED ID:', farmId);
             this.router.navigate(['/farms']);
           },
           error: (err) => {
             this.errorMessage = 'Failed to create farm.';
             this.loading = false;
-            console.error(err);
+            console.error('❌ CREATE FARM ERROR:', err);
           },
         });
       },

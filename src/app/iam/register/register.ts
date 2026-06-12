@@ -101,7 +101,6 @@ export class RegisterComponent {
           this.authService.signIn(this.username.trim(), this.password).subscribe({
             next: (user) => {
               const profilePayload = {
-                userId: user.id,
                 firstName,
                 lastName,
                 email: this.email,
@@ -110,11 +109,9 @@ export class RegisterComponent {
                 location: '',
               };
               console.log('PROFILE PAYLOAD', profilePayload);
-              this.profileService.createProfile(profilePayload);
 
               this.profileService
                 .createProfile({
-                  userId: user.id,
                   firstName,
                   lastName,
                   email: this.email,

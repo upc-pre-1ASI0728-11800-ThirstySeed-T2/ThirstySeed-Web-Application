@@ -31,45 +31,45 @@ export class PlotsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log('🟢 PlotsComponent INIT');
+
     const user = this.authService.getCurrentUser();
-
-    if (user) {
-      this.subscriptionService.getByUserId(user.id).subscribe((sub) => {
-        this.maxNodes = sub.maxNodes;
-        this.planType = sub.planType;
-      });
-    }
-    this.loadPlots();
-  }
-
-  loadPlots(): void {
-    const user = this.authService.getCurrentUser();
-    const token = this.authService.getToken();
-
-    if (!user || !token) {
-      this.errorMessage = 'User not logged in or token missing.';
-      return;
-    }
+    if (!user) return;
 
     this.loading = true;
-    this.errorMessage = '';
 
-    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    this.subscriptionService.getByUserId(user.id).subscribe({
+      next: (sub) => {
+        this.planType = sub.planType;
+        this.maxNodes = sub.maxNodes;
 
-    this.plotService.getPlotsByUser(user.id).subscribe({
+        this.cd.detectChanges();
+
+        this.loadPlots(user.id); // 👈 CLAVE
+      },
+      error: () => {
+        this.planType = '—';
+        this.maxNodes = 0;
+
+        this.loadPlots(user.id); // 👈 CLAVE
+      },
+    });
+  }
+
+  loadPlots(userId: number): void {
+    this.loading = true;
+
+    this.plotService.getPlotsByUser(userId).subscribe({
       next: (plots) => {
         this.plots = plots;
         this.loading = false;
-        if (plots.length > 0) this.selectedFarmName = plots[0].name;
-
-        // Fuerza detección de cambios sin que NG0100 se dispare
-        setTimeout(() => this.cd.detectChanges());
+        this.cd.detectChanges();
       },
       error: (err) => {
-        this.errorMessage = 'No se pudieron cargar los plots';
-        this.loading = false;
         console.error(err);
-        setTimeout(() => this.cd.detectChanges());
+        this.errorMessage = 'Could not load plots.';
+        this.loading = false;
+        this.cd.detectChanges();
       },
     });
   }
@@ -88,7 +88,6 @@ export class PlotsComponent implements OnInit {
   get nodesUsed(): number {
     return this.plots.length;
   }
-
 
   goToCreatePlot() {
     this.router.navigate(['/plots/create']);
