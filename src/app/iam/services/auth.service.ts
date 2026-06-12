@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface User {
   id: number;
@@ -25,7 +27,7 @@ export interface SubscriptionPlan {
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'https://thirstyseed-api.onrender.com/api/v1/authentication';
+  private baseUrl = `${environment.apiBaseUrl}/api/v1/authentication`;
   private readonly CURRENT_USER_KEY = 'currentUser';
   private readonly JWT_KEY = 'jwtToken';
 
@@ -44,30 +46,53 @@ export class AuthService {
           this.setToken(user.token);
         }
         this.setCurrentUser(user);
-      })
+      }),
     );
   }
 
+  private platformId = inject(PLATFORM_ID);
+
   // ------------------ TOKEN ------------------
   setToken(token: string) {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     localStorage.setItem(this.JWT_KEY, token);
   }
 
   getToken(): string | null {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
+
     return localStorage.getItem(this.JWT_KEY);
   }
 
   // ------------------ CURRENT USER ------------------
   setCurrentUser(user: User) {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(user));
   }
 
   getCurrentUser(): User | null {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
+
     const user = localStorage.getItem(this.CURRENT_USER_KEY);
+
     return user ? JSON.parse(user) : null;
   }
 
   logout(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     localStorage.removeItem(this.CURRENT_USER_KEY);
     localStorage.removeItem(this.JWT_KEY);
   }
