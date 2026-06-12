@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface CreateProfileRequest {
-  userId: number;
   firstName: string;
   lastName: string;
   email: string;
@@ -16,11 +16,17 @@ export interface CreateProfileRequest {
   providedIn: 'root',
 })
 export class ProfileService {
-  private apiUrl = 'https://thirstyseed-api.onrender.com/api/v1/profiles';
+  private apiUrl = `${environment.apiBaseUrl}/api/v1/profiles`;
 
   constructor(private http: HttpClient) {}
 
   createProfile(profile: CreateProfileRequest): Observable<any> {
-    return this.http.post(this.apiUrl, profile);
+    const token = localStorage.getItem('jwtToken');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.post(this.apiUrl, profile, { headers });
   }
 }

@@ -5,6 +5,7 @@ import { FarmService } from './services/farm.service';
 import { Farm } from './model/farm.model';
 import { AuthService } from '../../iam/services/auth.service';
 import { SubscriptionService } from '../../iam/services/subscription.service';
+import { PlotService } from '../plots/services/plot.service';
 
 @Component({
   selector: 'app-farms',
@@ -15,10 +16,11 @@ import { SubscriptionService } from '../../iam/services/subscription.service';
 })
 export class FarmsComponent implements OnInit {
   farms: Farm[] = [];
+  allPlots: any[] = [];
   loading = false;
   errorMessage = '';
-  subscriptionPlan = '';
-  maxFarms = 0;
+  subscriptionPlan: string | null = null;
+  maxFarms: number | null = null;
 
   constructor(
     private farmService: FarmService,
@@ -26,45 +28,60 @@ export class FarmsComponent implements OnInit {
     private router: Router,
     private cd: ChangeDetectorRef,
     private subscriptionService: SubscriptionService,
+    private plotService: PlotService,
   ) {}
 
   ngOnInit(): void {
     const user = this.authService.getCurrentUser();
-
-    if (user) {
-      this.subscriptionService.getByUserId(user.id).subscribe((sub) => {
-        this.subscriptionPlan = sub.planType;
-        this.maxFarms = sub.maxFarms;
-      });
-    }
-    this.loadFarms();
-  }
-
-  loadFarms(): void {
-    const user = this.authService.getCurrentUser();
-    if (!user) {
-      this.errorMessage = 'User not logged in.';
-      return;
-    }
-
-    const ids = this.farmService.getSavedFarmIds();
-
-    if (ids.length === 0) {
-      this.loading = false;
-      return;
-    }
+    if (!user) return;
 
     this.loading = true;
+
+    this.subscriptionService.getByUserId(user.id).subscribe({
+      next: (sub) => {
+        this.subscriptionPlan = sub.planType;
+        this.maxFarms = sub.maxFarms;
+
+        this.plotService.getPlotsByUser(user.id).subscribe({
+          next: (plots) => {
+            this.allPlots = plots;
+            this.loadFarms(user.id);
+          },
+        });
+      },
+      error: () => {
+        this.maxFarms = 0;
+        this.subscriptionPlan = '—';
+        this.loadFarms(user.id);
+      },
+    });
+  }
+
+  loadFarms(userId: number): void {
+    this.loading = true;
+
+    const ids = this.farmService.getSavedFarmIds(userId);
+
+    if (!ids || ids.length === 0) {
+      this.farms = [];
+      this.loading = false;
+
+      this.cd.detectChanges(); // 👈 CLAVE
+      return;
+    }
+
     this.farmService.getFarmsByIds(ids).subscribe({
       next: (farms) => {
         this.farms = farms;
         this.loading = false;
-        setTimeout(() => this.cd.detectChanges());
+
+        this.cd.detectChanges(); // 👈 CLAVE
       },
       error: () => {
         this.errorMessage = 'Could not load farms.';
         this.loading = false;
-        setTimeout(() => this.cd.detectChanges());
+
+        this.cd.detectChanges(); // 👈 CLAVE
       },
     });
   }
@@ -82,8 +99,9 @@ export class FarmsComponent implements OnInit {
     return this.farms.filter((f) => f.initialStatus === 'Moderate' || f.initialStatus === 'High')
       .length;
   }
-  get remainingFarms(): number {
-    return this.maxFarms - this.farms.length;
+
+  getPlotsByFarm(farmId: number): number {
+    return this.allPlots.filter((p) => p.farmId === farmId).length;
   }
 
   goToCreate(): void {

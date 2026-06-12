@@ -6,12 +6,13 @@
       <span class="page-badge">● Farm management</span>
       <h1>Your registered farms</h1>
       <p class="subscription-info">
-        {{ subscriptionPlan }}
+        {{ subscriptionPlan ?? '—' }}
         Plan ·
-        {{ farms.length }}/{{ maxFarms }}
+        {{ farms.length }}/{{ maxFarms ?? 0 }}
         farms used
       </p>
       <p class="subtitle">Review your farms, monitor their active plots and manage the agricultural spaces connected to Thirsty Seed.</p>
+
     </div>
     <div class="top-nav-right">
       <div class="search-bar">
@@ -35,7 +36,7 @@
       <button
         class="add-button"
         (click)="goToCreate()"
-        [disabled]="farms.length >= maxFarms"
+        [disabled]="farms.length >= (maxFarms ?? 0)"
       >+ Add farm</button>
     </div>
   </header>
@@ -116,7 +117,7 @@
             <div class="farm-metrics">
               <div class="metric">
                 <label>PLOTS</label>
-                <span>—</span>
+                <span>{{ getPlotsByFarm(farm.id) }}</span>
               </div>
               <div class="metric">
                 <label>NODES</label>
@@ -145,7 +146,7 @@
           <button
             class="add-button-sm"
             (click)="goToCreate()"
-            [disabled]="farms.length >= maxFarms">
+            [disabled]="farms.length >= (maxFarms ?? 0)">
             Add farm
           </button>
         </div>

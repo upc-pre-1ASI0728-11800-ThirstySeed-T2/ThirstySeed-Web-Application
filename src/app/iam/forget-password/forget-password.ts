@@ -1,9 +1,10 @@
-import { Component } from '@angular/core'; 
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-forget-password',
@@ -20,7 +21,7 @@ export class ForgetPasswordComponent {
   errorMessage = '';
   successMessage = '';
 
-  private backendUrl = 'https://thirstyseed-api.onrender.com/api/v1/profiles';
+  private backendUrl = `${environment.apiBaseUrl}/api/v1/profiles`;
 
   constructor(
     private authService: AuthService,
