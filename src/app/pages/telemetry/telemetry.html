@@ -1,0 +1,199 @@
+<section class="telemetry-page">
+
+  <div class="header">
+    <div class="filters">
+
+      <div class="filter-group">
+
+        <label>Farm</label>
+
+        <select (change)="onFarmChange($event)">
+
+          <option value="">
+            Select farm
+          </option>
+
+          <option
+            *ngFor="let farm of farms"
+            [value]="farm.id">
+
+            {{ farm.name }}
+
+          </option>
+
+        </select>
+
+      </div>
+
+      <div class="filter-group">
+
+        <label>Plot</label>
+
+        <select
+          [disabled]="!selectedFarmId"
+          (change)="onPlotChange($event)">
+
+          <option value="">
+            Select plot
+          </option>
+
+          <option
+            *ngFor="let plot of filteredPlots"
+            [value]="plot.id">
+
+            {{ plot.name }}
+
+          </option>
+
+        </select>
+
+      </div>
+
+      <div class="filter-group">
+        <label>Time Range</label>
+
+        <select>
+          <option>Last 24 Hours</option>
+          <option>Last 7 Days</option>
+          <option>Last 30 Days</option>
+        </select>
+      </div>
+
+    </div>
+    <h1>Telemetry Dashboard</h1>
+    <p>Monitor sensor data from your agricultural plots.</p>
+  </div>
+
+  <div class="summary-cards">
+
+    <div class="card">
+      <h3>Latest Soil Moisture</h3>
+      <strong>{{ latestReading?.soilMoisture }}%</strong>
+    </div>
+
+    <div class="card">
+      <h3>Latest Temperature</h3>
+      <strong>{{ latestReading?.temperature }}°C</strong>
+    </div>
+
+    <div class="card">
+      <h3>Node Status</h3>
+      <strong>{{ latestReading?.nodeStatus }}</strong>
+    </div>
+
+    <div class="card">
+      <h3>Last reading</h3>
+      <strong>{{latestAssessment?.stressLevel ?? 'N/A' }}</strong>
+    </div>
+
+  </div>
+
+  <div class="node-panel" *ngIf="nodes.length">
+    <h2>Current Telemetry Status</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Node</th>
+        <th>Status</th>
+        <th>Moisture</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let node of nodes">
+        <td>{{ node.location }}</td>
+        <td>{{ node.status }}</td>
+        <td>{{ node.moisture }}%</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div
+    class="anomaly-panel"
+    *ngIf="latestAssessment">
+    <h2>Anomaly Detection</h2>
+    <div class="anomaly-content">
+      <strong>
+        {{ latestAssessment.stressLevel }}
+      </strong>
+      <p>
+        Plot water stress evaluation
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Average Moisture</h3>
+    <strong>
+      {{ averageMoisture }}%
+    </strong>
+  </div>
+
+  <div class="weather-panel" *ngIf="latestAssessment">
+    <h2>Weather Context</h2>
+    <div class="weather-grid">
+      <div class="weather-card">
+        <span>🌡️ Temperature</span>
+        <strong>
+          {{ latestAssessment.weatherContext.temperature }}°C
+        </strong>
+      </div>
+      <div class="weather-card">
+        <span>💧 Humidity</span>
+        <strong>
+          {{ latestAssessment.weatherContext.humidity }}%
+        </strong>
+      </div>
+      <div class="weather-card">
+        <span>🌬️ Wind Speed</span>
+        <strong>
+          {{ latestAssessment.weatherContext.windSpeed }}
+        </strong>
+      </div>
+      <div class="weather-card">
+        <span>🌧️ Rain Probability</span>
+        <strong>
+          {{ latestAssessment.weatherContext.precipitationProbability }}%
+        </strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h2>Soil Moisture Trend</h2>
+    <div class="fake-chart">
+      <div class="bar" style="height:60%"></div>
+      <div class="bar" style="height:70%"></div>
+      <div class="bar" style="height:80%"></div>
+      <div class="bar" style="height:55%"></div>
+      <div class="bar" style="height:40%"></div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <p>Assessment Loaded: {{ latestAssessment ? 'YES' : 'NO' }}</p>
+
+    <p>Nodes Loaded: {{ nodes.length }}</p>
+    <h2>Recent Readings</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Time</th>
+        <th>Moisture</th>
+        <th>Temperature</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let reading of readings">
+
+        <td>{{ reading.timestamp }}</td>
+        <td>{{ reading.soilMoisture }}%</td>
+        <td>{{ reading.temperature }}°C</td>
+        <td>{{ reading.nodeStatus }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>

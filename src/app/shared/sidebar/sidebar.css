@@ -8,14 +8,18 @@
 /* ── Sidebar ── */
 .sidebar {
   width: 220px;
-  min-height: 100vh;
+  height: 100vh;
   background: linear-gradient(180deg, #1d9148 0%, #14763d 100%);
   display: flex;
   flex-direction: column;
   padding: 20px 14px;
-  position: relative;
-  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
   box-sizing: border-box;
+  z-index: 1000;
 }
 
 /* Decorative leaf lines */
