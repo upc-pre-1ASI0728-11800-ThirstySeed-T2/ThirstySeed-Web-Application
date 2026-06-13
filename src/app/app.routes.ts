@@ -10,6 +10,7 @@ import { CreatePlotComponent } from './pages/plots/create_plots/create-plot';
 import { FarmsComponent } from './pages/farms/farms';
 import { FarmCreateComponent } from './pages/farms/create_farms/farm-create';
 import { authGuard } from './iam/guards/auth.guard';
+import { TelemetryComponent } from './pages/telemetry/telemetry';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -27,7 +28,8 @@ export const routes: Routes = [
       { path: 'plots/create', component: CreatePlotComponent },
       { path: 'farms', component: FarmsComponent },
       { path: 'farms/create', component: FarmCreateComponent },
+      { path: 'telemetry', component: TelemetryComponent },
     ],
   },
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: 'login' },
 ];
