@@ -110,7 +110,7 @@ export class CreatePlotComponent implements OnInit {
 
             const newPlot = {
               userId: user.id,
-              farmId: this.selectedFarmId,
+              farmId: this.selectedFarmId ?? undefined,
               name: this.plotName,
               location: selectedFarm?.name ?? '',
               extension: this.extension,
