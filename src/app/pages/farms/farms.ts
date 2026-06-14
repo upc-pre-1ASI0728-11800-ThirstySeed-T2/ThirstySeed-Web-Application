@@ -44,7 +44,13 @@ export class FarmsComponent implements OnInit {
 
         this.plotService.getPlotsByUser(user.id).subscribe({
           next: (plots) => {
+            console.log('Plots:', plots);
             this.allPlots = plots;
+            this.loadFarms(user.id);
+          },
+          error: (err) => {
+            console.error('Error obteniendo plots', err);
+            this.allPlots = [];
             this.loadFarms(user.id);
           },
         });
@@ -66,7 +72,7 @@ export class FarmsComponent implements OnInit {
       this.farms = [];
       this.loading = false;
 
-      this.cd.detectChanges(); // 👈 CLAVE
+      this.cd.detectChanges();
       return;
     }
 
@@ -75,13 +81,13 @@ export class FarmsComponent implements OnInit {
         this.farms = farms;
         this.loading = false;
 
-        this.cd.detectChanges(); // 👈 CLAVE
+        this.cd.detectChanges();
       },
       error: () => {
         this.errorMessage = 'Could not load farms.';
         this.loading = false;
 
-        this.cd.detectChanges(); // 👈 CLAVE
+        this.cd.detectChanges();
       },
     });
   }
