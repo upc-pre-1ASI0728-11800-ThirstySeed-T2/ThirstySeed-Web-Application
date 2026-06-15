@@ -1,0 +1,102 @@
+
+<!-- page-header -->
+<div class="page-header" *ngIf="form">
+
+  <div class="avatar-ring">
+    <span class="avatar-initials">
+      {{ getInitials(form.value?.name) }}
+    </span>
+  </div>
+
+  <div class="page-header-text">
+    <h1>{{ form.value?.name }}</h1>
+    <p>{{ form.value?.username }}</p>
+  </div>
+<div class="badge-plan" *ngIf="subscription">
+
+  <span class="badge-dot" [ngClass]="subscription.planType"></span>
+
+  {{ subscription.planType }}
+
+</div>
+
+</div>
+
+<!-- loading -->
+<div *ngIf="loading">
+  Cargando perfil...
+</div>
+
+<!-- id chips -->
+<div class="id-chips" *ngIf="!loading">
+
+  <div class="chip">
+    <span class="chip-label">User ID</span>
+    <span class="chip-value mono">#{{ userId }}</span>
+  </div>
+
+  <div class="chip">
+    <span class="chip-label">Profile ID</span>
+    <span class="chip-value mono">#{{ profileId }}</span>
+  </div>
+
+</div>
+
+<!-- form card -->
+<div class="form-card" *ngIf="!loading">
+
+  <div class="form-card-header">
+    <h2>Editar perfil</h2>
+  </div>
+
+  <div class="form-card-body">
+
+    <form [formGroup]="form">
+
+      <div class="field-row">
+
+        <div class="field">
+          <label>Nombre completo</label>
+          <input formControlName="name" type="text" />
+        </div>
+
+        <div class="field">
+          <label>Usuario (email)</label>
+          <input formControlName="username" type="email" />
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-save" type="button" (click)="updateProfile()">
+          Guardar cambios
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+<!-- danger zone -->
+<div class="danger-card" *ngIf="!loading">
+
+  <div class="danger-card-header">
+    <span>Zona de peligro</span>
+  </div>
+
+  <div class="danger-card-body">
+
+    <p>
+      Esta acción eliminará permanentemente tu cuenta y todos los datos asociados.
+      No se puede deshacer.
+    </p>
+
+    <button class="btn-danger" type="button" (click)="deleteAccount()">
+      Eliminar cuenta
+    </button>
+
+  </div>
+
+</div>

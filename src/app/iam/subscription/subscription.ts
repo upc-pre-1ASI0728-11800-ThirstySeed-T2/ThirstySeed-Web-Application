@@ -11,6 +11,7 @@ import { environment } from '../../../environments/environment';
   styleUrl: './subscription.css',
 })
 export class SubscriptionComponent {
+
   private backendUrl = `${environment.apiBaseUrl}/api/v1/subscriptions`;
 
   constructor(
@@ -19,70 +20,73 @@ export class SubscriptionComponent {
     private http: HttpClient,
   ) {}
 
+  // 🔥 IMPORTANTE: UI usa "Plus" | "Premium"
   selectPlan(plan: 'Plus' | 'Premium'): void {
-    const user = this.authService.getCurrentUser();
 
-    console.log('Current user:', user);
-    console.log('Selected plan:', plan);
+  const user = this.authService.getCurrentUser();
 
-    if (!user) {
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    // Tomar token JWT
-    const token = this.authService.getToken();
-    if (!token) {
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-
-    // Llamada al backend para actualizar la suscripción
-    this.http
-      .post(
-        this.backendUrl,
-        { userId: user.id, planType: plan === 'Plus' ? 'PLUS' : 'PREMIUM' },
-        { headers },
-      )
-      .subscribe({
-        next: (res) => {
-          console.log('Subscription updated successfully', res);
-
-          // Actualizar usuario local con plan (opcional)
-          user.subscription =
-            plan === 'Plus'
-              ? {
-                  name: 'Plus',
-                  price: 19,
-                  maxNodes: 3,
-                  features: [
-                    'Basic plot monitoring',
-                    'Water stress alerts',
-                    'Sensor history access',
-                  ],
-                }
-              : {
-                  name: 'Premium',
-                  price: 39,
-                  maxNodes: 10,
-                  features: [
-                    'Predictive irrigation',
-                    'Weather support',
-                    'Priority alerts & reports',
-                  ],
-                };
-          this.authService.setCurrentUser(user);
-
-          this.router.navigate(['/dashboard']); // Redirigir al dashboard
-        },
-        error: (err) => {
-          console.error('Failed to update subscription', err);
-          alert('Unable to update subscription. Please try again.');
-        },
-      });
+  if (!user) {
+    this.router.navigate(['/login']);
+    return;
   }
+
+  const token = this.authService.getToken();
+
+  if (!token) {
+    this.router.navigate(['/login']);
+    return;
+  }
+
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  const planType = plan === 'Plus' ? 'PLUS' : 'PREMIUM';
+
+  const payload = {
+    userId: user.id,
+    planType,
+    status: 'ACTIVE',
+    active: true,
+    maxFarms: plan === 'Plus' ? 3 : 10,
+    maxNodes: plan === 'Plus' ? 3 : 10,
+    validationCode: ''
+  };
+
+  this.http.post(this.backendUrl, payload, { headers })
+    .subscribe({
+      next: (res: any) => {
+
+        console.log('OK subscription:', res);
+
+        user.subscription = {
+          name: plan,
+          price: plan === 'Plus' ? 19 : 39,
+          maxNodes: plan === 'Plus' ? 3 : 10,
+          features: plan === 'Plus'
+            ? [
+                'Basic plot monitoring',
+                'Water stress alerts',
+                'Sensor history access',
+              ]
+            : [
+                'Predictive irrigation',
+                'Weather support',
+                'Priority alerts & reports',
+              ],
+        };
+
+        this.authService.setCurrentUser(user);
+
+        this.router.navigate(['/dashboard']);
+      },
+
+      error: (err) => {
+        console.error('FAILED subscription:', err);
+        alert('Unable to update subscription. Please try again.');
+      }
+    });
+}
 
   goBack(): void {
     this.router.navigate(['/register']);
