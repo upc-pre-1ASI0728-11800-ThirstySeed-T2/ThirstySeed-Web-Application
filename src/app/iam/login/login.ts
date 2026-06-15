@@ -54,18 +54,23 @@ export class LoginComponent implements OnInit {
     }
 
     this.authService.signIn(this.username, this.password).subscribe({
-      next: (user) => {
-        if (this.rememberMe) {
-          localStorage.setItem('rememberedUsername', this.username);
-        } else {
-          localStorage.removeItem('rememberedUsername');
-        }
+next: (user: any) => {
 
-        this.successMessage = 'Login successful.';
-        console.log('Logged user:', user);
+  if (this.rememberMe) {
+    localStorage.setItem('rememberedUsername', this.username);
+  } else {
+    localStorage.removeItem('rememberedUsername');
+  }
 
-        this.router.navigate(['/dashboard']);
-      },
+  this.successMessage = 'Login successful.';
+
+  console.log('Logged user:', user);
+
+  // 🔥 AQUÍ ESTÁ EL FIX REAL
+  localStorage.setItem('userId', user.id);
+
+  this.router.navigate(['/dashboard']);
+},
       error: () => {
         this.errorMessage = 'Invalid username or password.';
       }

@@ -42,7 +42,7 @@ if (user.roles?.includes('ROLE_PRODUCER')) {
     { label: 'Telemetry',    route: '/telemetry'    },
     { label: 'Irrigation',   route: '/irrigation'   },
     { label: 'Alerts',       route: '/alerts'       },
-    { label: 'Subscription', route: '/subscription' },
+    { label: 'Subscription', route: '/profile-rol' },
     { label: 'Settings',     route: '/settings'     },
   ];
   this.showPremiumCard = true;

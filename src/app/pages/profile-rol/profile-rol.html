@@ -1,0 +1,63 @@
+<!-- LOADING -->
+<div *ngIf="loading" class="loading">
+  Cargando plan...
+</div>
+
+<!-- CONTENIDO -->
+<div *ngIf="!loading && subscription" class="container">
+
+  <!-- HEADER -->
+  <div class="card header">
+
+    <div class="title-section">
+      <h1>Mi Plan Actual</h1>
+      <p>Gestión de suscripción activa</p>
+    </div>
+
+    <div class="badge" [ngClass]="subscription.planType">
+      {{ subscription.planType }}
+    </div>
+
+  </div>
+
+  <!-- INFO PLAN -->
+  <div class="card grid">
+
+    <div class="box">
+      <label>Estado</label>
+      <p>{{ subscription.status }}</p>
+    </div>
+
+    <div class="box">
+      <label>Max Farms</label>
+      <p>{{ subscription.maxFarms }}</p>
+    </div>
+
+    <div class="box">
+      <label>Max Nodes</label>
+      <p>{{ subscription.maxNodes }}</p>
+    </div>
+
+    <div class="box">
+      <label>Validation Code</label>
+      <p class="mono">{{ subscription.validationCode }}</p>
+    </div>
+
+  </div>
+
+  <!-- ACTION -->
+  <div class="card actions">
+
+    <h3>Cambiar plan</h3>
+
+    <p class="hint">
+      Para cambiar tu plan, dirígete a la pantalla de suscripción.
+    </p>
+
+    <button class="btn-primary" (click)="goToChangePlan()">
+      Cambiar plan
+    </button>
+
+  </div>
+
+</div>
