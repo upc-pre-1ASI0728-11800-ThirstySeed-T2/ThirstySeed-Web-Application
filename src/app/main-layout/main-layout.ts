@@ -1,8 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { Subject, timeout, catchError, of, takeUntil } from 'rxjs';
+import { Subject, timeout, catchError, of, takeUntil, filter } from 'rxjs';
 import { SidebarComponent } from '../shared/sidebar/sidebar';
 import { AuthService } from '../iam/services/auth.service';
 import { SubscriptionService } from '../iam/services/subscription.service';
@@ -18,7 +17,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   subscriptionChecked = false;
   hasSubscription = false;
   isProducer = false;
+  currentUrl = '';
 
+  private userId = 0;
   private destroy$ = new Subject<void>();
 
   readonly plans = [
@@ -49,7 +50,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     const user = this.authService.getCurrentUser();
     if (!user) return;
 
+    this.userId = user.id;
     this.isProducer = user.roles?.includes('ROLE_PRODUCER') ?? false;
+    this.currentUrl = this.router.url;
 
     if (!this.isProducer) {
       this.subscriptionChecked = true;
@@ -58,8 +61,44 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Re-check subscription every time user leaves /profile-rol
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      takeUntil(this.destroy$),
+    ).subscribe((e) => {
+      const prev = this.currentUrl;
+      this.currentUrl = e.urlAfterRedirects;
+
+      if (prev === '/profile-rol' && this.currentUrl !== '/profile-rol') {
+        this.checkSubscription();
+      }
+
+      this.cd.detectChanges();
+    });
+
+    this.checkSubscription();
+  }
+
+  /** Gate overlay: only shows for producers without a plan, and not while on the plan page */
+  get showGate(): boolean {
+    return (
+      this.subscriptionChecked &&
+      !this.hasSubscription &&
+      this.isProducer &&
+      this.currentUrl !== '/profile-rol'
+    );
+  }
+
+  get showChecking(): boolean {
+    return !this.subscriptionChecked && this.isProducer && this.currentUrl !== '/profile-rol';
+  }
+
+  private checkSubscription(): void {
+    this.subscriptionChecked = false;
+    this.cd.detectChanges();
+
     this.subscriptionService
-      .getByUserId(user.id)
+      .getByUserId(this.userId)
       .pipe(
         timeout(8000),
         catchError(() => of(null)),

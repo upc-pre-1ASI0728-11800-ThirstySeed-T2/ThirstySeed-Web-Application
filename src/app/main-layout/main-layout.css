@@ -11,16 +11,37 @@
   background: #f0f5ec;
   margin-left: 220px;
   min-height: 100vh;
+  position: relative;
+}
+
+/* ── Shared overlay base ── */
+/* Sits on top of router-outlet content; sidebar (z-index 1000) remains visible */
+.sub-overlay {
+  position: fixed;
+  top: 0;
+  left: 220px; /* sidebar width */
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  background: #f0f5ec;
+  overflow-y: auto;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
 }
 
 /* ── Checking state ── */
-.sub-checking {
+.sub-checking .gate-card--slim {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
   gap: 16px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
   color: #5a7a5a;
   font-size: 14px;
 }
@@ -38,16 +59,7 @@
   to { transform: rotate(360deg); }
 }
 
-/* ── Subscription gate ── */
-.sub-gate {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 40px 24px;
-  box-sizing: border-box;
-}
-
+/* ── Gate card ── */
 .gate-card {
   background: #ffffff;
   border: 1px solid #dde8d8;
@@ -58,7 +70,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0;
   box-shadow: 0 4px 24px rgba(18, 121, 55, 0.08);
 }
 

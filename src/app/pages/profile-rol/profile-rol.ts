@@ -101,8 +101,8 @@ export class ProfileRol implements OnInit {
       }).subscribe({
         next: (subscription) => {
           this.applySubscription(subscription, plan);
-          this.successMessage = `Your plan was changed to ${plan.name}.`;
           this.savingPlan = null;
+          this.router.navigate(['/dashboard']);
         },
         error: (err) => {
           console.error('SUBSCRIPTION UPDATE ERROR:', err);

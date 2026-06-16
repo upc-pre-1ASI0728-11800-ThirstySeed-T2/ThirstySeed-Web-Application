@@ -4,14 +4,19 @@
 
   <main class="content">
 
-    <!-- Checking subscription -->
-    <div *ngIf="!subscriptionChecked && isProducer" class="sub-checking">
-      <div class="sub-spinner"></div>
-      <p>Verifying your plan…</p>
+    <!-- router-outlet is ALWAYS in the DOM so child routes can render -->
+    <router-outlet></router-outlet>
+
+    <!-- Checking overlay (only while verifying, not on plan page) -->
+    <div *ngIf="showChecking" class="sub-overlay sub-checking">
+      <div class="gate-card gate-card--slim">
+        <div class="sub-spinner"></div>
+        <p>Verifying your plan…</p>
+      </div>
     </div>
 
-    <!-- Subscription gate -->
-    <div *ngIf="subscriptionChecked && !hasSubscription && isProducer" class="sub-gate">
+    <!-- Subscription gate overlay (covers content, sidebar stays visible) -->
+    <div *ngIf="showGate" class="sub-overlay sub-gate">
       <div class="gate-card">
 
         <div class="gate-icon">
@@ -64,11 +69,6 @@
 
       </div>
     </div>
-
-    <!-- Normal content -->
-    <ng-container *ngIf="!isProducer || (subscriptionChecked && hasSubscription)">
-      <router-outlet></router-outlet>
-    </ng-container>
 
   </main>
 
