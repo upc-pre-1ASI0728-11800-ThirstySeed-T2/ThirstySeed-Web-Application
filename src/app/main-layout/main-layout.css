@@ -1,10 +1,234 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 .app-layout {
   display: flex;
   min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
 }
 
 .content {
   flex: 1;
-  background: #f7fbf4;
+  background: #f0f5ec;
   margin-left: 220px;
+  min-height: 100vh;
+}
+
+/* ── Checking state ── */
+.sub-checking {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 16px;
+  color: #5a7a5a;
+  font-size: 14px;
+}
+
+.sub-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #dde8d8;
+  border-top-color: #127937;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Subscription gate ── */
+.sub-gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 24px;
+  box-sizing: border-box;
+}
+
+.gate-card {
+  background: #ffffff;
+  border: 1px solid #dde8d8;
+  border-radius: 20px;
+  padding: 48px 40px;
+  max-width: 720px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  box-shadow: 0 4px 24px rgba(18, 121, 55, 0.08);
+}
+
+.gate-icon {
+  width: 64px;
+  height: 64px;
+  background: #f0f5ec;
+  border: 1.5px solid #c8dfc0;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.gate-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.gate-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a2e1a;
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+.gate-sub {
+  font-size: 14px;
+  color: #6b8a6b;
+  text-align: center;
+  line-height: 1.6;
+  max-width: 480px;
+  margin: 0 0 32px;
+}
+
+/* ── Plan cards ── */
+.gate-plans {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 28px;
+}
+
+.gate-plan {
+  background: #f8fbf6;
+  border: 1.5px solid #dde8d8;
+  border-radius: 14px;
+  padding: 20px;
+  transition: border-color 0.2s;
+}
+
+.gate-plan:hover {
+  border-color: #127937;
+}
+
+.gate-plan-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.gate-plan-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a2e1a;
+}
+
+.gate-plan-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #127937;
+}
+
+.gate-plan-period {
+  font-size: 13px;
+  font-weight: 400;
+  color: #6b8a6b;
+}
+
+.gate-plan-highlight {
+  font-size: 12.5px;
+  color: #6b8a6b;
+  margin: 0 0 14px;
+  line-height: 1.4;
+}
+
+.gate-plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gate-plan-features li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #3d5c3d;
+}
+
+.gate-plan-features li svg {
+  width: 14px;
+  height: 14px;
+  stroke: #127937;
+  flex-shrink: 0;
+}
+
+/* ── Buttons ── */
+.gate-btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #127937;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 32px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.12s ease;
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.gate-btn-primary svg {
+  width: 16px;
+  height: 16px;
+  stroke: #ffffff;
+}
+
+.gate-btn-primary:hover {
+  background: #0f6530;
+  transform: translateY(-1px);
+}
+
+.gate-btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: #8a9a8a;
+  border: 1px solid #dde8d8;
+  border-radius: 10px;
+  padding: 11px 32px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.gate-btn-logout svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+}
+
+.gate-btn-logout:hover {
+  color: #d44;
+  border-color: #e8c4c4;
 }

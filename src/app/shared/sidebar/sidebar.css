@@ -192,3 +192,48 @@ nav {
 .manage-btn:active {
   transform: translateY(0);
 }
+
+/* ── Logout button ── */
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 8px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: 'DM Sans', sans-serif;
+  position: relative;
+  z-index: 1;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 80, 80, 0.15);
+}
+
+.logout-btn svg {
+  width: 17px;
+  height: 17px;
+  stroke: rgba(255, 180, 180, 0.85);
+  flex-shrink: 0;
+  transition: stroke 0.15s ease;
+}
+
+.logout-btn span {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: rgba(255, 180, 180, 0.85);
+  transition: color 0.15s ease;
+}
+
+.logout-btn:hover svg {
+  stroke: #ff8080;
+}
+
+.logout-btn:hover span {
+  color: #ff8080;
+}

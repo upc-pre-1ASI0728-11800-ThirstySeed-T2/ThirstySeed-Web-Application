@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
-import { RouterModule } from '@angular/router';           // ← necesario para routerLink y routerLinkActive
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../iam/services/auth.service';
 
 export interface MenuItem {
@@ -29,7 +29,12 @@ export class SidebarComponent implements OnInit {
   usedNodes = 4;
   totalNodes = 10;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 
   ngOnInit(): void {
     const user = this.authService.getCurrentUser();
