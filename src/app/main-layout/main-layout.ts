@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Subject, timeout, catchError, of, takeUntil, filter } from 'rxjs';
+import { Subject, takeUntil, filter } from 'rxjs';
 import { SidebarComponent } from '../shared/sidebar/sidebar';
 import { AuthService } from '../iam/services/auth.service';
 import { SubscriptionService } from '../iam/services/subscription.service';
@@ -20,6 +20,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   currentUrl = '';
 
   private userId = 0;
+  private destroyed = false;
+  private fallbackTimer?: ReturnType<typeof setTimeout>;
   private destroy$ = new Subject<void>();
 
   readonly plans = [
@@ -57,11 +59,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     if (!this.isProducer) {
       this.subscriptionChecked = true;
       this.hasSubscription = true;
-      this.cd.detectChanges();
       return;
     }
 
-    // Re-check subscription every time user leaves /profile-rol
+    // Re-check when leaving /profile-rol (user just picked a plan)
     this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd),
       takeUntil(this.destroy$),
@@ -79,7 +80,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.checkSubscription();
   }
 
-  /** Gate overlay: only shows for producers without a plan, and not while on the plan page */
   get showGate(): boolean {
     return (
       this.subscriptionChecked &&
@@ -90,28 +90,47 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   get showChecking(): boolean {
-    return !this.subscriptionChecked && this.isProducer && this.currentUrl !== '/profile-rol';
+    return (
+      !this.subscriptionChecked &&
+      this.isProducer &&
+      this.currentUrl !== '/profile-rol'
+    );
   }
 
   private checkSubscription(): void {
     this.subscriptionChecked = false;
-    this.cd.detectChanges();
+    clearTimeout(this.fallbackTimer);
 
-    this.subscriptionService
-      .getByUserId(this.userId)
-      .pipe(
-        timeout(8000),
-        catchError(() => of(null)),
-        takeUntil(this.destroy$),
-      )
-      .subscribe((sub) => {
+    // Native timeout as hard fallback — fires regardless of Observable state
+    this.fallbackTimer = setTimeout(() => {
+      if (!this.destroyed && !this.subscriptionChecked) {
+        this.hasSubscription = false;
+        this.subscriptionChecked = true;
+        this.cd.detectChanges();
+      }
+    }, 6000);
+
+    this.subscriptionService.getByUserId(this.userId).subscribe({
+      next: (sub) => {
+        clearTimeout(this.fallbackTimer);
+        if (this.destroyed) return;
         this.hasSubscription = sub?.active === true;
         this.subscriptionChecked = true;
         this.cd.detectChanges();
-      });
+      },
+      error: () => {
+        clearTimeout(this.fallbackTimer);
+        if (this.destroyed) return;
+        this.hasSubscription = false;
+        this.subscriptionChecked = true;
+        this.cd.detectChanges();
+      },
+    });
   }
 
   ngOnDestroy(): void {
+    this.destroyed = true;
+    clearTimeout(this.fallbackTimer);
     this.destroy$.next();
     this.destroy$.complete();
   }

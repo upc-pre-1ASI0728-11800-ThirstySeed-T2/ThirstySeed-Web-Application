@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../iam/services/auth.service';
 import { Subscription, SubscriptionService } from '../../iam/services/subscription.service';
@@ -56,6 +56,7 @@ export class ProfileRol implements OnInit {
     private authService: AuthService,
     private router: Router,
     private subscriptionService: SubscriptionService,
+    private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -102,12 +103,14 @@ export class ProfileRol implements OnInit {
         next: (subscription) => {
           this.applySubscription(subscription, plan);
           this.savingPlan = null;
+          this.cd.detectChanges();
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
           console.error('SUBSCRIPTION UPDATE ERROR:', err);
           this.errorMessage = 'The plan could not be changed. Please try again.';
           this.savingPlan = null;
+          this.cd.detectChanges();
         },
       });
     };
@@ -119,6 +122,7 @@ export class ProfileRol implements OnInit {
           console.error('SUBSCRIPTION DELETE BEFORE UPDATE ERROR:', err);
           this.errorMessage = 'The current plan could not be replaced.';
           this.savingPlan = null;
+          this.cd.detectChanges();
         },
       });
       return;
@@ -132,11 +136,12 @@ export class ProfileRol implements OnInit {
       next: (res) => {
         this.currentSubscription = res;
         this.loading = false;
+        this.cd.detectChanges();
       },
-      error: (err) => {
-        console.warn('SUBSCRIPTION NOT FOUND:', err);
+      error: () => {
         this.currentSubscription = null;
         this.loading = false;
+        this.cd.detectChanges();
       },
     });
   }
