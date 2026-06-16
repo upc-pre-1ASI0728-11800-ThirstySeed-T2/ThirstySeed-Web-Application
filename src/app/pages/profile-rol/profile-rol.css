@@ -233,6 +233,47 @@ button:disabled {
   color: #b42318;
 }
 
+/* ── Water Manager theme ── */
+.wm-mode .page-badge {
+  color: #0e5c8a;
+}
+
+.wm-mode .current-plan-card {
+  background: #e8f4fb;
+  border-color: #b6d9ef;
+}
+
+.wm-mode .plan-card.active {
+  border-color: #0e5c8a;
+  box-shadow: 0 20px 54px rgba(14, 92, 138, 0.16);
+}
+
+.wm-mode .plan-card.premium {
+  background: #f4f8fd;
+}
+
+.wm-mode .status-pill {
+  background: #daeef8;
+  color: #0e5c8a;
+}
+
+.wm-mode .limits div {
+  background: #edf5fb;
+}
+
+.wm-mode li::before {
+  color: #0e5c8a;
+}
+
+.wm-mode button {
+  background: #0e5c8a;
+}
+
+.wm-mode .plan-card.active button {
+  background: #daeef8;
+  color: #0e5c8a;
+}
+
 @media (max-width: 900px) {
   .subscription-page {
     padding: 18px;

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../iam/services/auth.service';
 import { Subscription, SubscriptionService } from '../../iam/services/subscription.service';
 
-type PlanType = 'PLUS' | 'PREMIUM';
+type PlanType = 'PRODUCER_PLUS' | 'PRODUCER_PREMIUM' | 'WATER_MANAGER_PLUS' | 'WATER_MANAGER_PREMIUM';
 
 interface PlanOption {
   type: PlanType;
@@ -12,6 +12,7 @@ interface PlanOption {
   price: number;
   maxFarms: number;
   maxNodes: number;
+  maxProducers: number;
   highlight: string;
   features: string[];
 }
@@ -25,32 +26,62 @@ interface PlanOption {
 })
 export class ProfileRol implements OnInit {
   userId!: number;
+  isProducer = false;
   currentSubscription: Subscription | null = null;
   loading = true;
   savingPlan: PlanType | null = null;
   successMessage = '';
   errorMessage = '';
 
-  planOptions: PlanOption[] = [
+  private readonly producerPlans: PlanOption[] = [
     {
-      type: 'PLUS',
+      type: 'PRODUCER_PLUS',
       name: 'Plus',
       price: 19,
-      maxFarms: 3,
+      maxFarms: 2,
       maxNodes: 3,
+      maxProducers: 0,
       highlight: 'For small farms getting started with monitoring.',
-      features: ['Up to 3 farms', 'Up to 3 IoT nodes', 'Basic plot monitoring', 'Water stress alerts'],
+      features: ['Up to 2 farms', 'Up to 3 IoT nodes', 'Basic plot monitoring', 'Water stress alerts'],
     },
     {
-      type: 'PREMIUM',
+      type: 'PRODUCER_PREMIUM',
       name: 'Premium',
       price: 39,
       maxFarms: 10,
       maxNodes: 10,
+      maxProducers: 0,
       highlight: 'For advanced operations with more plots and telemetry.',
       features: ['Up to 10 farms', 'Up to 10 IoT nodes', 'Predictive irrigation', 'Priority alerts and reports'],
     },
   ];
+
+  private readonly waterManagerPlans: PlanOption[] = [
+    {
+      type: 'WATER_MANAGER_PLUS',
+      name: 'Plus',
+      price: 19,
+      maxFarms: 2,
+      maxNodes: 0,
+      maxProducers: 1,
+      highlight: 'For water managers supervising a small producer network.',
+      features: ['Manage 1 producer', 'Up to 2 zones', 'Water distribution planning', 'Consumption reports'],
+    },
+    {
+      type: 'WATER_MANAGER_PREMIUM',
+      name: 'Premium',
+      price: 39,
+      maxFarms: 10,
+      maxNodes: 0,
+      maxProducers: 5,
+      highlight: 'For regional water management at scale.',
+      features: ['Manage up to 5 producers', 'Up to 10 zones', 'Predictive distribution', 'Critical area alerts & reports'],
+    },
+  ];
+
+  get planOptions(): PlanOption[] {
+    return this.isProducer ? this.producerPlans : this.waterManagerPlans;
+  }
 
   constructor(
     private authService: AuthService,
@@ -69,6 +100,7 @@ export class ProfileRol implements OnInit {
     }
 
     this.userId = Number(id);
+    this.isProducer = user.roles?.includes('ROLE_PRODUCER') ?? false;
     this.loadSubscription();
   }
 
@@ -104,7 +136,8 @@ export class ProfileRol implements OnInit {
           this.applySubscription(subscription, plan);
           this.savingPlan = null;
           this.cd.detectChanges();
-          this.router.navigate(['/dashboard']);
+          const target = this.isProducer ? '/dashboard' : '/water-manager/dashboard';
+          this.router.navigate([target]);
         },
         error: (err) => {
           console.error('SUBSCRIPTION UPDATE ERROR:', err);
@@ -150,9 +183,11 @@ export class ProfileRol implements OnInit {
     this.currentSubscription = subscription ?? {
       id: Date.now(),
       userId: this.userId,
+      roleType: this.isProducer ? 'PRODUCER' : 'WATER_MANAGER',
       planType: plan.type,
       maxFarms: plan.maxFarms,
       maxNodes: plan.maxNodes,
+      maxProducers: plan.maxProducers,
       validationCode: '',
       status: 'ACTIVE',
       active: true,

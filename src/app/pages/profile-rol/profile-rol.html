@@ -1,15 +1,16 @@
-<section class="subscription-page">
+<section class="subscription-page" [class.wm-mode]="!isProducer">
   <header class="subscription-header">
     <div>
       <span class="page-badge">Subscription</span>
       <h1>Manage your plan</h1>
-      <p>Review your current plan and switch when your monitoring needs change.</p>
+      <p>Review your current plan and switch when your needs change.</p>
     </div>
 
     <div class="current-plan-card">
       <span>Current plan</span>
       <strong>{{ currentPlanType }}</strong>
-      <small *ngIf="currentPlan">{{ currentPlan.maxNodes }} nodes - {{ currentPlan.maxFarms }} farms</small>
+      <small *ngIf="currentPlan && isProducer">{{ currentPlan.maxNodes }} nodes · {{ currentPlan.maxFarms }} farms</small>
+      <small *ngIf="currentPlan && !isProducer">{{ currentPlan.maxProducers }} producer(s) · {{ currentPlan.maxFarms }} zones</small>
     </div>
   </header>
 
@@ -19,7 +20,11 @@
     <article
       class="plan-card"
       *ngFor="let plan of planOptions"
-      [ngClass]="{ active: isCurrentPlan(plan), premium: plan.type === 'PREMIUM' }">
+      [ngClass]="{
+        active: isCurrentPlan(plan),
+        premium: plan.name === 'Premium'
+      }">
+
       <div class="plan-top">
         <div>
           <span class="status-pill" *ngIf="isCurrentPlan(plan)">Active</span>
@@ -32,7 +37,8 @@
 
       <p class="highlight">{{ plan.highlight }}</p>
 
-      <div class="limits">
+      <!-- Producer limits -->
+      <div class="limits" *ngIf="isProducer">
         <div>
           <strong>{{ plan.maxFarms }}</strong>
           <span>farms</span>
@@ -40,6 +46,18 @@
         <div>
           <strong>{{ plan.maxNodes }}</strong>
           <span>IoT nodes</span>
+        </div>
+      </div>
+
+      <!-- Water Manager limits -->
+      <div class="limits" *ngIf="!isProducer">
+        <div>
+          <strong>{{ plan.maxProducers }}</strong>
+          <span>producers</span>
+        </div>
+        <div>
+          <strong>{{ plan.maxFarms }}</strong>
+          <span>zones</span>
         </div>
       </div>
 
