@@ -287,7 +287,7 @@
 
           <!-- Main metric -->
           <div class="rec-hero">
-            <strong>{{ latestRecommendation.recommendedLitres | number:'1.0-1' }}</strong>
+            <strong>{{ latestRecommendation.suggestedWaterAmount | number:'1.0-1' }}</strong>
             <span>litres recommended</span>
           </div>
 
@@ -300,7 +300,7 @@
                 </svg>
                 Duration
               </div>
-              <strong>{{ latestRecommendation.durationHours }}h</strong>
+              <strong>{{ latestRecommendation.suggestedDurationHours }}h</strong>
             </div>
             <div class="rec-row">
               <div class="rec-label">
@@ -311,7 +311,7 @@
                 </svg>
                 Start time
               </div>
-              <strong>{{ latestRecommendation.startTime | date:'HH:mm · dd MMM' }}</strong>
+              <strong>{{ latestRecommendation.suggestedStartTime | date:'HH:mm · dd MMM' }}</strong>
             </div>
             <div class="rec-row">
               <div class="rec-label">
@@ -332,7 +332,7 @@
               </svg>
               AI reasoning
             </h4>
-            <p>{{ latestRecommendation.reasoning }}</p>
+            <p>{{ latestRecommendation.aiReasoning }}</p>
           </div>
 
           <!-- Action -->
