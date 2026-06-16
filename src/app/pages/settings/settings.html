@@ -1,0 +1,100 @@
+<section class="settings-page" *ngIf="form">
+  <header class="settings-header">
+    <div class="profile-mark">{{ getInitials(displayName) }}</div>
+
+    <div class="profile-title">
+      <span class="page-badge">Account settings</span>
+      <h1>{{ displayName }}</h1>
+      <p>{{ displayEmail }}</p>
+    </div>
+
+    <div class="plan-pill" [ngClass]="planType.toLowerCase()">
+      {{ planType }}
+    </div>
+  </header>
+
+  <div class="loading" *ngIf="loading">Loading profile...</div>
+
+  <div class="settings-grid" *ngIf="!loading">
+    <aside class="account-panel">
+      <h2>Profile overview</h2>
+
+      <div class="info-row">
+        <span>User ID</span>
+        <strong>#{{ userId }}</strong>
+      </div>
+
+      <div class="info-row">
+        <span>Profile ID</span>
+        <strong>{{ profileId || 'Local draft' }}</strong>
+      </div>
+
+      <div class="info-row">
+        <span>Role</span>
+        <strong>{{ roleLabel }}</strong>
+      </div>
+
+      <div class="info-row">
+        <span>Subscription</span>
+        <strong>{{ planType }}</strong>
+      </div>
+
+      <p class="notice" *ngIf="profileMissing">
+        Your profile details are ready to save. Changes will create your profile record.
+      </p>
+    </aside>
+
+    <main class="edit-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="page-badge">Editable information</span>
+          <h2>Personal data</h2>
+        </div>
+        <button class="save-button" type="button" (click)="updateProfile()" [disabled]="saving">
+          {{ saving ? 'Saving...' : 'Save changes' }}
+        </button>
+      </div>
+
+      <form [formGroup]="form" class="profile-form">
+        <label>
+          Full name
+          <input type="text" formControlName="name" placeholder="Your full name" />
+          <small *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+            Name is required.
+          </small>
+        </label>
+
+        <label>
+          Email
+          <input type="email" formControlName="email" placeholder="you@example.com" />
+          <small *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+            Enter a valid email.
+          </small>
+        </label>
+      </form>
+
+      <div class="message success" *ngIf="successMessage">{{ successMessage }}</div>
+      <div class="message error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    </main>
+  </div>
+
+  <section class="security-panel" *ngIf="!loading">
+    <div>
+      <span class="page-badge">Security</span>
+      <h2>Password changes</h2>
+      <p>Password editing is not enabled because the backend contract does not expose a password update endpoint.</p>
+    </div>
+  </section>
+
+  <section class="danger-panel" *ngIf="!loading">
+    <div>
+      <span class="page-badge danger">Danger zone</span>
+      <h2>Delete account</h2>
+      <p>This permanently removes your account data and signs you out.</p>
+    </div>
+
+    <button class="danger-button" type="button" (click)="deleteAccount()">
+      Delete account
+    </button>
+  </section>
+</section>

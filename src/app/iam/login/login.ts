@@ -54,16 +54,15 @@ export class LoginComponent implements OnInit {
     }
 
     this.authService.signIn(this.username, this.password).subscribe({
-      next: (user) => {
+      next: (user: any) => {
         if (this.rememberMe) {
           localStorage.setItem('rememberedUsername', this.username);
         } else {
           localStorage.removeItem('rememberedUsername');
         }
 
+        localStorage.setItem('userId', user.id);
         this.successMessage = 'Login successful.';
-        console.log('Logged user:', user);
-
         this.router.navigate([this.authService.getRouteForCurrentUser()]);
       },
       error: () => {
