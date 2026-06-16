@@ -2,9 +2,10 @@ import { TelemetryReading } from '../model/telemetry.model';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs';
 import { WaterStressAssessment } from '../model/water-stress.model';
 import { TelemetryNode } from '../model/node.model';
+import { IrrigationRecommendation, TelemetryReadingPayload } from '../model/recommendation.model';
 
 
 
@@ -71,5 +72,35 @@ export class TelemetryService {
     return this.http.get<TelemetryNode[]>(`${this.apiUrl}/api/v1/nodes/plot/${plotId}`, {
       headers: this.getHeaders(),
     });
+  }
+
+  // POST /api/v1/telemetry/readings — envía UNA lectura (llámalo dos veces: moisture luego temp)
+  sendReading(payload: TelemetryReadingPayload): Observable<void> {
+    return this.http
+      .post<void>(`${this.apiUrl}/api/v1/telemetry/readings`, payload, {
+        headers: this.getHeaders(),
+      })
+      .pipe(catchError((err) => throwError(() => err)));
+  }
+
+  // GET /api/v1/recommendations/plot/{plotId}
+  getRecommendationsByPlot(plotId: number): Observable<IrrigationRecommendation[]> {
+    return this.http
+      .get<IrrigationRecommendation[]>(
+        `${this.apiUrl}/api/v1/recommendations/plot/${plotId}`,
+        { headers: this.getHeaders() },
+      )
+      .pipe(catchError((err) => throwError(() => err)));
+  }
+
+  // PUT /api/v1/recommendations/{id}/accept
+  acceptRecommendation(id: number): Observable<void> {
+    return this.http
+      .put<void>(
+        `${this.apiUrl}/api/v1/recommendations/${id}/accept`,
+        {},
+        { headers: this.getHeaders() },
+      )
+      .pipe(catchError((err) => throwError(() => err)));
   }
 }
