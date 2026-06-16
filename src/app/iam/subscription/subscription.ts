@@ -1,87 +1,65 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { SubscriptionService } from '../services/subscription.service';
+
+type InitialPlan = 'Plus' | 'Premium';
 
 @Component({
   selector: 'app-subscription',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './subscription.html',
   styleUrl: './subscription.css',
 })
 export class SubscriptionComponent {
-  private backendUrl = `${environment.apiBaseUrl}/api/v1/subscriptions`;
+  savingPlan: InitialPlan | null = null;
+  errorMessage = '';
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private http: HttpClient,
+    private subscriptionService: SubscriptionService,
   ) {}
 
-  selectPlan(plan: 'Plus' | 'Premium'): void {
+  selectPlan(plan: InitialPlan): void {
     const user = this.authService.getCurrentUser();
-
-    console.log('Current user:', user);
-    console.log('Selected plan:', plan);
 
     if (!user) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // Tomar token JWT
-    const token = this.authService.getToken();
-    if (!token) {
-      this.router.navigate(['/login']);
-      return;
-    }
+    this.savingPlan = plan;
+    this.errorMessage = '';
 
-    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    const planType = plan === 'Plus' ? 'PLUS' : 'PREMIUM';
+    const maxNodes = plan === 'Plus' ? 3 : 10;
 
-    // Llamada al backend para actualizar la suscripción
-    this.http
-      .post(
-        this.backendUrl,
-        { userId: user.id, planType: plan === 'Plus' ? 'PLUS' : 'PREMIUM' },
-        { headers },
-      )
-      .subscribe({
-        next: (res) => {
-          console.log('Subscription updated successfully', res);
+    this.subscriptionService.createSubscription({
+      userId: user.id,
+      planType,
+    }).subscribe({
+      next: () => {
+        user.subscription = {
+          name: plan,
+          price: plan === 'Plus' ? 19 : 39,
+          maxNodes,
+          features: plan === 'Plus'
+            ? ['Basic plot monitoring', 'Water stress alerts', 'Sensor history access']
+            : ['Predictive irrigation', 'Weather support', 'Priority alerts and reports'],
+        };
 
-          // Actualizar usuario local con plan (opcional)
-          user.subscription =
-            plan === 'Plus'
-              ? {
-                  name: 'Plus',
-                  price: 19,
-                  maxNodes: 3,
-                  features: [
-                    'Basic plot monitoring',
-                    'Water stress alerts',
-                    'Sensor history access',
-                  ],
-                }
-              : {
-                  name: 'Premium',
-                  price: 39,
-                  maxNodes: 10,
-                  features: [
-                    'Predictive irrigation',
-                    'Weather support',
-                    'Priority alerts & reports',
-                  ],
-                };
-          this.authService.setCurrentUser(user);
-
-          this.router.navigate(['/dashboard']); // Redirigir al dashboard
-        },
-        error: (err) => {
-          console.error('Failed to update subscription', err);
-          alert('Unable to update subscription. Please try again.');
-        },
-      });
+        this.authService.setCurrentUser(user);
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        console.error('INITIAL SUBSCRIPTION ERROR:', err);
+        this.errorMessage = 'Unable to create subscription. Please try again.';
+        this.savingPlan = null;
+      },
+    });
   }
 
   goBack(): void {

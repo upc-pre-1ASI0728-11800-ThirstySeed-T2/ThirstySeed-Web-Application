@@ -37,7 +37,7 @@ export class RegisterComponent {
     this.errorMessage = '';
     this.successMessage = '';
 
-    // Validaciones
+    // VALIDACIONES
     if (this.fullName.trim().length < 3) {
       this.errorMessage = 'Full name must contain at least 3 characters.';
       return;
@@ -76,12 +76,11 @@ export class RegisterComponent {
       return;
     }
 
-    // Llamada al backend
+    // SPLIT NAME
     const fullNameParts = this.fullName.trim().split(' ');
-
     const firstName = fullNameParts[0];
-
-    const lastName = fullNameParts.length > 1 ? fullNameParts.slice(1).join(' ') : '';
+    const lastName =
+      fullNameParts.length > 1 ? fullNameParts.slice(1).join(' ') : '';
 
     const roleMap: Record<string, string> = {
       'Agricultural Producer': 'ROLE_PRODUCER',
@@ -90,6 +89,7 @@ export class RegisterComponent {
 
     const role = roleMap[this.accountType];
 
+    // SIGN UP
     this.authService
       .signUp({
         username: this.username.trim(),
@@ -98,8 +98,16 @@ export class RegisterComponent {
       })
       .subscribe({
         next: () => {
+
+          // SIGN IN AUTOMÁTICO
           this.authService.signIn(this.username.trim(), this.password).subscribe({
-            next: (user) => {
+            next: (user: any) => {
+
+              console.log('REGISTER LOGIN USER:', user);
+
+              // 🔥 FIX CRÍTICO: guardar sesión correctamente
+              localStorage.setItem('userId', user.id);
+
               const profilePayload = {
                 firstName,
                 lastName,
@@ -108,39 +116,28 @@ export class RegisterComponent {
                 profileImage: '',
                 location: '',
               };
+
               console.log('PROFILE PAYLOAD', profilePayload);
 
-              this.profileService
-                .createProfile({
-                  firstName,
-                  lastName,
-                  email: this.email,
-                  phoneNumber: '',
-                  profileImage: '',
-                  location: '',
-                })
-                .subscribe({
-                  next: () => {
-                    this.authService.setCurrentUser(user);
+              this.profileService.createProfile(profilePayload).subscribe({
+                next: () => {
 
-                    this.successMessage = 'Account created successfully.';
+                  this.successMessage = 'Account created successfully.';
 
-                    setTimeout(() => {
-                      this.router.navigate(['/subscription']);
-                    }, 1000);
-                  },
+                  setTimeout(() => {
+                    this.router.navigate(['/subscription']);
+                  }, 1000);
+                },
 
-                  error: (err) => {
-                    console.error(err);
-
-                    this.errorMessage = 'Profile creation failed.';
-                  },
-                });
+                error: (err) => {
+                  console.error(err);
+                  this.errorMessage = 'Profile creation failed.';
+                },
+              });
             },
 
             error: (err) => {
               console.error(err);
-
               this.errorMessage = 'Automatic login failed.';
             },
           });
@@ -148,8 +145,8 @@ export class RegisterComponent {
 
         error: (err) => {
           console.error(err);
-
-          this.errorMessage = err?.error?.message ?? 'Failed to create account.';
+          this.errorMessage =
+            err?.error?.message ?? 'Failed to create account.';
         },
       });
   }

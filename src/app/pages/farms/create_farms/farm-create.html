@@ -142,7 +142,7 @@
         </div>
         <div class="preview-row">
           <span>STATUS</span>
-          <strong [ngClass]="farm.initialStatus?.toLowerCase() || 'setup'">
+          <strong [ngClass]="farm.initialStatus.toLowerCase() || 'setup'">
             {{ farm.initialStatus || 'Setup' }}
           </strong>
         </div>

@@ -15,6 +15,8 @@ import { IotSimulatorComponent } from './pages/telemetry/iot-simulator/iot-simul
 import { WaterManagerDashboardComponent } from './pages/water-zones/water-manager-dashboard/water-manager-dashboard';
 import { CreateWaterZoneComponent } from './pages/water-zones/create-water-zone/create-water-zone';
 import { waterManagerGuard } from './iam/guards/water-manager.guard';
+import { SettingsComponent } from './pages/settings/settings';
+import { ProfileRol } from './pages/profile-rol/profile-rol';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -34,6 +36,8 @@ export const routes: Routes = [
       { path: 'farms/create', component: FarmCreateComponent },
       { path: 'telemetry', component: TelemetryComponent },
       { path: 'iot-simulator', component: IotSimulatorComponent },
+      { path: 'profile-rol', component: ProfileRol },
+      { path: 'settings', component: SettingsComponent },
       {
         path: 'water-manager',
         canActivate: [waterManagerGuard],

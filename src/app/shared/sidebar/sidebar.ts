@@ -54,11 +54,9 @@ export class SidebarComponent implements OnInit {
         { label: 'Dashboard',    route: '/dashboard'    },
         { label: 'Farms',        route: '/farms'        },
         { label: 'Plots',        route: '/plots'        },
-        { label: 'Telemetry',     route: '/telemetry'     },
+        { label: 'Telemetry',    route: '/telemetry'    },
         { label: 'IoT Simulator', route: '/iot-simulator' },
-        { label: 'Irrigation',   route: '/irrigation'   },
-        { label: 'Alerts',       route: '/alerts'       },
-        { label: 'Subscription', route: '/subscription' },
+        { label: 'Subscription', route: '/profile-rol'  },
         { label: 'Settings',     route: '/settings'     },
       ];
       this.showPremiumCard = true;

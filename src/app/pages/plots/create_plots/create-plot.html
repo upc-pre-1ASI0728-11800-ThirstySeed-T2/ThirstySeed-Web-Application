@@ -1,187 +1,120 @@
 <section class="create-page">
 
   <div class="page-header">
+
     <span class="page-badge">● Plot registration</span>
 
     <h1>Create a new plot</h1>
 
     <p class="subtitle">
-      Register a productive area within a farm to monitor telemetry,
-      irrigation and agricultural activity.
+      Register a productive area within a farm to monitor telemetry and irrigation.
     </p>
 
     <div class="plan-chip">
       {{ planType }} Plan · {{ currentNodes }}/{{ maxNodes }} nodes used
     </div>
+
   </div>
 
   <div class="layout">
 
     <!-- FORM -->
-
     <div class="form-card">
-
-      <div class="card-title">
-        <h2>Plot information</h2>
-        <span class="step">Step 1 of 1</span>
-      </div>
 
       <form (ngSubmit)="createPlot()">
 
-        <div class="grid">
+        <!-- FARM -->
+        <label>Farm *</label>
+<select
+  [(ngModel)]="selectedFarmId"
+  name="farmId"
+  required>
 
-          <div class="field">
-            <label>Farm *</label>
+  <option [ngValue]="null" disabled>Select farm</option>
 
-            <select
-              [(ngModel)]="selectedFarmId"
-              name="farmId"
-              required>
-              <option [ngValue]="null" disabled>
-                Select farm
-              </option>
-              <option
-                *ngFor="let farm of farms"
-                [ngValue]="farm.id">
-                {{ farm.name }}
-              </option>
-            </select>
+  <option *ngFor="let farm of farms" [ngValue]="farm.id">
+    {{ farm.name }}
+  </option>
 
-            <small *ngIf="farms.length === 0">
-              No farms available. Create a farm first.
-            </small>
-          </div>
+</select>
 
-          <div class="field">
-            <label>Plot name *</label>
-            <input
-              [(ngModel)]="plotName"
-              name="name"
-              placeholder="Example: North Plot"
-              required>
-          </div>
+        <!-- NAME -->
+        <label>Plot name *</label>
+        <input [(ngModel)]="plotName" name="name" required />
 
-          <label>Crop or activity</label>
-          <select [(ngModel)]="selectedCrop" name="crop">
-            <option value="">Select crop or activity</option>
-            <option *ngFor="let crop of cropOptions" [value]="crop">
-              {{ crop }}
-            </option>
-          </select>
+        <!-- CROP -->
+        <label>Crop</label>
+        <select [(ngModel)]="selectedCrop" name="crop">
+          <option *ngFor="let crop of cropOptions" [value]="crop">
+            {{ crop }}
+          </option>
+        </select>
 
-          <div class="field">
-            <label>Plot area (ha) *</label>
-            <input
-              type="number"
-              [(ngModel)]="extension"
-              name="extension"
-              placeholder="Example: 3"
-              required>
-          </div>
+        <!-- AREA -->
+        <label>Area</label>
+        <input type="number" [(ngModel)]="extension" name="extension" />
 
-          <label>Soil type</label>
-          <select [(ngModel)]="selectedSoilType" name="soilType">
-            <option value="">Select soil type</option>
-            <option *ngFor="let soil of soilTypes" [value]="soil">
-              {{ soil }}
-            </option>
-          </select>
+        <!-- SOIL -->
+        <label>Soil</label>
+        <select [(ngModel)]="selectedSoilType" name="soil">
+          <option *ngFor="let soil of soilTypes" [value]="soil">
+            {{ soil }}
+          </option>
+        </select>
 
-          <label>Irrigation system</label>
-          <select [(ngModel)]="selectedIrrigation" name="irrigation">
-            <option value="">Select irrigation system</option>
-            <option *ngFor="let irrigation of irrigationSystems" [value]="irrigation">
-              {{ irrigation }}
-            </option>
-          </select>
+        <!-- IRRIGATION -->
+        <label>Irrigation</label>
+        <select [(ngModel)]="selectedIrrigation" name="irrigation">
+          <option *ngFor="let irrigation of irrigationSystems" [value]="irrigation">
+            {{ irrigation }}
+          </option>
+        </select>
 
-          <div class="field">
-            <label>Initial status</label>
-            <select [(ngModel)]="status" name="status">
-              <option>Active</option>
-              <option>REQUESTED</option>
-            </select>
-          </div>
+        <!-- WATER DEMAND -->
+        <label>Water demand</label>
+        <select [(ngModel)]="selectedWaterDemand" name="waterDemand">
+          <option *ngFor="let demand of waterDemandOptions" [value]="demand">
+            {{ demand }}
+          </option>
+        </select>
 
-          <label>IoT node assignment</label>
-          <select [(ngModel)]="selectedNode" name="node">
-            <option *ngFor="let node of nodeOptions" [value]="node">
-              {{ node }}
-            </option>
-          </select>
+        <!-- NODE (FIXED) -->
+        <label>IoT Node</label>
+        <select [(ngModel)]="selectedNode" name="node">
+          <option *ngFor="let node of nodeOptions" [value]="node">
+            {{ node }}
+          </option>
+        </select>
 
-          <div class="field full-width">
-            <label>Image URL (optional)</label>
+        <!-- DESCRIPTION -->
+        <label>Description</label>
+        <textarea [(ngModel)]="description" name="description"></textarea>
 
-            <input
-              [(ngModel)]="imageUrl"
-              name="imageUrl"
-              placeholder="https://...">
-          </div>
+        <!-- ACTIONS -->
+        <button type="button" (click)="goBack()">Cancel</button>
 
-          <label>Description</label>
-          <textarea rows="4" [(ngModel)]="description" name="description"
-            placeholder="Add notes about this plot, crop conditions, irrigation needs or monitoring objectives.">
-          </textarea>
-
-        </div>
-
-        <div class="actions">
-
-          <button type="button" (click)="goBack()">
-            Cancel
-          </button>
-
-          <button
-            type="submit"
-            class="btn-primary"
-            [disabled]="
-              farms.length === 0 ||
-              currentNodes >= maxNodes">
-
-            Create plot
-
-          </button>
-
-        </div>
+        <button type="submit">
+          Create plot
+        </button>
 
       </form>
 
-      <div *ngIf="errorMessage" class="error">
-        {{ errorMessage }}
-      </div>
-
-      <div *ngIf="successMessage" class="success">
-        {{ successMessage }}
-      </div>
+      <p class="error">{{ errorMessage }}</p>
+      <p class="success">{{ successMessage }}</p>
 
     </div>
 
-    <!-- SIDEBAR -->
-
+    <!-- SUMMARY -->
     <div class="summary-card">
 
-      <h3>Plot summary</h3>
+      <h3>Summary</h3>
 
-      <div class="summary-row">
-        <span>Plan</span>
-        <strong>{{ planType }}</strong>
-      </div>
+      <p><b>Plan:</b> {{ planType }}</p>
+      <p><b>Nodes:</b> {{ currentNodes }}/{{ maxNodes }}</p>
 
-      <div class="summary-row">
-        <span>Node usage</span>
-        <strong>{{ currentNodes }}/{{ maxNodes }}</strong>
-      </div>
+      <p><b>Farm:</b> {{ selectedFarmName }}</p>
 
-      <div class="summary-row">
-        <span>Selected farm</span>
-        <strong>{{ selectedFarmName }}</strong>
-      </div>
-
-      <div class="summary-row">
-        <span>Status</span>
-        <strong>{{ status }}</strong>
-      </div>
+      <p><b>Status:</b> {{ status }}</p>
 
     </div>
 
