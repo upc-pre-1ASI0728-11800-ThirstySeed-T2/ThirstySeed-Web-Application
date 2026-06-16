@@ -1,0 +1,357 @@
+<section class="sim-page">
+
+  <!-- TOP NAV -->
+  <header class="top-nav">
+    <div class="top-nav-left">
+      <span class="page-badge">● IoT Simulator &amp; Telemetry</span>
+      <h1>Sensor data simulator</h1>
+      <p class="subtitle">Inject simulated sensor readings into your plots to trigger the AI irrigation engine and receive optimised recommendations.</p>
+    </div>
+    <div class="top-nav-right">
+      <button class="icon-btn notif">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 01-3.46 0"/>
+        </svg>
+        <span class="badge-dot"></span>
+      </button>
+      <button class="user-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>Producer</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- STAT CARDS -->
+  <div class="main-content">
+    <div class="summary-cards">
+      <div class="stat-card">
+        <div class="stat-icon">📡</div>
+        <div class="stat-body">
+          <strong>{{ transmissionCount }}</strong>
+          <p>Transmissions sent</p>
+        </div>
+      </div>
+      <div class="stat-card" [ngClass]="'moisture-' + moistureLevel">
+        <div class="stat-icon">💧</div>
+        <div class="stat-body">
+          <strong>{{ soilMoisture }}%</strong>
+          <p>Current soil moisture · <span [ngClass]="moistureLevel">{{ moistureLevelLabel }}</span></p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🌡️</div>
+        <div class="stat-body">
+          <strong>{{ temperature }}°C</strong>
+          <p>Current temperature</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🤖</div>
+        <div class="stat-body">
+          <strong>{{ latestRecommendation ? latestRecommendation.status : 'IDLE' }}</strong>
+          <p>AI engine status</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div *ngIf="errorMessage" class="alert alert-error">{{ errorMessage }}</div>
+    <div *ngIf="successMessage && !errorMessage" class="alert alert-success">{{ successMessage }}</div>
+
+    <!-- TWO COLUMN -->
+    <div class="two-col">
+
+      <!-- ── LEFT: SIMULATOR ── -->
+      <div class="left-col">
+
+        <!-- Simulator form card -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <div>
+              <h2>IoT sensor simulator</h2>
+              <p class="section-sub">Select a plot and inject sensor readings to trigger the AI engine.</p>
+            </div>
+            <span class="badge-transmitting" *ngIf="isSimulating">
+              <span class="pulse-dot"></span> Transmitting…
+            </span>
+          </div>
+
+          <!-- Selectors row -->
+          <div class="selectors-row">
+            <div class="form-group">
+              <label>Farm</label>
+              <select (change)="onFarmChange($event)">
+                <option value="">Select farm</option>
+                <option *ngFor="let farm of farms" [value]="farm.id">{{ farm.name }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Plot (node)</label>
+              <select (change)="onPlotChange($event)" [disabled]="!selectedFarmId">
+                <option value="">Select plot</option>
+                <option *ngFor="let plot of filteredPlots" [value]="plot.id">{{ plot.name }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Plot chip -->
+          <div class="plot-chip" *ngIf="selectedPlot">
+            <span class="chip-dot"></span>
+            <span><strong>{{ selectedPlot.name }}</strong> · {{ selectedPlot.location }} · {{ selectedPlot.extension }} ha</span>
+          </div>
+
+          <!-- Sensor inputs -->
+          <div class="sensor-grid">
+
+            <div class="sensor-card">
+              <div class="sensor-header">
+                <span class="sensor-icon">💧</span>
+                <div>
+                  <h4>Soil Moisture</h4>
+                  <p>SOIL_MOISTURE</p>
+                </div>
+                <span class="sensor-badge" [ngClass]="moistureLevel">{{ moistureLevelLabel }}</span>
+              </div>
+              <div class="sensor-input-wrap">
+                <input
+                  type="range"
+                  min="0" max="100" step="1"
+                  [(ngModel)]="soilMoisture"
+                  class="range-slider"
+                />
+                <div class="range-labels">
+                  <span>0%</span>
+                  <strong class="range-value" [ngClass]="moistureLevel">{{ soilMoisture }}%</strong>
+                  <span>100%</span>
+                </div>
+              </div>
+              <div class="manual-input">
+                <label>Or type a value</label>
+                <div class="input-suffix">
+                  <input type="number" [(ngModel)]="soilMoisture" min="0" max="100" placeholder="35" />
+                  <span>%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="sensor-card">
+              <div class="sensor-header">
+                <span class="sensor-icon">🌡️</span>
+                <div>
+                  <h4>Temperature</h4>
+                  <p>TEMPERATURE</p>
+                </div>
+                <span class="sensor-badge neutral">Sensor</span>
+              </div>
+              <div class="sensor-input-wrap">
+                <input
+                  type="range"
+                  min="-10" max="55" step="0.5"
+                  [(ngModel)]="temperature"
+                  class="range-slider temp"
+                />
+                <div class="range-labels">
+                  <span>-10°C</span>
+                  <strong class="range-value">{{ temperature }}°C</strong>
+                  <span>55°C</span>
+                </div>
+              </div>
+              <div class="manual-input">
+                <label>Or type a value</label>
+                <div class="input-suffix">
+                  <input type="number" [(ngModel)]="temperature" min="-10" max="55" placeholder="28" />
+                  <span>°C</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Transmit button -->
+          <div class="transmit-row">
+            <div class="transmit-info" *ngIf="!selectedPlotId">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              Select a farm and a plot to enable transmission
+            </div>
+            <button
+              class="btn-transmit"
+              (click)="transmitReadings()"
+              [disabled]="!canTransmit"
+            >
+              <svg *ngIf="!isSimulating" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+              <span class="spinner" *ngIf="isSimulating"></span>
+              {{ isSimulating ? 'Transmitting & waiting for AI…' : 'Transmit readings' }}
+            </button>
+          </div>
+
+          <!-- Step indicator -->
+          <div class="steps-row" *ngIf="isSimulating">
+            <div class="step done">
+              <span class="step-dot"></span>POST SOIL_MOISTURE
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step done">
+              <span class="step-dot"></span>POST TEMPERATURE
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step active">
+              <span class="step-dot pulse"></span>AI processing…
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+              <span class="step-dot"></span>GET recommendation
+            </div>
+          </div>
+        </div>
+
+        <!-- Transmission log -->
+        <div class="log-card" *ngIf="transmissionLog.length > 0">
+          <div class="section-header">
+            <div>
+              <h2>Transmission log</h2>
+              <p class="section-sub">Last {{ transmissionLog.length }} data injections sent to the backend.</p>
+            </div>
+          </div>
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>TIME</th>
+                <th>PLOT ID</th>
+                <th>MOISTURE</th>
+                <th>TEMPERATURE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let entry of transmissionLog">
+                <td>{{ entry.timestamp }}</td>
+                <td>#{{ entry.plotId }}</td>
+                <td>{{ entry.soilMoisture }}%</td>
+                <td>{{ entry.temperature }}°C</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- ── RIGHT: AI RECOMMENDATION ── -->
+      <div class="right-col">
+
+        <!-- Empty state -->
+        <div class="ai-card empty" *ngIf="!latestRecommendation && !isSimulating">
+          <div class="ai-icon-wrap">
+            <span class="ai-icon">🤖</span>
+          </div>
+          <h3>AI engine ready</h3>
+          <p>Transmit sensor readings to trigger the heuristic engine. Your irrigation recommendation will appear here.</p>
+          <div class="ai-hint">
+            <span>💡</span>
+            <span>Low soil moisture + high temperature → higher water demand recommendation</span>
+          </div>
+        </div>
+
+        <!-- Processing state -->
+        <div class="ai-card processing" *ngIf="isSimulating">
+          <div class="ai-icon-wrap">
+            <span class="ai-icon spinning">⚙️</span>
+          </div>
+          <h3>Processing data…</h3>
+          <p>The AI engine is evaluating your sensor readings and weather context to generate an optimised recommendation.</p>
+          <div class="processing-bar">
+            <div class="processing-fill"></div>
+          </div>
+        </div>
+
+        <!-- Recommendation result -->
+        <div class="ai-card result" *ngIf="latestRecommendation && !isSimulating">
+          <div class="ai-result-header">
+            <span class="ai-icon-sm">🤖</span>
+            <div>
+              <h3>AI Recommendation</h3>
+              <p class="section-sub">Generated {{ latestRecommendation.createdAt | date:'short' }}</p>
+            </div>
+            <span class="rec-badge" [ngClass]="latestRecommendation.status.toLowerCase()">
+              {{ latestRecommendation.status }}
+            </span>
+          </div>
+
+          <!-- Main metric -->
+          <div class="rec-hero">
+            <strong>{{ latestRecommendation.recommendedLitres | number:'1.0-1' }}</strong>
+            <span>litres recommended</span>
+          </div>
+
+          <!-- Detail rows -->
+          <div class="rec-details">
+            <div class="rec-row">
+              <div class="rec-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                Duration
+              </div>
+              <strong>{{ latestRecommendation.durationHours }}h</strong>
+            </div>
+            <div class="rec-row">
+              <div class="rec-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                Start time
+              </div>
+              <strong>{{ latestRecommendation.startTime | date:'HH:mm · dd MMM' }}</strong>
+            </div>
+            <div class="rec-row">
+              <div class="rec-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                </svg>
+                Plot ID
+              </div>
+              <strong>#{{ latestRecommendation.plotId }}</strong>
+            </div>
+          </div>
+
+          <!-- Reasoning -->
+          <div class="rec-reasoning">
+            <h4>
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+              AI reasoning
+            </h4>
+            <p>{{ latestRecommendation.reasoning }}</p>
+          </div>
+
+          <!-- Action -->
+          <button
+            class="btn-accept"
+            (click)="acceptRecommendation()"
+            [disabled]="isAccepting || latestRecommendation.status === 'ACCEPTED'"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            {{ latestRecommendation.status === 'ACCEPTED'
+               ? 'Schedule created ✓'
+               : isAccepting ? 'Accepting…' : 'Accept & create schedule' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</section>
