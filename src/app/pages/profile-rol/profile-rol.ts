@@ -1,7 +1,20 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SubscriptionService, Subscription } from '../../iam/services/subscription.service';
+import { AuthService } from '../../iam/services/auth.service';
+import { Subscription, SubscriptionService } from '../../iam/services/subscription.service';
+
+type PlanType = 'PLUS' | 'PREMIUM';
+
+interface PlanOption {
+  type: PlanType;
+  name: 'Plus' | 'Premium';
+  price: number;
+  maxFarms: number;
+  maxNodes: number;
+  highlight: string;
+  features: string[];
+}
 
 @Component({
   selector: 'app-profile-rol',
@@ -11,46 +24,145 @@ import { SubscriptionService, Subscription } from '../../iam/services/subscripti
   styleUrl: './profile-rol.css',
 })
 export class ProfileRol implements OnInit {
-
   userId!: number;
-  subscription!: Subscription;
+  currentSubscription: Subscription | null = null;
   loading = true;
+  savingPlan: PlanType | null = null;
+  successMessage = '';
+  errorMessage = '';
+
+  planOptions: PlanOption[] = [
+    {
+      type: 'PLUS',
+      name: 'Plus',
+      price: 19,
+      maxFarms: 3,
+      maxNodes: 3,
+      highlight: 'For small farms getting started with monitoring.',
+      features: ['Up to 3 farms', 'Up to 3 IoT nodes', 'Basic plot monitoring', 'Water stress alerts'],
+    },
+    {
+      type: 'PREMIUM',
+      name: 'Premium',
+      price: 39,
+      maxFarms: 10,
+      maxNodes: 10,
+      highlight: 'For advanced operations with more plots and telemetry.',
+      features: ['Up to 10 farms', 'Up to 10 IoT nodes', 'Predictive irrigation', 'Priority alerts and reports'],
+    },
+  ];
 
   constructor(
+    private authService: AuthService,
+    private router: Router,
     private subscriptionService: SubscriptionService,
-    private router: Router
   ) {}
 
   ngOnInit(): void {
+    const user = this.authService.getCurrentUser();
+    const id = localStorage.getItem('userId') || String(user?.id ?? '');
 
-    const id = localStorage.getItem('userId');
-
-    if (!id) {
+    if (!id || !user) {
       this.router.navigate(['/login']);
       return;
     }
 
     this.userId = Number(id);
-
     this.loadSubscription();
   }
 
-  loadSubscription() {
-    this.subscriptionService.getByUserId(this.userId)
-      .subscribe({
-        next: (res) => {
-          this.subscription = res;
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error(err);
-          this.loading = false;
-        }
-      });
+  get currentPlanType(): string {
+    return this.currentSubscription?.planType || 'NO PLAN';
   }
 
-  // 🔥 SOLO NAVEGACIÓN, NO CREAR DATA
-  goToChangePlan() {
-    this.router.navigate(['/subscription']);
+  get currentPlan(): PlanOption | undefined {
+    return this.planOptions.find((plan) => plan.type === this.currentSubscription?.planType);
+  }
+
+  isCurrentPlan(plan: PlanOption): boolean {
+    return this.currentSubscription?.planType === plan.type;
+  }
+
+  selectPlan(plan: PlanOption): void {
+    if (this.isCurrentPlan(plan)) {
+      this.successMessage = `${plan.name} is already your active plan.`;
+      this.errorMessage = '';
+      return;
+    }
+
+    this.savingPlan = plan.type;
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    const createPlan = () => {
+      this.subscriptionService.createSubscription({
+        userId: this.userId,
+        planType: plan.type,
+      }).subscribe({
+        next: (subscription) => {
+          this.applySubscription(subscription, plan);
+          this.successMessage = `Your plan was changed to ${plan.name}.`;
+          this.savingPlan = null;
+        },
+        error: (err) => {
+          console.error('SUBSCRIPTION UPDATE ERROR:', err);
+          this.errorMessage = 'The plan could not be changed. Please try again.';
+          this.savingPlan = null;
+        },
+      });
+    };
+
+    if (this.currentSubscription?.id) {
+      this.subscriptionService.delete(this.currentSubscription.id).subscribe({
+        next: createPlan,
+        error: (err) => {
+          console.error('SUBSCRIPTION DELETE BEFORE UPDATE ERROR:', err);
+          this.errorMessage = 'The current plan could not be replaced.';
+          this.savingPlan = null;
+        },
+      });
+      return;
+    }
+
+    createPlan();
+  }
+
+  private loadSubscription(): void {
+    this.subscriptionService.getByUserId(this.userId).subscribe({
+      next: (res) => {
+        this.currentSubscription = res;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.warn('SUBSCRIPTION NOT FOUND:', err);
+        this.currentSubscription = null;
+        this.loading = false;
+      },
+    });
+  }
+
+  private applySubscription(subscription: Subscription | null, plan: PlanOption): void {
+    this.currentSubscription = subscription ?? {
+      id: Date.now(),
+      userId: this.userId,
+      planType: plan.type,
+      maxFarms: plan.maxFarms,
+      maxNodes: plan.maxNodes,
+      validationCode: '',
+      status: 'ACTIVE',
+      active: true,
+    };
+
+    const user = this.authService.getCurrentUser();
+    if (!user) return;
+
+    user.subscription = {
+      name: plan.name,
+      price: plan.price,
+      maxNodes: plan.maxNodes,
+      features: plan.features,
+    };
+
+    this.authService.setCurrentUser(user);
   }
 }

@@ -121,7 +121,7 @@
                 <h3>{{ plot.name }}</h3>
                 <p>{{ plot.location }} · {{ plot.extension }} ha</p>
               </div>
-              <span class="risk-badge" [ngClass]="plot.status.toLowerCase()">
+              <span class="risk-badge" [ngClass]="(plot.status || 'no-data').toLowerCase()">
                 {{ plot.status || 'No data' }}
               </span>
             </div>
@@ -136,7 +136,7 @@
               </div>
               <div class="metric">
                 <label>STATUS</label>
-                <span [ngClass]="plot.status.toLowerCase()">{{ plot.status || '--' }}</span>
+                <span [ngClass]="(plot.status || 'no-data').toLowerCase()">{{ plot.status || '--' }}</span>
               </div>
             </div>
             <div class="plot-actions">
@@ -176,7 +176,7 @@
         <p class="section-sub">Quick status of all registered plots.</p>
         <div *ngFor="let plot of plots" class="other-farm-row">
           <span>{{ plot.name }}</span>
-          <span class="plots-count" [ngClass]="plot.status.toLowerCase()">
+          <span class="plots-count" [ngClass]="(plot.status || 'no-data').toLowerCase()">
             {{ plot.status || 'No data' }}
           </span>
         </div>

@@ -1,102 +1,100 @@
+<section class="settings-page" *ngIf="form">
+  <header class="settings-header">
+    <div class="profile-mark">{{ getInitials(displayName) }}</div>
 
-<!-- page-header -->
-<div class="page-header" *ngIf="form">
+    <div class="profile-title">
+      <span class="page-badge">Account settings</span>
+      <h1>{{ displayName }}</h1>
+      <p>{{ displayEmail }}</p>
+    </div>
 
-  <div class="avatar-ring">
-    <span class="avatar-initials">
-      {{ getInitials(form.value?.name) }}
-    </span>
-  </div>
+    <div class="plan-pill" [ngClass]="planType.toLowerCase()">
+      {{ planType }}
+    </div>
+  </header>
 
-  <div class="page-header-text">
-    <h1>{{ form.value?.name }}</h1>
-    <p>{{ form.value?.username }}</p>
-  </div>
-<div class="badge-plan" *ngIf="subscription">
+  <div class="loading" *ngIf="loading">Loading profile...</div>
 
-  <span class="badge-dot" [ngClass]="subscription.planType"></span>
+  <div class="settings-grid" *ngIf="!loading">
+    <aside class="account-panel">
+      <h2>Profile overview</h2>
 
-  {{ subscription.planType }}
-
-</div>
-
-</div>
-
-<!-- loading -->
-<div *ngIf="loading">
-  Cargando perfil...
-</div>
-
-<!-- id chips -->
-<div class="id-chips" *ngIf="!loading">
-
-  <div class="chip">
-    <span class="chip-label">User ID</span>
-    <span class="chip-value mono">#{{ userId }}</span>
-  </div>
-
-  <div class="chip">
-    <span class="chip-label">Profile ID</span>
-    <span class="chip-value mono">#{{ profileId }}</span>
-  </div>
-
-</div>
-
-<!-- form card -->
-<div class="form-card" *ngIf="!loading">
-
-  <div class="form-card-header">
-    <h2>Editar perfil</h2>
-  </div>
-
-  <div class="form-card-body">
-
-    <form [formGroup]="form">
-
-      <div class="field-row">
-
-        <div class="field">
-          <label>Nombre completo</label>
-          <input formControlName="name" type="text" />
-        </div>
-
-        <div class="field">
-          <label>Usuario (email)</label>
-          <input formControlName="username" type="email" />
-        </div>
-
+      <div class="info-row">
+        <span>User ID</span>
+        <strong>#{{ userId }}</strong>
       </div>
 
-      <div class="form-actions">
-        <button class="btn-save" type="button" (click)="updateProfile()">
-          Guardar cambios
+      <div class="info-row">
+        <span>Profile ID</span>
+        <strong>{{ profileId || 'Local draft' }}</strong>
+      </div>
+
+      <div class="info-row">
+        <span>Role</span>
+        <strong>{{ roleLabel }}</strong>
+      </div>
+
+      <div class="info-row">
+        <span>Subscription</span>
+        <strong>{{ planType }}</strong>
+      </div>
+
+      <p class="notice" *ngIf="profileMissing">
+        Your profile details are ready to save. Changes will create your profile record.
+      </p>
+    </aside>
+
+    <main class="edit-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="page-badge">Editable information</span>
+          <h2>Personal data</h2>
+        </div>
+        <button class="save-button" type="button" (click)="updateProfile()" [disabled]="saving">
+          {{ saving ? 'Saving...' : 'Save changes' }}
         </button>
       </div>
 
-    </form>
+      <form [formGroup]="form" class="profile-form">
+        <label>
+          Full name
+          <input type="text" formControlName="name" placeholder="Your full name" />
+          <small *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+            Name is required.
+          </small>
+        </label>
 
+        <label>
+          Email
+          <input type="email" formControlName="email" placeholder="you@example.com" />
+          <small *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+            Enter a valid email.
+          </small>
+        </label>
+      </form>
+
+      <div class="message success" *ngIf="successMessage">{{ successMessage }}</div>
+      <div class="message error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    </main>
   </div>
 
-</div>
+  <section class="security-panel" *ngIf="!loading">
+    <div>
+      <span class="page-badge">Security</span>
+      <h2>Password changes</h2>
+      <p>Password editing is not enabled because the backend contract does not expose a password update endpoint.</p>
+    </div>
+  </section>
 
-<!-- danger zone -->
-<div class="danger-card" *ngIf="!loading">
+  <section class="danger-panel" *ngIf="!loading">
+    <div>
+      <span class="page-badge danger">Danger zone</span>
+      <h2>Delete account</h2>
+      <p>This permanently removes your account data and signs you out.</p>
+    </div>
 
-  <div class="danger-card-header">
-    <span>Zona de peligro</span>
-  </div>
-
-  <div class="danger-card-body">
-
-    <p>
-      Esta acción eliminará permanentemente tu cuenta y todos los datos asociados.
-      No se puede deshacer.
-    </p>
-
-    <button class="btn-danger" type="button" (click)="deleteAccount()">
-      Eliminar cuenta
+    <button class="danger-button" type="button" (click)="deleteAccount()">
+      Delete account
     </button>
-
-  </div>
-
-</div>
+  </section>
+</section>

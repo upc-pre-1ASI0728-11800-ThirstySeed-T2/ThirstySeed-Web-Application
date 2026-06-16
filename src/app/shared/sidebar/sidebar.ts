@@ -40,8 +40,6 @@ if (user.roles?.includes('ROLE_PRODUCER')) {
     { label: 'Farms',        route: '/farms'        },
     { label: 'Plots',        route: '/plots'        },
     { label: 'Telemetry',    route: '/telemetry'    },
-    { label: 'Irrigation',   route: '/irrigation'   },
-    { label: 'Alerts',       route: '/alerts'       },
     { label: 'Subscription', route: '/profile-rol' },
     { label: 'Settings',     route: '/settings'     },
   ];
@@ -50,11 +48,6 @@ if (user.roles?.includes('ROLE_PRODUCER')) {
 } else if (user.roles?.includes('ROLE_WATER_MANAGER')) {
   this.menuItems = [
     { label: 'Dashboard',      route: '/dashboard'       },
-    { label: 'Zones',          route: '/zones'           },
-    { label: 'Water Demand',   route: '/water-demand'    },
-    { label: 'Critical Areas', route: '/critical-areas'  },
-    { label: 'Reports',        route: '/reports'         },
-    { label: 'Regional Alerts',route: '/regional-alerts' },
     { label: 'Settings',       route: '/settings'        },
   ];
   this.showPremiumCard = false;

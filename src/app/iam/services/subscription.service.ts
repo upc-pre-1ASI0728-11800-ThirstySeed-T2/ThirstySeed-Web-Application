@@ -14,6 +14,11 @@ export interface Subscription {
   active: boolean;
 }
 
+export interface CreateSubscriptionRequest {
+  userId: number;
+  planType: 'PLUS' | 'PREMIUM';
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -29,8 +34,8 @@ export class SubscriptionService {
   }
 
   // 👇 crear o cambiar suscripción (CAMBIO DE PLAN)
-  createSubscription(payload: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, payload);
+  createSubscription(payload: CreateSubscriptionRequest): Observable<Subscription> {
+    return this.http.post<Subscription>(`${this.apiUrl}`, payload);
   }
 
   // (opcional futuro)
