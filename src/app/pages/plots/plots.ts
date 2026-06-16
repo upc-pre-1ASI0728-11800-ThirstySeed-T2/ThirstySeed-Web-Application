@@ -61,13 +61,14 @@ export class PlotsComponent implements OnInit {
 
     this.plotService.getPlotsByUser(userId).subscribe({
       next: (plots) => {
-        this.plots = plots;
+        this.plots = this.plotService.mergeWithStoredPlots(userId, plots);
         this.loading = false;
         this.cd.detectChanges();
       },
       error: (err) => {
         console.error(err);
-        this.errorMessage = 'Could not load plots.';
+        this.plots = this.plotService.getStoredPlots(userId);
+        this.errorMessage = this.plots.length > 0 ? '' : 'Could not load plots.';
         this.loading = false;
         this.cd.detectChanges();
       },

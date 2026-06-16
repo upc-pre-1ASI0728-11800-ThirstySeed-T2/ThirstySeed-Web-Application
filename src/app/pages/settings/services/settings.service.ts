@@ -1,6 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+
+export interface ProfilePayload {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber?: string;
+  profileImage?: string;
+  location?: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +25,11 @@ export class SettingsService {
     return this.http.get(`${this.baseUrl}/user/${userId}`);
   }
 
-  updateProfile(profileId: string, data: any) {
+  createProfile(data: ProfilePayload): Observable<any> {
+    return this.http.post(this.baseUrl, data);
+  }
+
+  updateProfile(profileId: string, data: ProfilePayload) {
     return this.http.put(`${this.baseUrl}/${profileId}`, data);
   }
 

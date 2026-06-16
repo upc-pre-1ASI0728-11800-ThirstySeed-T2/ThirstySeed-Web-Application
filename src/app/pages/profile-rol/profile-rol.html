@@ -1,63 +1,66 @@
-<!-- LOADING -->
-<div *ngIf="loading" class="loading">
-  Cargando plan...
-</div>
-
-<!-- CONTENIDO -->
-<div *ngIf="!loading && subscription" class="container">
-
-  <!-- HEADER -->
-  <div class="card header">
-
-    <div class="title-section">
-      <h1>Mi Plan Actual</h1>
-      <p>Gestión de suscripción activa</p>
+<section class="subscription-page">
+  <header class="subscription-header">
+    <div>
+      <span class="page-badge">Subscription</span>
+      <h1>Manage your plan</h1>
+      <p>Review your current plan and switch when your monitoring needs change.</p>
     </div>
 
-    <div class="badge" [ngClass]="subscription.planType">
-      {{ subscription.planType }}
+    <div class="current-plan-card">
+      <span>Current plan</span>
+      <strong>{{ currentPlanType }}</strong>
+      <small *ngIf="currentPlan">{{ currentPlan.maxNodes }} nodes - {{ currentPlan.maxFarms }} farms</small>
     </div>
+  </header>
 
+  <div class="loading" *ngIf="loading">Loading subscription...</div>
+
+  <div class="plans-grid" *ngIf="!loading">
+    <article
+      class="plan-card"
+      *ngFor="let plan of planOptions"
+      [ngClass]="{ active: isCurrentPlan(plan), premium: plan.type === 'PREMIUM' }">
+      <div class="plan-top">
+        <div>
+          <span class="status-pill" *ngIf="isCurrentPlan(plan)">Active</span>
+          <h2>{{ plan.name }}</h2>
+        </div>
+        <div class="price">
+          ${{ plan.price }} <small>/mo</small>
+        </div>
+      </div>
+
+      <p class="highlight">{{ plan.highlight }}</p>
+
+      <div class="limits">
+        <div>
+          <strong>{{ plan.maxFarms }}</strong>
+          <span>farms</span>
+        </div>
+        <div>
+          <strong>{{ plan.maxNodes }}</strong>
+          <span>IoT nodes</span>
+        </div>
+      </div>
+
+      <ul>
+        <li *ngFor="let feature of plan.features">{{ feature }}</li>
+      </ul>
+
+      <button
+        type="button"
+        (click)="selectPlan(plan)"
+        [disabled]="savingPlan === plan.type">
+        <ng-container *ngIf="isCurrentPlan(plan); else changePlan">
+          Current plan
+        </ng-container>
+        <ng-template #changePlan>
+          {{ savingPlan === plan.type ? 'Changing...' : 'Switch to ' + plan.name }}
+        </ng-template>
+      </button>
+    </article>
   </div>
 
-  <!-- INFO PLAN -->
-  <div class="card grid">
-
-    <div class="box">
-      <label>Estado</label>
-      <p>{{ subscription.status }}</p>
-    </div>
-
-    <div class="box">
-      <label>Max Farms</label>
-      <p>{{ subscription.maxFarms }}</p>
-    </div>
-
-    <div class="box">
-      <label>Max Nodes</label>
-      <p>{{ subscription.maxNodes }}</p>
-    </div>
-
-    <div class="box">
-      <label>Validation Code</label>
-      <p class="mono">{{ subscription.validationCode }}</p>
-    </div>
-
-  </div>
-
-  <!-- ACTION -->
-  <div class="card actions">
-
-    <h3>Cambiar plan</h3>
-
-    <p class="hint">
-      Para cambiar tu plan, dirígete a la pantalla de suscripción.
-    </p>
-
-    <button class="btn-primary" (click)="goToChangePlan()">
-      Cambiar plan
-    </button>
-
-  </div>
-
-</div>
+  <div class="message success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="message error" *ngIf="errorMessage">{{ errorMessage }}</div>
+</section>

@@ -1,45 +1,143 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { forkJoin, Observable } from 'rxjs';
-import { Plot } from '../model/plot.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { HttpHeaders } from '@angular/common/http';
+import { Plot } from '../model/plot.model';
+
+export interface CreatePlotRequest {
+  userId: number;
+  name: string;
+  location: string;
+  extension: number;
+  imageUrl: string;
+}
+
+export interface ConfigurePlotRequest {
+  cropName: string;
+  waterDemand: string;
+  coordinatesJson: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlotService {
-  private baseUrl = `${environment.apiBaseUrl}/api/v1/plots`;
+
+  private baseUrl = `${environment.apiBaseUrl}/api/v1`;
+  private readonly LOCAL_PLOTS_KEY = 'configuredPlots';
 
   constructor(private http: HttpClient) {}
 
-  getPlotsByUser(userId: number): Observable<Plot[]> {
-    return this.http.get<Plot[]>(`${this.baseUrl}/user/${userId}`, { headers: this.getHeaders() });
-  }
-
-  getPlotById(plotId: number): Observable<Plot> {
-    return this.http.get<Plot>(`${this.baseUrl}/${plotId}`);
-  }
-
+  // =========================
+  // HEADERS CENTRALIZADOS
+  // =========================
   private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('jwtToken') ?? '';
+    const token =
+      localStorage.getItem('jwtToken') ||
+      localStorage.getItem('access_token') ||
+      localStorage.getItem('token') ||
+      '';
+
     return new HttpHeaders({
       Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
   }
 
-  createPlot(plot: Partial<Plot>): Observable<Plot> {
-    return this.http.post<Plot>(this.baseUrl, plot, { headers: this.getHeaders() });
+  // =========================
+  // GET ALL PLOTS
+  // =========================
+  getAllPlots(): Observable<Plot[]> {
+    return this.http.get<Plot[]>(
+      `${this.baseUrl}/plots`,
+      { headers: this.getHeaders() }
+    );
   }
 
-  savePlotId(userId: number, plotId: number): void {
-    const key = `plotIds_${userId}`;
-    const raw = localStorage.getItem(key);
-    const ids: number[] = raw ? JSON.parse(raw) : [];
+  // =========================
+  // GET BY USER
+  // =========================
+  getPlotsByUser(userId: number): Observable<Plot[]> {
+    return this.http.get<Plot[]>(
+      `${this.baseUrl}/plots/user/${userId}`,
+      { headers: this.getHeaders() }
+    );
+  }
 
-    if (!ids.includes(plotId)) {
-      ids.push(plotId);
-      localStorage.setItem(key, JSON.stringify(ids));
+  // =========================
+  // GET BY ID
+  // =========================
+  getPlotById(plotId: number): Observable<Plot> {
+    return this.http.get<Plot>(
+      `${this.baseUrl}/plots/${plotId}`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  // =========================
+  // CREATE PLOT
+  // =========================
+  createPlot(payload: CreatePlotRequest): Observable<number> {
+    return this.http.post<number>(
+      `${this.baseUrl}/plots`,
+      payload,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  // =========================
+  // CONFIGURE PLOT IN FARM
+  // =========================
+  createPlotInFarm(farmId: number, payload: ConfigurePlotRequest): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/farms/${farmId}/plots`,
+      payload,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  getStoredPlots(userId: number): Plot[] {
+    const raw = localStorage.getItem(this.getStoredPlotsKey(userId));
+    return raw ? JSON.parse(raw) : [];
+  }
+
+  saveStoredPlot(userId: number, plot: Plot): void {
+    const plots = this.getStoredPlots(userId);
+    const alreadyExists = plots.some(
+      (storedPlot) =>
+        storedPlot.farmId === plot.farmId &&
+        storedPlot.name === plot.name &&
+        storedPlot.extension === plot.extension,
+    );
+
+    if (!alreadyExists) {
+      plots.push(plot);
+      localStorage.setItem(this.getStoredPlotsKey(userId), JSON.stringify(plots));
     }
+  }
+
+  mergeWithStoredPlots(userId: number, backendPlots: Plot[]): Plot[] {
+    const storedPlots = this.getStoredPlots(userId);
+    const merged = [...backendPlots];
+
+    for (const storedPlot of storedPlots) {
+      const alreadyExists = merged.some(
+        (plot) =>
+          plot.id === storedPlot.id ||
+          (plot.farmId === storedPlot.farmId &&
+            plot.name === storedPlot.name &&
+            plot.extension === storedPlot.extension),
+      );
+
+      if (!alreadyExists) {
+        merged.push(storedPlot);
+      }
+    }
+
+    return merged;
+  }
+
+  private getStoredPlotsKey(userId: number): string {
+    return `${this.LOCAL_PLOTS_KEY}_${userId}`;
   }
 }
