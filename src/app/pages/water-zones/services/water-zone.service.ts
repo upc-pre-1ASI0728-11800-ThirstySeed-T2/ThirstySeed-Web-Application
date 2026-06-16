@@ -93,6 +93,17 @@ export class WaterZoneService {
     );
   }
 
+  // ── localStorage helpers (onboarding local) ──────────────────────────────
+
+  saveZoneId(userId: number, zoneId: number): void {
+    const key = `zoneIds_${userId}`;
+    const ids: number[] = JSON.parse(localStorage.getItem(key) ?? '[]');
+    if (!ids.includes(zoneId)) {
+      ids.push(zoneId);
+      localStorage.setItem(key, JSON.stringify(ids));
+    }
+  }
+
   // PUT /api/v1/plot/wm/{userId}/distribution/{planId}/item/{itemId}
   updateDistributionItem(
     userId: number,
