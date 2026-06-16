@@ -1,21 +1,19 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface User {
   id: number;
-  fullName: string;
-  email: string;
   username: string;
-  accountType: string;
-  password: string;
-
+  roles: string[];
+  token: string;
+  fullName?: string;
+  email?: string;
+  profileImage?: string;
+  accountType?: string;
   subscription?: SubscriptionPlan;
-}
-
-export interface Subscription {
-  userId: number;
-  plan: 'Plus' | 'Premium';
-  monthlyPrice: number;
-  createdAt: string;
 }
 
 export interface SubscriptionPlan {
@@ -29,129 +27,93 @@ export interface SubscriptionPlan {
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly USERS_KEY = 'users';
+  private baseUrl = `${environment.apiBaseUrl}/api/v1/authentication`;
   private readonly CURRENT_USER_KEY = 'currentUser';
-  private readonly SUBSCRIPTIONS_KEY = 'subscriptions';
+  private readonly JWT_KEY = 'jwtToken';
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  getUsers(): User[] {
-    return JSON.parse(localStorage.getItem(this.USERS_KEY) || '[]');
+  // ------------------ BACKEND SIGN-UP ------------------
+  signUp(userData: { username: string; password: string; roles: string[] }): Observable<User> {
+    return this.http.post<User>(`${this.baseUrl}/sign-up`, userData);
   }
 
-  login(email: string, password: string): User | null {
-    const users = this.getUsers();
-
-    const user = users.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password,
+  // ------------------ BACKEND SIGN-IN ------------------
+  signIn(username: string, password: string): Observable<User> {
+    return this.http.post<User>(`${this.baseUrl}/sign-in`, { username, password }).pipe(
+      tap((user) => {
+        if (user.token) {
+          this.setToken(user.token);
+        }
+        this.setCurrentUser(user);
+      }),
     );
+  }
 
-    if (!user) {
+  private platformId = inject(PLATFORM_ID);
+
+  // ------------------ TOKEN ------------------
+  setToken(token: string) {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    localStorage.setItem(this.JWT_KEY, token);
+  }
+
+  getToken(): string | null {
+    if (!isPlatformBrowser(this.platformId)) {
       return null;
     }
 
-    localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(user));
-
-    return user;
+    return localStorage.getItem(this.JWT_KEY);
   }
 
-  logout(): void {
-    localStorage.removeItem(this.CURRENT_USER_KEY);
+  // ------------------ CURRENT USER ------------------
+  setCurrentUser(user: User) {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(user));
   }
 
   getCurrentUser(): User | null {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
+
     const user = localStorage.getItem(this.CURRENT_USER_KEY);
 
     return user ? JSON.parse(user) : null;
+  }
+
+  logout(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    localStorage.removeItem(this.CURRENT_USER_KEY);
+    localStorage.removeItem(this.JWT_KEY);
   }
 
   isAuthenticated(): boolean {
     return !!this.getCurrentUser();
   }
 
-  register(userData: Omit<User, 'id'>): User {
-    const users = this.getUsers();
-
-    const newUser: User = {
-      id: Date.now(),
-      ...userData,
-    };
-
-    users.push(newUser);
-
-    localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
-    localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(newUser));
-
-    return newUser;
+  hasRole(role: string): boolean {
+    return this.getCurrentUser()?.roles.includes(role) ?? false;
   }
 
-  emailExists(email: string): boolean {
-    return this.getUsers().some((user) => user.email.toLowerCase() === email.toLowerCase());
+  getRouteForCurrentUser(): string {
+    const roles = this.getCurrentUser()?.roles ?? [];
+
+    if (roles.includes('ROLE_WATER_MANAGER')) return '/water-manager/dashboard';
+    return '/dashboard';
   }
 
-  usernameExists(username: string): boolean {
-    return this.getUsers().some((user) => user.username.toLowerCase() === username.toLowerCase());
-  }
-
-  saveSubscription(userId: number, plan: 'Plus' | 'Premium'): void {
-    const users = this.getUsers();
-
-    const user = users.find((u) => u.id === userId);
-
-    if (!user) {
-      return;
-    }
-
-    if (plan === 'Plus') {
-      user.subscription = {
-        name: 'Plus',
-        price: 19,
-        maxNodes: 3,
-        features: ['Basic plot monitoring', 'Water stress alerts', 'Sensor history access'],
-      };
-    } else {
-      user.subscription = {
-        name: 'Premium',
-        price: 39,
-        maxNodes: 10,
-        features: ['Predictive irrigation', 'Weather support', 'Priority alerts & reports'],
-      };
-    }
-
-    localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
-
-    localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(user));
-  }
-
+  // ------------------ SUBSCRIPTION (Opcional, si backend lo retorna) ------------------
   getCurrentSubscription(): SubscriptionPlan | null {
     return this.getCurrentUser()?.subscription ?? null;
-  }
-
-  getSubscriptionByUserId(userId: number) {
-    const subscriptions = JSON.parse(localStorage.getItem(this.SUBSCRIPTIONS_KEY) || '[]');
-
-    return subscriptions.find((s: any) => s.userId === userId);
-  }
-
-  updatePassword(email: string, newPassword: string): boolean {
-    const users = this.getUsers();
-
-    const user = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
-
-    if (!user) {
-      return false;
-    }
-
-    user.password = newPassword;
-
-    localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
-
-    const currentUser = this.getCurrentUser();
-
-    if (currentUser && currentUser.id === user.id) {
-      localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(user));
-    }
-
-    return true;
   }
 }
