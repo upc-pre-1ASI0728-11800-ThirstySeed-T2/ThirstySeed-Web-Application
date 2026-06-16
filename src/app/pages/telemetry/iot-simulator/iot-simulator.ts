@@ -12,6 +12,7 @@ import {
   IrrigationRecommendation,
   TransmissionLogEntry,
 } from '../model/recommendation.model';
+import { User } from '../../../iam/services/auth.service';
 
 @Component({
   selector: 'app-iot-simulator',
@@ -26,6 +27,7 @@ export class IotSimulatorComponent implements OnInit {
   plots: Plot[] = [];
   selectedFarmId: number | null = null;
   selectedPlotId: number | null = null;
+  currentUser: User | null = null;
 
   // ── Simulator form ─────────────────────────────────────────
   soilMoisture = 35;
@@ -53,6 +55,7 @@ export class IotSimulatorComponent implements OnInit {
   ngOnInit(): void {
     const user = this.authService.getCurrentUser();
     if (!user) return;
+    this.currentUser = user;
 
     const farmIds = this.farmService.getSavedFarmIds(user.id);
     if (farmIds.length > 0) {
