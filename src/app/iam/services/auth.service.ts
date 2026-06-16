@@ -101,6 +101,17 @@ export class AuthService {
     return !!this.getCurrentUser();
   }
 
+  hasRole(role: string): boolean {
+    return this.getCurrentUser()?.roles.includes(role) ?? false;
+  }
+
+  getRouteForCurrentUser(): string {
+    const roles = this.getCurrentUser()?.roles ?? [];
+
+    if (roles.includes('ROLE_WATER_MANAGER')) return '/water-manager/dashboard';
+    return '/dashboard';
+  }
+
   // ------------------ SUBSCRIPTION (Opcional, si backend lo retorna) ------------------
   getCurrentSubscription(): SubscriptionPlan | null {
     return this.getCurrentUser()?.subscription ?? null;
