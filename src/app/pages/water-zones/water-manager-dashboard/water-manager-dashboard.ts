@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../iam/services/auth.service';
 import { WaterZoneService } from '../services/water-zone.service';
 import { WaterConsumptionSummary } from '../model/water-zone.model';
@@ -23,6 +23,7 @@ export class WaterManagerDashboardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private waterZoneService: WaterZoneService,
+    private router: Router,
     private cd: ChangeDetectorRef,
   ) {}
 
@@ -66,5 +67,13 @@ export class WaterManagerDashboardComponent implements OnInit {
 
   get currentUser() {
     return this.authService.getCurrentUser();
+  }
+
+  get hasZone(): boolean {
+    return this.zoneIds.length > 0;
+  }
+
+  goToCreateZone(): void {
+    this.router.navigate(['/water-manager/zones/create']);
   }
 }
