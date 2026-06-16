@@ -37,6 +37,10 @@ export class CreateWaterZoneComponent {
     }
   }
 
+  cancel(): void {
+    this.router.navigate(['/water-manager/dashboard']);
+  }
+
   onSubmit(): void {
     const user = this.authService.getCurrentUser();
     if (!user) return;

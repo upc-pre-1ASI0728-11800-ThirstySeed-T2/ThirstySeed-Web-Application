@@ -1,19 +1,144 @@
-<!-- Inyecta tus clases y maquetación existente. Variables disponibles:
-     isLoading: boolean
-     errorMessage: string
-     successMessage: string
-     form: { waterManagerUserId, name, location, description }  → enlaza con [(ngModel)]
-     onSubmit(): void
--->
-<form (ngSubmit)="onSubmit()">
-  <div *ngIf="errorMessage">{{ errorMessage }}</div>
-  <div *ngIf="successMessage">{{ successMessage }}</div>
+<section class="create-page">
 
-  <input [(ngModel)]="form.name"        name="name"        placeholder="Nombre" />
-  <input [(ngModel)]="form.location"    name="location"    placeholder="Ubicación" />
-  <input [(ngModel)]="form.description" name="description" placeholder="Descripción" />
+  <!-- TOP NAV -->
+  <header class="top-nav">
+    <div class="top-nav-left">
+      <span class="page-badge">● Water zone registration</span>
+      <h1>Create a new zone</h1>
+      <p class="subtitle">Register a water management zone to group farms, monitor total consumption and coordinate resources across the region.</p>
+    </div>
+    <div class="top-nav-right">
+      <button class="user-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>Water Manager</span>
+      </button>
+    </div>
+  </header>
 
-  <button type="submit" [disabled]="isLoading">
-    {{ isLoading ? 'Creando...' : 'Crear Zona' }}
-  </button>
-</form>
+  <div class="create-layout">
+
+    <!-- FORM CARD -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <h2>Zone information</h2>
+        <p>Complete the required fields to register the water management zone. You can edit this information later.</p>
+        <span class="step-badge">STEP 1 OF 1</span>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-msg">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="success-msg">{{ successMessage }}</div>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Zone name</label>
+          <input
+            type="text"
+            [(ngModel)]="form.name"
+            name="name"
+            placeholder="Example: Zona Andina Sur"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Location</label>
+          <input
+            type="text"
+            [(ngModel)]="form.location"
+            name="location"
+            placeholder="Province, region or watershed"
+          />
+        </div>
+
+        <div class="form-group full-width">
+          <label>Description</label>
+          <textarea
+            [(ngModel)]="form.description"
+            name="description"
+            rows="4"
+            placeholder="Describe the hydrological basin, source or main use of this zone..."
+          ></textarea>
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-cancel" (click)="cancel()">Cancel</button>
+        <button class="btn-create" (click)="onSubmit()" [disabled]="isLoading">
+          {{ isLoading ? 'Creating...' : 'Create zone' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right-side">
+
+      <!-- Info card -->
+      <div class="info-card">
+        <div class="info-thumb">🌊</div>
+        <h3>What happens after creating a zone?</h3>
+        <p>A water zone works as the main container for regional water management. After registering it, you will be able to:</p>
+        <ul>
+          <li>
+            <span class="info-icon">🌾</span>
+            <div>
+              <strong>Link farms</strong>
+              <p>Associate agricultural farms that consume water from this zone.</p>
+            </div>
+          </li>
+          <li>
+            <span class="info-icon">📊</span>
+            <div>
+              <strong>Monitor consumption</strong>
+              <p>View total water consumed across all linked farms and plots.</p>
+            </div>
+          </li>
+          <li>
+            <span class="info-icon">⚠️</span>
+            <div>
+              <strong>Detect critical areas</strong>
+              <p>Identify zones with high demand and coordinate water resources.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Preview card -->
+      <div class="preview-card">
+        <span class="preview-label">PREVIEW</span>
+        <h4>New zone summary</h4>
+        <p class="preview-sub">This is how your zone will appear in the dashboard.</p>
+
+        <div class="preview-row">
+          <span>NAME</span>
+          <strong>{{ form.name || '—' }}</strong>
+        </div>
+        <div class="preview-row">
+          <span>LOCATION</span>
+          <strong>{{ form.location || '—' }}</strong>
+        </div>
+        <div class="preview-row">
+          <span>FARMS</span>
+          <strong>0</strong>
+        </div>
+        <div class="preview-row">
+          <span>PLOTS</span>
+          <strong>0</strong>
+        </div>
+        <div class="preview-row">
+          <span>CONSUMPTION</span>
+          <strong>0 L</strong>
+        </div>
+        <div class="preview-row">
+          <span>STATUS</span>
+          <strong class="active">Active</strong>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
