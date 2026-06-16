@@ -6,22 +6,16 @@
       <span class="page-badge">● Water zone management</span>
       <h1>{{ consumption?.zoneName ?? 'Water Manager Dashboard' }}</h1>
       <p class="subscription-info">
-        {{ zoneIds.length }} zone(s) registered
+        {{ wmDashboard ? wmDashboard.monitoredFarms + ' farms · ' + wmDashboard.monitoredPlots + ' plots' : (zone ? '1 zone registered' : 'No zone yet') }}
       </p>
       <p class="subtitle">Monitor total water consumption, registered farms and plots across all your managed zones.</p>
     </div>
 
     <div class="top-nav-right">
-      <!-- Zone selector (visible only when there are multiple zones) -->
-      <select
-        *ngIf="zoneIds.length > 1"
-        class="zone-select"
-        (change)="onZoneChange($event)"
-      >
-        <option *ngFor="let id of zoneIds" [value]="id" [selected]="id === selectedZoneId">
-          Zone #{{ id }}
-        </option>
-      </select>
+      <!-- Chip de zona activa -->
+      <div class="zone-chip" *ngIf="zone">
+        <span class="chip-dot"></span> Zone #{{ zone.id }} · {{ zone.status }}
+      </div>
 
       <button class="icon-btn notif">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
