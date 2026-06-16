@@ -11,6 +11,9 @@ import { FarmsComponent } from './pages/farms/farms';
 import { FarmCreateComponent } from './pages/farms/create_farms/farm-create';
 import { authGuard } from './iam/guards/auth.guard';
 import { TelemetryComponent } from './pages/telemetry/telemetry';
+import { WaterManagerDashboardComponent } from './pages/water-zones/water-manager-dashboard/water-manager-dashboard';
+import { CreateWaterZoneComponent } from './pages/water-zones/create-water-zone/create-water-zone';
+import { waterManagerGuard } from './iam/guards/water-manager.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -29,6 +32,15 @@ export const routes: Routes = [
       { path: 'farms', component: FarmsComponent },
       { path: 'farms/create', component: FarmCreateComponent },
       { path: 'telemetry', component: TelemetryComponent },
+      {
+        path: 'water-manager',
+        canActivate: [waterManagerGuard],
+        children: [
+          { path: 'dashboard', component: WaterManagerDashboardComponent },
+          { path: 'zones/create', component: CreateWaterZoneComponent },
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+        ],
+      },
     ],
   },
   { path: '**', redirectTo: 'login' },
