@@ -42,4 +42,7 @@ export class PlotService {
       localStorage.setItem(key, JSON.stringify(ids));
     }
   }
+  updatePlot(plotId: number, plot: Partial<Plot>): Observable<Plot> {
+    return this.http.put<Plot>(`${this.baseUrl}/${plotId}`, plot);
+  }
 }
