@@ -24,6 +24,7 @@ export interface MenuItem {
 export class SidebarComponent implements OnInit {
 
   menuItems: MenuItem[] = [];
+  panelTitle = 'Producer Panel';
   showPremiumCard = false;
   usedNodes = 4;
   totalNodes = 10;
@@ -34,7 +35,21 @@ export class SidebarComponent implements OnInit {
     const user = this.authService.getCurrentUser();
     if (!user) return;
 
-    if (user.accountType === 'Agricultural Producer') {
+    if (user.roles?.includes('ROLE_WATER_MANAGER')) {
+      this.panelTitle = 'Water Manager Panel';
+      this.menuItems = [
+        { label: 'Dashboard',       route: '/water-manager/dashboard'    },
+        { label: 'Zones',           route: '/water-manager/zones/create' },
+        { label: 'Water Demand',    route: '/water-demand'               },
+        { label: 'Critical Areas',  route: '/critical-areas'             },
+        { label: 'Reports',         route: '/reports'                    },
+        { label: 'Regional Alerts', route: '/regional-alerts'            },
+        { label: 'Settings',        route: '/settings'                   },
+      ];
+      this.showPremiumCard = false;
+
+    } else {
+      this.panelTitle = 'Producer Panel';
       this.menuItems = [
         { label: 'Dashboard',    route: '/dashboard'    },
         { label: 'Farms',        route: '/farms'        },
@@ -46,18 +61,6 @@ export class SidebarComponent implements OnInit {
         { label: 'Settings',     route: '/settings'     },
       ];
       this.showPremiumCard = true;
-
-    } else {
-      this.menuItems = [
-        { label: 'Dashboard',      route: '/dashboard'       },
-        { label: 'Zones',          route: '/zones'           },
-        { label: 'Water Demand',   route: '/water-demand'    },
-        { label: 'Critical Areas', route: '/critical-areas'  },
-        { label: 'Reports',        route: '/reports'         },
-        { label: 'Regional Alerts',route: '/regional-alerts' },
-        { label: 'Settings',       route: '/settings'        },
-      ];
-      this.showPremiumCard = false;
     }
   }
 }
