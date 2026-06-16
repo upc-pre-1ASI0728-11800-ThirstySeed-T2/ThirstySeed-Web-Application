@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../iam/services/auth.service';
 import { WaterZoneService } from '../services/water-zone.service';
-import { WaterConsumptionSummary } from '../model/water-zone.model';
+import { WaterConsumptionSummary, WaterManagerDashboard, WaterZone } from '../model/water-zone.model';
 
 @Component({
   selector: 'app-water-manager-dashboard',
@@ -13,12 +13,12 @@ import { WaterConsumptionSummary } from '../model/water-zone.model';
   styleUrl: './water-manager-dashboard.css',
 })
 export class WaterManagerDashboardComponent implements OnInit {
+  zone: WaterZone | null = null;
   consumption: WaterConsumptionSummary | null = null;
+  wmDashboard: WaterManagerDashboard | null = null;
+
   isLoading = false;
   errorMessage = '';
-
-  zoneIds: number[] = [];
-  selectedZoneId: number | null = null;
 
   constructor(
     private authService: AuthService,
@@ -31,18 +31,25 @@ export class WaterManagerDashboardComponent implements OnInit {
     const user = this.authService.getCurrentUser();
     if (!user) return;
 
-    this.zoneIds = this.waterZoneService.getSavedZoneIds(user.id);
-
-    if (this.zoneIds.length > 0) {
-      this.selectedZoneId = this.zoneIds[0];
-      this.loadConsumption(this.selectedZoneId);
-    }
-  }
-
-  loadConsumption(zoneId: number): void {
     this.isLoading = true;
     this.errorMessage = '';
 
+    // Fuente de verdad: API (no localStorage)
+    this.waterZoneService.getZoneByWMUserId(user.id).subscribe({
+      next: (zone) => {
+        this.zone = zone;
+        this.loadConsumption(zone.id);
+        this.loadDashboard(user.id);
+      },
+      error: () => {
+        // El WM aún no tiene zona registrada
+        this.isLoading = false;
+        this.cd.detectChanges();
+      },
+    });
+  }
+
+  loadConsumption(zoneId: number): void {
     this.waterZoneService.getWaterConsumption(zoneId).subscribe({
       next: (data) => {
         this.consumption = data;
@@ -57,20 +64,25 @@ export class WaterManagerDashboardComponent implements OnInit {
     });
   }
 
-  onZoneChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
-    this.selectedZoneId = value ? Number(value) : null;
-    if (this.selectedZoneId) {
-      this.loadConsumption(this.selectedZoneId);
-    }
+  loadDashboard(userId: number): void {
+    this.waterZoneService.getWMDashboard(userId).subscribe({
+      next: (dashboard) => {
+        this.wmDashboard = dashboard;
+        this.cd.detectChanges();
+      },
+    });
+  }
+
+  get hasZone(): boolean {
+    return this.zone !== null;
+  }
+
+  get selectedZoneId(): number | null {
+    return this.zone?.id ?? null;
   }
 
   get currentUser() {
     return this.authService.getCurrentUser();
-  }
-
-  get hasZone(): boolean {
-    return this.zoneIds.length > 0;
   }
 
   goToCreateZone(): void {
