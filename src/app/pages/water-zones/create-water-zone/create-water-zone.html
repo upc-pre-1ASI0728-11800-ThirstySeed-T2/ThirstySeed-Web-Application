@@ -1,0 +1,19 @@
+<!-- Inyecta tus clases y maquetación existente. Variables disponibles:
+     isLoading: boolean
+     errorMessage: string
+     successMessage: string
+     form: { waterManagerUserId, name, location, description }  → enlaza con [(ngModel)]
+     onSubmit(): void
+-->
+<form (ngSubmit)="onSubmit()">
+  <div *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div *ngIf="successMessage">{{ successMessage }}</div>
+
+  <input [(ngModel)]="form.name"        name="name"        placeholder="Nombre" />
+  <input [(ngModel)]="form.location"    name="location"    placeholder="Ubicación" />
+  <input [(ngModel)]="form.description" name="description" placeholder="Descripción" />
+
+  <button type="submit" [disabled]="isLoading">
+    {{ isLoading ? 'Creando...' : 'Crear Zona' }}
+  </button>
+</form>
