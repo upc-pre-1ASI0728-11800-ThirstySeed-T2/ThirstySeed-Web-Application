@@ -5,7 +5,11 @@ import { environment } from '../../../../environments/environment';
 import { Observable, catchError, throwError } from 'rxjs';
 import { WaterStressAssessment } from '../model/water-stress.model';
 import { TelemetryNode } from '../model/node.model';
-import { IrrigationRecommendation, TelemetryReadingPayload } from '../model/recommendation.model';
+import {
+  IrrigationRecommendation,
+  TelemetryReadingPayload,
+  TelemetrySnapshot,
+} from '../model/recommendation.model';
 
 
 
@@ -99,6 +103,25 @@ export class TelemetryService {
       .put<void>(
         `${this.apiUrl}/api/v1/recommendations/${id}/accept`,
         {},
+        { headers: this.getHeaders() },
+      )
+      .pipe(catchError((err) => throwError(() => err)));
+  }
+
+  // GET /api/v1/plots/{plotId}/telemetry/latest
+  getLatestSnapshot(plotId: number): Observable<TelemetrySnapshot> {
+    return this.http
+      .get<TelemetrySnapshot>(`${this.apiUrl}/api/v1/plots/${plotId}/telemetry/latest`, {
+        headers: this.getHeaders(),
+      })
+      .pipe(catchError((err) => throwError(() => err)));
+  }
+
+  // GET /api/v1/plots/{plotId}/telemetry/history?hoursAgo=24
+  getTelemetryHistory(plotId: number, hoursAgo = 24): Observable<TelemetrySnapshot[]> {
+    return this.http
+      .get<TelemetrySnapshot[]>(
+        `${this.apiUrl}/api/v1/plots/${plotId}/telemetry/history?hoursAgo=${hoursAgo}`,
         { headers: this.getHeaders() },
       )
       .pipe(catchError((err) => throwError(() => err)));
