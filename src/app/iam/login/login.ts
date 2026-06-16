@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit {
         this.successMessage = 'Login successful.';
         console.log('Logged user:', user);
 
-        this.router.navigate(['/dashboard']);
+        this.router.navigate([this.authService.getRouteForCurrentUser()]);
       },
       error: () => {
         this.errorMessage = 'Invalid username or password.';
