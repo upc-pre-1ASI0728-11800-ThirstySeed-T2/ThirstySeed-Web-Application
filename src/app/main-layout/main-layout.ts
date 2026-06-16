@@ -24,22 +24,49 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private fallbackTimer?: ReturnType<typeof setTimeout>;
   private destroy$ = new Subject<void>();
 
-  readonly plans = [
+  private readonly producerPlans = [
     {
-      type: 'PLUS',
+      type: 'PRODUCER_PLUS',
       name: 'Plus',
       price: 19,
       highlight: 'For small farms getting started.',
-      features: ['Up to 3 farms', 'Up to 3 IoT nodes', 'Basic plot monitoring', 'Water stress alerts'],
+      features: ['Up to 2 farms', 'Up to 3 IoT nodes', 'Basic plot monitoring', 'Water stress alerts'],
     },
     {
-      type: 'PREMIUM',
+      type: 'PRODUCER_PREMIUM',
       name: 'Premium',
       price: 39,
       highlight: 'For advanced operations.',
       features: ['Up to 10 farms', 'Up to 10 IoT nodes', 'Predictive irrigation', 'Priority alerts & reports'],
     },
   ];
+
+  private readonly waterManagerPlans = [
+    {
+      type: 'WATER_MANAGER_PLUS',
+      name: 'Plus',
+      price: 19,
+      highlight: 'For managers supervising a small producer network.',
+      features: ['Manage 1 producer', 'Up to 2 zones', 'Water distribution planning', 'Consumption reports'],
+    },
+    {
+      type: 'WATER_MANAGER_PREMIUM',
+      name: 'Premium',
+      price: 39,
+      highlight: 'For regional water management at scale.',
+      features: ['Manage up to 5 producers', 'Up to 10 zones', 'Predictive distribution', 'Critical area alerts'],
+    },
+  ];
+
+  get plans() {
+    return this.isProducer ? this.producerPlans : this.waterManagerPlans;
+  }
+
+  get gateSubtitle(): string {
+    return this.isProducer
+      ? 'You need an active subscription to access IoT monitoring, telemetry data and AI irrigation recommendations.'
+      : 'You need an active subscription to manage water zones, distribution plans and monitor your producer network.';
+  }
 
   constructor(
     private authService: AuthService,
@@ -55,12 +82,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.userId = user.id;
     this.isProducer = user.roles?.includes('ROLE_PRODUCER') ?? false;
     this.currentUrl = this.router.url;
-
-    if (!this.isProducer) {
-      this.subscriptionChecked = true;
-      this.hasSubscription = true;
-      return;
-    }
 
     // Re-check when leaving /profile-rol (user just picked a plan)
     this.router.events.pipe(
@@ -84,7 +105,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     return (
       this.subscriptionChecked &&
       !this.hasSubscription &&
-      this.isProducer &&
       this.currentUrl !== '/profile-rol'
     );
   }
@@ -92,7 +112,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   get showChecking(): boolean {
     return (
       !this.subscriptionChecked &&
-      this.isProducer &&
       this.currentUrl !== '/profile-rol'
     );
   }
