@@ -1,0 +1,23 @@
+<!-- Inyecta tus clases y maquetación existente. Variables disponibles:
+     isLoading: boolean
+     errorMessage: string
+     consumption: WaterConsumptionSummary | null  → .zoneId .zoneName .totalFarms .totalPlots .totalWaterConsumedLitres
+     zoneIds: number[]
+     selectedZoneId: number | null
+     currentUser → .username .roles
+-->
+<div>
+  <div *ngIf="isLoading">Cargando...</div>
+  <div *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <select *ngIf="zoneIds.length > 1" (change)="onZoneChange($event)">
+    <option *ngFor="let id of zoneIds" [value]="id">Zona {{ id }}</option>
+  </select>
+
+  <ng-container *ngIf="consumption && !isLoading">
+    <p>{{ consumption.zoneName }}</p>
+    <p>{{ consumption.totalFarms }}</p>
+    <p>{{ consumption.totalPlots }}</p>
+    <p>{{ consumption.totalWaterConsumedLitres }}</p>
+  </ng-container>
+</div>
