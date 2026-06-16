@@ -6,9 +6,11 @@ import { environment } from '../../../environments/environment';
 export interface Subscription {
   id: number;
   userId: number;
+  roleType: string;
   planType: string;
   maxFarms: number;
   maxNodes: number;
+  maxProducers: number;
   validationCode: string;
   status: string;
   active: boolean;
@@ -16,7 +18,7 @@ export interface Subscription {
 
 export interface CreateSubscriptionRequest {
   userId: number;
-  planType: 'PLUS' | 'PREMIUM';
+  planType: 'PRODUCER_PLUS' | 'PRODUCER_PREMIUM' | 'WATER_MANAGER_PLUS' | 'WATER_MANAGER_PREMIUM';
 }
 
 @Injectable({

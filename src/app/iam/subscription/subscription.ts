@@ -2,9 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { SubscriptionService } from '../services/subscription.service';
-
-type InitialPlan = 'Plus' | 'Premium';
+import { CreateSubscriptionRequest, SubscriptionService } from '../services/subscription.service';
 
 @Component({
   selector: 'app-subscription',
@@ -14,7 +12,7 @@ type InitialPlan = 'Plus' | 'Premium';
   styleUrl: './subscription.css',
 })
 export class SubscriptionComponent {
-  savingPlan: InitialPlan | null = null;
+  savingPlan: 'Plus' | 'Premium' | null = null;
   errorMessage = '';
 
   constructor(
@@ -23,7 +21,7 @@ export class SubscriptionComponent {
     private subscriptionService: SubscriptionService,
   ) {}
 
-  selectPlan(plan: InitialPlan): void {
+  selectPlan(plan: 'Plus' | 'Premium'): void {
     const user = this.authService.getCurrentUser();
 
     if (!user) {
@@ -34,25 +32,19 @@ export class SubscriptionComponent {
     this.savingPlan = plan;
     this.errorMessage = '';
 
-    const planType = plan === 'Plus' ? 'PLUS' : 'PREMIUM';
-    const maxNodes = plan === 'Plus' ? 3 : 10;
+    const isWaterManager = user.roles?.includes('ROLE_WATER_MANAGER') ?? false;
 
-    this.subscriptionService.createSubscription({
-      userId: user.id,
-      planType,
-    }).subscribe({
+    let planType: CreateSubscriptionRequest['planType'];
+    if (isWaterManager) {
+      planType = plan === 'Plus' ? 'WATER_MANAGER_PLUS' : 'WATER_MANAGER_PREMIUM';
+    } else {
+      planType = plan === 'Plus' ? 'PRODUCER_PLUS' : 'PRODUCER_PREMIUM';
+    }
+
+    this.subscriptionService.createSubscription({ userId: user.id, planType }).subscribe({
       next: () => {
-        user.subscription = {
-          name: plan,
-          price: plan === 'Plus' ? 19 : 39,
-          maxNodes,
-          features: plan === 'Plus'
-            ? ['Basic plot monitoring', 'Water stress alerts', 'Sensor history access']
-            : ['Predictive irrigation', 'Weather support', 'Priority alerts and reports'],
-        };
-
-        this.authService.setCurrentUser(user);
-        this.router.navigate(['/dashboard']);
+        const target = isWaterManager ? '/water-manager/dashboard' : '/dashboard';
+        this.router.navigate([target]);
       },
       error: (err) => {
         console.error('INITIAL SUBSCRIPTION ERROR:', err);
