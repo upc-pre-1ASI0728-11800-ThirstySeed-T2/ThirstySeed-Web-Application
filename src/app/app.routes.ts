@@ -11,6 +11,7 @@ import { FarmsComponent } from './pages/farms/farms';
 import { FarmCreateComponent } from './pages/farms/create_farms/farm-create';
 import { authGuard } from './iam/guards/auth.guard';
 import { TelemetryComponent } from './pages/telemetry/telemetry';
+import { IotSimulatorComponent } from './pages/telemetry/iot-simulator/iot-simulator';
 import { WaterManagerDashboardComponent } from './pages/water-zones/water-manager-dashboard/water-manager-dashboard';
 import { CreateWaterZoneComponent } from './pages/water-zones/create-water-zone/create-water-zone';
 import { waterManagerGuard } from './iam/guards/water-manager.guard';
@@ -32,6 +33,7 @@ export const routes: Routes = [
       { path: 'farms', component: FarmsComponent },
       { path: 'farms/create', component: FarmCreateComponent },
       { path: 'telemetry', component: TelemetryComponent },
+      { path: 'iot-simulator', component: IotSimulatorComponent },
       {
         path: 'water-manager',
         canActivate: [waterManagerGuard],
