@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { ProfileService } from '../services/profile.service';
 
 @Component({
   selector: 'app-register',
@@ -26,18 +25,17 @@ export class RegisterComponent {
 
   errorMessage = '';
   successMessage = '';
+  isLoading = false;
 
   constructor(
     private router: Router,
     private authService: AuthService,
-    private profileService: ProfileService,
   ) {}
 
   handleRegister(): void {
     this.errorMessage = '';
     this.successMessage = '';
 
-    // VALIDACIONES
     if (this.fullName.trim().length < 3) {
       this.errorMessage = 'Full name must contain at least 3 characters.';
       return;
@@ -76,79 +74,29 @@ export class RegisterComponent {
       return;
     }
 
-    // SPLIT NAME
-    const fullNameParts = this.fullName.trim().split(' ');
-    const firstName = fullNameParts[0];
-    const lastName =
-      fullNameParts.length > 1 ? fullNameParts.slice(1).join(' ') : '';
-
     const roleMap: Record<string, string> = {
       'Agricultural Producer': 'ROLE_PRODUCER',
       'Water Management Entity': 'ROLE_WATER_MANAGER',
     };
 
     const role = roleMap[this.accountType];
+    this.isLoading = true;
 
-    // SIGN UP
-    this.authService
-      .signUp({
-        username: this.username.trim(),
-        password: this.password,
-        roles: [role],
-      })
-      .subscribe({
-        next: () => {
-
-          // SIGN IN AUTOMÁTICO
-          this.authService.signIn(this.username.trim(), this.password).subscribe({
-            next: (user: any) => {
-
-              console.log('REGISTER LOGIN USER:', user);
-
-              // 🔥 FIX CRÍTICO: guardar sesión correctamente
-              localStorage.setItem('userId', user.id);
-
-              const profilePayload = {
-                firstName,
-                lastName,
-                email: this.email,
-                phoneNumber: '',
-                profileImage: '',
-                location: '',
-              };
-
-              console.log('PROFILE PAYLOAD', profilePayload);
-
-              this.profileService.createProfile(profilePayload).subscribe({
-                next: () => {
-
-                  this.successMessage = 'Account created successfully.';
-
-                  setTimeout(() => {
-                    this.router.navigate(['/subscription']);
-                  }, 1000);
-                },
-
-                error: (err) => {
-                  console.error(err);
-                  this.errorMessage = 'Profile creation failed.';
-                },
-              });
-            },
-
-            error: (err) => {
-              console.error(err);
-              this.errorMessage = 'Automatic login failed.';
-            },
-          });
-        },
-
-        error: (err) => {
-          console.error(err);
-          this.errorMessage =
-            err?.error?.message ?? 'Failed to create account.';
-        },
-      });
+    this.authService.signUp({
+      username: this.username.trim(),
+      password: this.password,
+      roles: [role],
+    }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.successMessage = 'Account created successfully. Please log in.';
+        setTimeout(() => this.router.navigate(['/login']), 1500);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = err?.error?.message ?? 'Failed to create account. Please try again.';
+      },
+    });
   }
 
   goToLogin(): void {
