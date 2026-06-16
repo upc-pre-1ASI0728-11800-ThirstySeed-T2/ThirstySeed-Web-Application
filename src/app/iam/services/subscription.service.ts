@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface Subscription {
@@ -28,23 +28,32 @@ export class SubscriptionService {
 
   constructor(private http: HttpClient) {}
 
-  // 👇 obtener suscripción actual del usuario
+  private headers(): HttpHeaders {
+    const token = localStorage.getItem('jwtToken') ?? '';
+    return new HttpHeaders({ Authorization: `Bearer ${token}` });
+  }
+
   getByUserId(userId: number): Observable<Subscription> {
-    return this.http.get<Subscription>(`${this.apiUrl}/user/${userId}`);
+    return this.http
+      .get<Subscription>(`${this.apiUrl}/user/${userId}`, { headers: this.headers() })
+      .pipe(catchError((err) => throwError(() => err)));
   }
 
-  // 👇 crear o cambiar suscripción (CAMBIO DE PLAN)
   createSubscription(payload: CreateSubscriptionRequest): Observable<Subscription> {
-    return this.http.post<Subscription>(`${this.apiUrl}`, payload);
+    return this.http
+      .post<Subscription>(this.apiUrl, payload, { headers: this.headers() })
+      .pipe(catchError((err) => throwError(() => err)));
   }
 
-  // (opcional futuro)
   getById(subscriptionId: number): Observable<Subscription> {
-    return this.http.get<Subscription>(`${this.apiUrl}/${subscriptionId}`);
+    return this.http
+      .get<Subscription>(`${this.apiUrl}/${subscriptionId}`, { headers: this.headers() })
+      .pipe(catchError((err) => throwError(() => err)));
   }
 
-  // (opcional futuro)
-  delete(subscriptionId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${subscriptionId}`);
+  delete(subscriptionId: number): Observable<void> {
+    return this.http
+      .delete<void>(`${this.apiUrl}/${subscriptionId}`, { headers: this.headers() })
+      .pipe(catchError((err) => throwError(() => err)));
   }
 }

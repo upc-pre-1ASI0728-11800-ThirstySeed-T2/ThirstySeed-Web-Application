@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subject, timeout, catchError, of, takeUntil } from 'rxjs';
 import { SidebarComponent } from '../shared/sidebar/sidebar';
 import { AuthService } from '../iam/services/auth.service';
 import { SubscriptionService } from '../iam/services/subscription.service';
@@ -13,10 +14,12 @@ import { SubscriptionService } from '../iam/services/subscription.service';
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
 })
-export class MainLayoutComponent implements OnInit {
+export class MainLayoutComponent implements OnInit, OnDestroy {
   subscriptionChecked = false;
   hasSubscription = false;
   isProducer = false;
+
+  private destroy$ = new Subject<void>();
 
   readonly plans = [
     {
@@ -39,6 +42,7 @@ export class MainLayoutComponent implements OnInit {
     private authService: AuthService,
     private subscriptionService: SubscriptionService,
     private router: Router,
+    private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -50,19 +54,27 @@ export class MainLayoutComponent implements OnInit {
     if (!this.isProducer) {
       this.subscriptionChecked = true;
       this.hasSubscription = true;
+      this.cd.detectChanges();
       return;
     }
 
-    this.subscriptionService.getByUserId(user.id).subscribe({
-      next: (sub) => {
-        this.hasSubscription = sub?.active ?? false;
+    this.subscriptionService
+      .getByUserId(user.id)
+      .pipe(
+        timeout(8000),
+        catchError(() => of(null)),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((sub) => {
+        this.hasSubscription = sub?.active === true;
         this.subscriptionChecked = true;
-      },
-      error: () => {
-        this.hasSubscription = false;
-        this.subscriptionChecked = true;
-      },
-    });
+        this.cd.detectChanges();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   goToPlans(): void {
