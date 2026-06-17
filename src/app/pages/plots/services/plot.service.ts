@@ -15,6 +15,7 @@ export interface CreatePlotRequest {
 export interface ConfigurePlotRequest {
   cropName: string;
   waterDemand: string;
+  area: number;
   coordinatesJson: string;
 }
 
