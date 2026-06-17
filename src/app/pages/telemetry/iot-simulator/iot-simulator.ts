@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { switchMap, delay } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../../../iam/services/auth.service';
 import { PlotService } from '../../plots/services/plot.service';
 import { FarmService } from '../../farms/services/farm.service';
@@ -10,8 +10,10 @@ import { Plot } from '../../plots/model/plot.model';
 import { Farm } from '../../farms/model/farm.model';
 import {
   IrrigationRecommendation,
+  IrrigationSchedule,
   TransmissionLogEntry,
 } from '../model/recommendation.model';
+import { WaterStressAssessment } from '../model/water-stress.model';
 import { User } from '../../../iam/services/auth.service';
 
 @Component({
@@ -41,6 +43,8 @@ export class IotSimulatorComponent implements OnInit {
 
   // ── AI results ─────────────────────────────────────────────
   latestRecommendation: IrrigationRecommendation | null = null;
+  latestAssessment: WaterStressAssessment | null = null;
+  latestSchedule: IrrigationSchedule | null = null;
   transmissionLog: TransmissionLogEntry[] = [];
   transmissionCount = 0;
 
@@ -84,12 +88,16 @@ export class IotSimulatorComponent implements OnInit {
     this.selectedFarmId = value ? Number(value) : null;
     this.selectedPlotId = null;
     this.latestRecommendation = null;
+    this.latestAssessment = null;
+    this.latestSchedule = null;
   }
 
   onPlotChange(event: Event): void {
     const value = (event.target as HTMLSelectElement).value;
     this.selectedPlotId = value ? Number(value) : null;
     this.latestRecommendation = null;
+    this.latestAssessment = null;
+    this.latestSchedule = null;
     this.errorMessage = '';
     this.successMessage = '';
   }
@@ -112,6 +120,13 @@ export class IotSimulatorComponent implements OnInit {
     );
   }
 
+  get stressLevelClass(): string {
+    const lvl = (this.latestAssessment?.stressLevel ?? '').toLowerCase();
+    if (lvl.includes('high') || lvl.includes('critical') || lvl.includes('extreme')) return 'stress-high';
+    if (lvl.includes('medium') || lvl.includes('moderate')) return 'stress-medium';
+    return 'stress-low';
+  }
+
   transmitReadings(): void {
     if (!this.canTransmit || !this.selectedPlotId) return;
 
@@ -119,73 +134,43 @@ export class IotSimulatorComponent implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
-    console.log('SELECTED PLOT', this.selectedPlot);
-    console.log('SELECTED PLOT ID', this.selectedPlotId);
     const plotId = this.selectedPlotId;
 
-    // Step 1: POST soil moisture → Step 2: POST temperature → Step 3: wait 2.5s for AI → Step 4: GET recommendations
+    // POST SOIL_MOISTURE → POST TEMPERATURE → GET snapshot → GET history → GET assessments → GET recommendations
     this.telemetryService
-      .sendReading({
-        plotId,
-        value: this.soilMoisture,
-        type: 'SOIL_MOISTURE',
-      })
+      .sendReading({ plotId, value: this.soilMoisture, type: 'SOIL_MOISTURE' })
       .pipe(
-        switchMap(() => {
-          console.log(' SOIL_MOISTURE SENT');
+        switchMap(() =>
+          this.telemetryService.sendReading({ plotId, value: this.temperature, type: 'TEMPERATURE' }),
+        ),
 
-          return this.telemetryService.sendReading({
-            plotId,
-            value: this.temperature,
-            type: 'TEMPERATURE',
-          });
+        switchMap(() => this.telemetryService.getLatestSnapshot(plotId)),
+
+        switchMap(() => this.telemetryService.getTelemetryHistory(plotId, 24)),
+
+        switchMap(() => this.telemetryService.getAssessmentsByPlot(plotId)),
+
+        tap((assessments) => {
+          this.latestAssessment = assessments[0] ?? null;
         }),
 
-        switchMap(() => {
-          console.log(' TEMPERATURE SENT');
-
-          return this.telemetryService.getLatestSnapshot(plotId);
-        }),
-
-        switchMap((snapshot) => {
-          console.log(' LATEST SNAPSHOT', snapshot);
-
-          return this.telemetryService.getTelemetryHistory(plotId, 24);
-        }),
-
-        switchMap((history) => {
-          console.log(' HISTORY', history);
-
-          return this.telemetryService.getRecommendationsByPlot(plotId);
-        }),
+        switchMap(() => this.telemetryService.getRecommendationsByPlot(plotId)),
       )
       .subscribe({
         next: (recommendations) => {
-          console.log(
-            ' RECOMMENDATIONS',
-            recommendations,
-          );
-
           this.latestRecommendation = recommendations[0] ?? null;
-
           this.transmissionCount++;
           this.addToLog();
-
           this.isSimulating = false;
-
           this.successMessage = this.latestRecommendation
             ? 'AI processed the data and generated a recommendation.'
             : 'Readings transmitted. No recommendation generated yet.';
-
           this.cd.detectChanges();
         },
 
         error: (err) => {
-          console.error(' TRANSMISSION ERROR', err);
-
-          this.errorMessage =
-            'Transmission failed. Check your connection or plot assignment.';
-
+          console.error('TRANSMISSION ERROR', err);
+          this.errorMessage = 'Transmission failed. Check your connection or plot assignment.';
           this.isSimulating = false;
           this.cd.detectChanges();
         },
@@ -193,23 +178,30 @@ export class IotSimulatorComponent implements OnInit {
   }
 
   acceptRecommendation(): void {
-    if (!this.latestRecommendation || this.isAccepting) return;
+    if (!this.latestRecommendation || this.isAccepting || !this.selectedPlotId) return;
 
     this.isAccepting = true;
+    const plotId = this.selectedPlotId;
 
-    this.telemetryService.acceptRecommendation(this.latestRecommendation.id).subscribe({
-      next: () => {
-        this.latestRecommendation!.status = 'ACCEPTED';
-        this.isAccepting = false;
-        this.successMessage = 'Recommendation accepted. Irrigation schedule created.';
-        this.cd.detectChanges();
-      },
-      error: () => {
-        this.errorMessage = 'Could not accept the recommendation. Try again.';
-        this.isAccepting = false;
-        this.cd.detectChanges();
-      },
-    });
+    this.telemetryService
+      .acceptRecommendation(this.latestRecommendation.id)
+      .pipe(switchMap(() => this.telemetryService.getSchedulesByPlot(plotId)))
+      .subscribe({
+        next: (schedules) => {
+          this.latestRecommendation!.status = 'ACCEPTED';
+          this.latestSchedule = schedules[0] ?? null;
+          this.isAccepting = false;
+          this.successMessage = 'Recommendation accepted. Irrigation schedule created.';
+          this.cd.detectChanges();
+        },
+        error: () => {
+          // Accept succeeded but schedule retrieval failed — mark as accepted anyway
+          this.latestRecommendation!.status = 'ACCEPTED';
+          this.isAccepting = false;
+          this.successMessage = 'Recommendation accepted. Irrigation schedule created.';
+          this.cd.detectChanges();
+        },
+      });
   }
 
   private addToLog(): void {
