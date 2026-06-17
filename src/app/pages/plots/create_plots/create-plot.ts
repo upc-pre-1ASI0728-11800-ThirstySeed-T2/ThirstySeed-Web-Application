@@ -97,12 +97,12 @@ export class CreatePlotComponent implements OnInit {
 
     // PLOTS USAGE
     this.plotService.getPlotsByUser(user.id).subscribe({
-      next: (plots) => { this.currentNodes = plots.length; },
-      error: () => { this.currentNodes = 0; },
       next: (plots) => {
         this.currentNodes = this.plotService.mergeWithStoredPlots(user.id, plots).length;
       },
-      error: () => this.currentNodes = this.plotService.getStoredPlots(user.id).length
+      error: () => {
+        this.currentNodes = this.plotService.getStoredPlots(user.id).length;
+      },
     });
 
     // FARMS — primary: localStorage IDs; fallback: getAllFarms filtered by producerId
