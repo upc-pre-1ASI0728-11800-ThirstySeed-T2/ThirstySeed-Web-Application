@@ -44,6 +44,7 @@
   <!-- LOADING / ERROR -->
   <div *ngIf="loading" class="state-msg">Loading farms...</div>
   <div *ngIf="errorMessage" class="state-msg error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage && !errorMessage" class="state-msg success">{{ successMessage }}</div>
 
   <div class="main-content" *ngIf="!loading && !errorMessage">
 
@@ -134,6 +135,7 @@
             <div class="farm-actions">
               <button class="btn-edit">Edit</button>
               <button class="btn-open" (click)="openFarm(farm.id)">Open</button>
+              <button class="btn-delete" (click)="deleteFarm(farm)">Delete</button>
             </div>
           </div>
         </div>

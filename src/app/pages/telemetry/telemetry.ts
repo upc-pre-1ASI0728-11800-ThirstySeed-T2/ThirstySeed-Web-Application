@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { FarmService } from '../farms/services/farm.service';
 import { PlotService } from '../plots/services/plot.service';
 import { AuthService } from '../../iam/services/auth.service';
@@ -10,11 +11,35 @@ import { TelemetryReading } from './model/telemetry.model';
 import { WaterStressAssessment } from './model/water-stress.model';
 import { ChangeDetectorRef } from '@angular/core';
 import { TelemetryNode } from './model/node.model';
+import { BaseChartDirective } from 'ng2-charts';
+import {
+  Chart,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  LineController,
+  Filler,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { ChartConfiguration, ChartData } from 'chart.js';
+
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  LineController,
+  Filler,
+  Tooltip,
+  Legend,
+);
 
 @Component({
   selector: 'app-telemetry',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, BaseChartDirective],
   templateUrl: './telemetry.html',
   styleUrl: './telemetry.css',
 })
@@ -37,6 +62,7 @@ export class TelemetryComponent implements OnInit {
     private plotService: PlotService,
     private telemetryService: TelemetryService,
     private cd: ChangeDetectorRef,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -54,20 +80,56 @@ export class TelemetryComponent implements OnInit {
       this.farmService.getFarmsByIds(farmIds).subscribe({
         next: (farms) => {
           this.farms = farms;
-          this.cd.detectChanges();
+          setTimeout(() => {
+            this.cd.detectChanges();
+          });
         },
       });
     }
 
     this.plotService.getPlotsByUser(user.id).subscribe({
       next: (plots) => {
-        this.plots = plots;
+        this.plots = this.plotService.mergeWithStoredPlots(user.id, plots);
         this.filteredPlots = [];
-        this.cd.detectChanges();
+        this.applyRouteSelection();
+        setTimeout(() => {
+          this.cd.detectChanges();
+        });
       },
     });
 
-    this.readings = this.telemetryService.getMockReadings();
+    this.useMockTelemetry();
+  }
+
+  loadTelemetryCharts() {
+    if (!this.selectedPlotId) return;
+
+    this.telemetryService.getTelemetryHistory(this.selectedPlotId).subscribe({
+      next: (history) => {
+        if (!history.length) {
+          this.useMockTelemetry();
+          return;
+        }
+
+        const readings = history.map((h) => ({
+          timestamp: new Date(h.recordedAt).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+          soilMoisture: h.soilMoisture,
+          temperature: h.temperature,
+          nodeStatus: 'Online',
+        }));
+
+        this.applyReadingsToCharts(readings);
+        setTimeout(() => {
+          this.cd.detectChanges();
+        });
+      },
+      error: () => {
+        this.useMockTelemetry();
+      },
+    });
   }
 
   onFarmChange(event: Event): void {
@@ -75,8 +137,7 @@ export class TelemetryComponent implements OnInit {
 
     this.selectedFarmId = value ? Number(value) : null;
 
-    // TEMPORAL
-    this.filteredPlots = [...this.plots];
+    this.filteredPlots = this.getPlotsForFarm(this.selectedFarmId);
 
     this.selectedPlotId = null;
   }
@@ -87,53 +148,7 @@ export class TelemetryComponent implements OnInit {
     if (!this.selectedPlotId) {
       return;
     }
-    this.telemetryService.getAssessmentsByPlot(this.selectedPlotId).subscribe({
-      next: (assessments) => {
-        console.log('ASSESSMENTS', assessments);
-
-        if (assessments.length > 0) {
-          this.latestAssessment = assessments[0];
-        } else {
-          this.latestAssessment = {
-            id: crypto.randomUUID(),
-            plotId: this.selectedPlotId!,
-            readingValue: 34,
-            stressLevel: 'MODERATE',
-            weatherContext: {
-              temperature: 28,
-              humidity: 65,
-              windSpeed: 12,
-              precipitationProbability: 25,
-            },
-            evaluatedAt: new Date().toISOString(),
-          };
-        }
-
-        this.cd.detectChanges();
-      },
-    });
-
-    this.telemetryService.getNodesByPlot(this.selectedPlotId).subscribe({
-      next: (nodes) => {
-        console.log('NODES', nodes);
-
-        if (nodes.length > 0) {
-          this.nodes = nodes;
-        } else {
-          this.nodes = [
-            {
-              id: 1,
-              plotId: this.selectedPlotId!,
-              location: 'Node TS-01',
-              moisture: 34,
-              status: 'Online',
-            },
-          ];
-        }
-
-        this.cd.detectChanges();
-      },
-    });
+    this.loadSelectedPlotData();
   }
 
   get latestReading(): TelemetryReading | null {
@@ -144,5 +159,140 @@ export class TelemetryComponent implements OnInit {
     if (!this.nodes.length) return 0;
     const total = this.nodes.reduce((sum, n) => sum + n.moisture, 0);
     return Math.round(total / this.nodes.length);
+  }
+
+  public lineChartType: 'line' = 'line';
+
+  public moistureChartData: ChartData<'line'> = {
+    labels: [],
+    datasets: [],
+  };
+
+  public temperatureChartData: ChartData<'line'> = {
+    labels: [],
+    datasets: [],
+  };
+
+  public lineChartOptions: ChartConfiguration<'line'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    elements: {
+      line: {
+        tension: 0.4,
+      },
+      point: {
+        radius: 0,
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: '#eef2ef',
+        },
+        ticks: {
+          color: '#6B7280',
+        },
+      },
+    },
+  };
+
+  private applyRouteSelection(): void {
+    const farmId = Number(this.route.snapshot.queryParamMap.get('farmId'));
+    const plotId = Number(this.route.snapshot.queryParamMap.get('plotId'));
+
+    if (farmId) {
+      this.selectedFarmId = farmId;
+      this.filteredPlots = this.getPlotsForFarm(farmId);
+    }
+
+    if (plotId) {
+      this.selectedPlotId = plotId;
+      this.loadSelectedPlotData();
+    }
+  }
+
+  private getPlotsForFarm(farmId: number | null): Plot[] {
+    if (!farmId) return [];
+
+    return this.plots.filter((plot) => !plot.farmId || plot.farmId === farmId);
+  }
+
+  private loadSelectedPlotData(): void {
+    if (!this.selectedPlotId) return;
+
+    this.loadTelemetryCharts();
+    this.telemetryService.getAssessmentsByPlot(this.selectedPlotId).subscribe({
+      next: (assessments) => {
+        this.latestAssessment = assessments[0] ?? null;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.latestAssessment = null;
+      },
+    });
+
+    this.telemetryService.getNodesByPlot(this.selectedPlotId).subscribe({
+      next: (nodes) => {
+        this.nodes = nodes;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.nodes = [];
+      },
+    });
+  }
+
+  private useMockTelemetry(): void {
+    this.applyReadingsToCharts(this.telemetryService.getMockReadings());
+  }
+
+  private applyReadingsToCharts(readings: TelemetryReading[]): void {
+    const labels = readings.map((reading) => reading.timestamp);
+
+    this.readings = readings;
+    this.moistureChartData = {
+      labels,
+      datasets: [
+        {
+          data: readings.map((reading) => reading.soilMoisture),
+          borderColor: '#10754F',
+          backgroundColor: 'rgba(16,117,79,0.12)',
+          fill: 'origin',
+          tension: 0.45,
+          borderWidth: 3,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+        },
+      ],
+    };
+
+    this.temperatureChartData = {
+      labels,
+      datasets: [
+        {
+          data: readings.map((reading) => reading.temperature),
+          borderColor: '#F59E0B',
+          backgroundColor: 'rgba(245,158,11,0.12)',
+          fill: 'origin',
+          tension: 0.45,
+          borderWidth: 3,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+        },
+      ],
+    };
+
+    this.cd.detectChanges();
   }
 }

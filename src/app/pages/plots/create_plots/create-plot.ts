@@ -88,9 +88,9 @@ export class CreatePlotComponent implements OnInit {
     // PLOTS USAGE
     this.plotService.getPlotsByUser(user.id).subscribe({
       next: (plots) => {
-        this.currentNodes = plots.length;
+        this.currentNodes = this.plotService.mergeWithStoredPlots(user.id, plots).length;
       },
-      error: () => this.currentNodes = 0
+      error: () => this.currentNodes = this.plotService.getStoredPlots(user.id).length
     });
 
     // FARMS
@@ -159,6 +159,21 @@ export class CreatePlotComponent implements OnInit {
     this.plotService.createPlotInFarm(this.selectedFarmId, payload)
       .subscribe({
         next: () => {
+          const now = new Date().toISOString();
+
+          this.plotService.saveStoredPlot(user.id, {
+            id: Date.now(),
+            userId: user.id,
+            farmId: this.selectedFarmId!,
+            name: this.plotName,
+            location: this.selectedFarmName,
+            extension: this.extension,
+            status: this.status,
+            imageUrl: this.imageUrl || 'https://placehold.co/600x400',
+            createdAt: now,
+            updatedAt: now,
+          });
+
           this.successMessage = 'Plot created successfully';
           this.router.navigate(['/plots']);
         },
