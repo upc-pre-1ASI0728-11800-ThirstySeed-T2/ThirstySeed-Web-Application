@@ -32,6 +32,19 @@ export interface TelemetrySnapshot {
 export interface IrrigationSchedule {
   id: number;
   plotId: number;
+  waterAmount: number;
+  pressure: number;
+  sprinklerRadius: number;
+  expectedMoisture: number;
+  durationHours: number;
+  startTime: string;
+  angle: number;
+  isAutomatic: boolean;
+}
+
+export interface IrrigationSchedule {
+  id: number;
+  plotId: number;
   scheduledStartTime: string;
   durationHours: number;
   waterAmountM3: number;
