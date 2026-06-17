@@ -192,27 +192,27 @@
         <div class="weather-grid">
           <div class="weather-item">
             <span>Temperature</span>
-            <strong>
-              {{ latestAssessment.weatherContext.temperature }}°C
-            </strong>
+            <strong>{{ latestAssessment.weatherContext.temperature }}°C</strong>
           </div>
           <div class="weather-item">
             <span>Humidity</span>
-            <strong>
-              {{ latestAssessment.weatherContext.humidity }}%
-            </strong>
+            <strong>{{ latestAssessment.weatherContext.humidity }}%</strong>
           </div>
           <div class="weather-item">
             <span>Wind</span>
-            <strong>
-              {{ latestAssessment.weatherContext.windSpeed }}
-            </strong>
+            <strong>{{ latestAssessment.weatherContext.windSpeed }} km/h</strong>
           </div>
           <div class="weather-item">
-            <span>Rain</span>
-            <strong>
-              {{ latestAssessment.weatherContext.precipitationProbability }}%
-            </strong>
+            <span>Rain chance</span>
+            <strong>{{ latestAssessment.weatherContext.precipitationProbability }}%</strong>
+          </div>
+          <div class="weather-item" [class.weather-flag-active]="latestAssessment.weatherContext.droughtForecast">
+            <span>Drought forecast</span>
+            <strong>{{ latestAssessment.weatherContext.droughtForecast ? 'Yes ⚠️' : 'No' }}</strong>
+          </div>
+          <div class="weather-item" [class.weather-flag-active]="latestAssessment.weatherContext.pestSeasonActive">
+            <span>Pest season</span>
+            <strong>{{ latestAssessment.weatherContext.pestSeasonActive ? 'Active ⚠️' : 'Inactive' }}</strong>
           </div>
         </div>
       </div>

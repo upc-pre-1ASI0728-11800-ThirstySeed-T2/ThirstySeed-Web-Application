@@ -210,6 +210,19 @@
   margin-bottom: 8px;
 }
 
+.weather-flag-active {
+  background: #fff3e0;
+  border: 1px solid #ffcc80;
+}
+
+.weather-flag-active span {
+  color: #bf360c;
+}
+
+.weather-flag-active strong {
+  color: #e65100;
+}
+
 /* TABLE */
 
 table {
