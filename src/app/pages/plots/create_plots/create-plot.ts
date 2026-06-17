@@ -168,14 +168,7 @@ export class CreatePlotComponent implements OnInit {
       cropName: this.selectedCrop || this.plotName,
       waterDemand: this.selectedWaterDemand,
       area: this.extension,
-      coordinatesJson: JSON.stringify({
-        name: this.plotName,
-        farmName: this.selectedFarmName,
-        soilType: this.selectedSoilType,
-        irrigationSystem: this.selectedIrrigation,
-        description: this.description,
-        imageUrl: this.imageUrl || 'https://placehold.co/600x400',
-      }),
+      coordinatesJson: JSON.stringify({ name: this.plotName }),
     };
 
     console.log('👉 PAYLOAD FINAL:', payload);
