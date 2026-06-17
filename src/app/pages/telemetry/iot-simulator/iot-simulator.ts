@@ -119,35 +119,73 @@ export class IotSimulatorComponent implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
+    console.log('SELECTED PLOT', this.selectedPlot);
+    console.log('SELECTED PLOT ID', this.selectedPlotId);
     const plotId = this.selectedPlotId;
 
     // Step 1: POST soil moisture → Step 2: POST temperature → Step 3: wait 2.5s for AI → Step 4: GET recommendations
     this.telemetryService
-      .sendReading({ plotId, value: this.soilMoisture, type: 'SOIL_MOISTURE' })
+      .sendReading({
+        plotId,
+        value: this.soilMoisture,
+        type: 'SOIL_MOISTURE',
+      })
       .pipe(
-        switchMap(() =>
-          this.telemetryService.sendReading({
+        switchMap(() => {
+          console.log(' SOIL_MOISTURE SENT');
+
+          return this.telemetryService.sendReading({
             plotId,
             value: this.temperature,
             type: 'TEMPERATURE',
-          }),
-        ),
-        delay(2500),
-        switchMap(() => this.telemetryService.getRecommendationsByPlot(plotId)),
+          });
+        }),
+
+        switchMap(() => {
+          console.log(' TEMPERATURE SENT');
+
+          return this.telemetryService.getLatestSnapshot(plotId);
+        }),
+
+        switchMap((snapshot) => {
+          console.log(' LATEST SNAPSHOT', snapshot);
+
+          return this.telemetryService.getTelemetryHistory(plotId, 24);
+        }),
+
+        switchMap((history) => {
+          console.log(' HISTORY', history);
+
+          return this.telemetryService.getRecommendationsByPlot(plotId);
+        }),
       )
       .subscribe({
         next: (recommendations) => {
+          console.log(
+            ' RECOMMENDATIONS',
+            recommendations,
+          );
+
           this.latestRecommendation = recommendations[0] ?? null;
+
           this.transmissionCount++;
           this.addToLog();
+
           this.isSimulating = false;
+
           this.successMessage = this.latestRecommendation
             ? 'AI processed the data and generated a recommendation.'
             : 'Readings transmitted. No recommendation generated yet.';
+
           this.cd.detectChanges();
         },
-        error: () => {
-          this.errorMessage = 'Transmission failed. Check your connection or plot assignment.';
+
+        error: (err) => {
+          console.error(' TRANSMISSION ERROR', err);
+
+          this.errorMessage =
+            'Transmission failed. Check your connection or plot assignment.';
+
           this.isSimulating = false;
           this.cd.detectChanges();
         },

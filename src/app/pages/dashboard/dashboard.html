@@ -1,4 +1,224 @@
-<div class="dashboard-placeholder">
-  <h1>Dashboard</h1>
-  <p>Dashboard under construction.</p>
+<div class="dashboard">
+
+  <section class="metrics-grid">
+
+    <div class="metric-card">
+      <div class="metric-number">
+        {{ metrics.farms }}
+      </div>
+
+      <div class="metric-label">
+        Registered farms
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-number">
+        {{ metrics.plots }}
+      </div>
+
+      <div class="metric-label">
+        Active plots
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-number">
+        {{ metrics.connectedNodes }}/{{ metrics.totalNodes }}
+      </div>
+
+      <div class="metric-label">
+        Connected IoT nodes
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-number">
+        {{ metrics.criticalAlerts }}
+      </div>
+
+      <div class="metric-label">
+        Critical alerts
+      </div>
+    </div>
+
+  </section>
+
+  <section class="content-grid">
+
+    <div class="left-column">
+
+      <div class="card">
+
+        <div class="card-header">
+          <div>
+            <h2>Plot monitoring</h2>
+            <p>
+              Latest readings from your monitored plots.
+            </p>
+          </div>
+
+          <a
+            routerLink="/plots"
+            class="view-all-btn"
+          >
+            View all plots
+          </a>
+        </div>
+
+        <div
+          class="plot-row"
+          *ngFor="let plot of plotMonitoring"
+        >
+
+          <div class="plot-info">
+            <div class="plot-icon">
+              <img
+                *ngIf="plot.imageUrl"
+                [src]="plot.imageUrl"
+                alt="plot"
+              />
+              <span *ngIf="!plot.imageUrl">
+                🌱
+              </span>
+            </div>
+            <div>
+              <h4>{{ plot.plotName }}</h4>
+              <small>{{ plot.farmName }}</small>
+            </div>
+          </div>
+
+          <div class="metric">
+            <span>SOIL MOISTURE</span>
+            <strong>
+              {{ plot.moisture }}%
+            </strong>
+          </div>
+
+          <div class="metric">
+            <span>TEMPERATURE</span>
+            <strong>
+              {{ plot.temperature }}°C
+            </strong>
+          </div>
+
+          <div>
+          <span
+            class="status-pill"
+            [ngClass]="{
+              low: plot.status==='LOW',
+              moderate: plot.status==='MODERATE',
+              critical: plot.status==='CRITICAL'
+            }"
+          >
+            {{ plot.status }}
+          </span>
+          </div>
+
+          <button
+            class="open-btn"
+            [routerLink]="['/plots']"
+          >
+            Open
+          </button>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>
+              Soil moisture trend
+            </h2>
+
+            <p>
+              Average readings from the last 7 days.
+            </p>
+          </div>
+
+          <a routerLink="/telemetry">
+            Sensor history
+          </a>
+
+        </div>
+
+        <div class="chart-container">
+          <canvas
+            baseChart
+            [type]="lineChartType"
+            [data]="lineChartData"
+            [options]="lineChartOptions"
+          >
+          </canvas>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="right-column">
+
+      <div
+        class="card stress-card"
+        *ngIf="waterStress"
+      >
+
+        <div class="stress-badge">
+          ACTION NEEDED
+        </div>
+
+        <h3>
+          {{ waterStress.stressLevel }}
+          water stress detected
+        </h3>
+
+        <p>
+          {{ waterStress.plotName }}
+          shows reduced soil moisture
+          ({{ waterStress.moisture }}%)
+          and a temperature of
+          {{ waterStress.temperature }}°C.
+        </p>
+
+        <button class="recommendation-btn">
+          View recommendation
+        </button>
+
+      </div>
+
+      <div class="card">
+
+        <div class="card-header-column">
+          <h3>Latest alerts</h3>
+
+          <p>
+            Recent events from your monitored plots.
+          </p>
+        </div>
+
+        <div
+          class="alert-item"
+          *ngFor="
+        let alert of latestAlerts
+      "
+        >
+
+          <div class="alert-icon">
+            ⚠️
+          </div>
+
+          <div>
+            <h4>
+              {{ alert.title }}
+            </h4>
+
+            <p>
+              {{ alert.description }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
