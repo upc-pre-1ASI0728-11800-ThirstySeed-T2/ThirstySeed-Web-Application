@@ -69,7 +69,11 @@ export class IotSimulatorComponent implements OnInit {
 
     this.plotService.getPlotsByUser(user.id).subscribe({
       next: (plots) => {
-        this.plots = plots;
+        this.plots = this.plotService.mergeWithStoredPlots(user.id, plots);
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.plots = this.plotService.getStoredPlots(user.id);
         this.cd.detectChanges();
       },
     });
@@ -92,7 +96,7 @@ export class IotSimulatorComponent implements OnInit {
 
   get filteredPlots(): Plot[] {
     if (!this.selectedFarmId) return this.plots;
-    return this.plots.filter((p) => p.farmId === this.selectedFarmId);
+    return this.plots.filter((p) => !p.farmId || p.farmId === this.selectedFarmId);
   }
 
   get selectedPlot(): Plot | null {

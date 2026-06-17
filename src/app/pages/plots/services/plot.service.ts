@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Plot } from '../model/plot.model';
 
@@ -61,7 +61,7 @@ export class PlotService {
     return this.http.get<Plot[]>(
       `${this.baseUrl}/plots/user/${userId}`,
       { headers: this.getHeaders() }
-    );
+    ).pipe(map((plots) => this.withoutSyncedPlaceholders(plots)));
   }
 
   // =========================
@@ -98,7 +98,12 @@ export class PlotService {
 
   getStoredPlots(userId: number): Plot[] {
     const raw = localStorage.getItem(this.getStoredPlotsKey(userId));
-    return raw ? JSON.parse(raw) : [];
+    if (!raw) return [];
+
+    const storedPlots = this.withoutSyncedPlaceholders(JSON.parse(raw));
+    localStorage.setItem(this.getStoredPlotsKey(userId), JSON.stringify(storedPlots));
+
+    return storedPlots;
   }
 
   saveStoredPlot(userId: number, plot: Plot): void {
@@ -116,10 +121,42 @@ export class PlotService {
     }
   }
   updatePlot(plotId: number, plot: Partial<Plot>): Observable<Plot> {
-    return this.http.put<Plot>(`${this.baseUrl}/${plotId}`, plot);
+    return this.http.put<Plot>(
+      `${this.baseUrl}/plots/${plotId}`,
+      plot,
+      { headers: this.getHeaders() },
+    );
+  }
+
+  deletePlot(plotId: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.baseUrl}/plots/${plotId}`,
+      { headers: this.getHeaders() },
+    );
+  }
+
+  updateStoredPlot(userId: number, updatedPlot: Plot): void {
+    const storedPlots = this.getStoredPlots(userId);
+    const exists = storedPlots.some((plot) => plot.id === updatedPlot.id);
+    const plots = exists
+      ? storedPlots.map((plot) => (plot.id === updatedPlot.id ? updatedPlot : plot))
+      : [...storedPlots, updatedPlot];
+
+    localStorage.setItem(this.getStoredPlotsKey(userId), JSON.stringify(plots));
+  }
+
+  deleteStoredPlot(userId: number, plotId: number): void {
+    const plots = this.getStoredPlots(userId).filter((plot) => plot.id !== plotId);
+    localStorage.setItem(this.getStoredPlotsKey(userId), JSON.stringify(plots));
+  }
+
+  deleteStoredPlotsByFarm(userId: number, farmId: number): void {
+    const plots = this.getStoredPlots(userId).filter((plot) => plot.farmId !== farmId);
+    localStorage.setItem(this.getStoredPlotsKey(userId), JSON.stringify(plots));
   }
 
   mergeWithStoredPlots(userId: number, backendPlots: Plot[]): Plot[] {
+    backendPlots = this.withoutSyncedPlaceholders(backendPlots);
     const storedPlots = this.getStoredPlots(userId);
     if (storedPlots.length === 0) return backendPlots;
 
@@ -127,14 +164,23 @@ export class PlotService {
 
     for (const storedPlot of storedPlots) {
       // Backend's PlotResource does not include farmId, so compare by name + extension only
-      const alreadyExists = merged.some(
+      const existingIndex = merged.findIndex(
         (plot) =>
           plot.id === storedPlot.id ||
           (plot.name === storedPlot.name && plot.extension === storedPlot.extension),
       );
+      const alreadyExists = existingIndex >= 0;
 
       if (!alreadyExists) {
         merged.push(storedPlot);
+      } else {
+        merged[existingIndex] = {
+          ...merged[existingIndex],
+          farmId: storedPlot.farmId ?? merged[existingIndex].farmId,
+          location: storedPlot.location || merged[existingIndex].location,
+          status: storedPlot.status || merged[existingIndex].status,
+          imageUrl: storedPlot.imageUrl || merged[existingIndex].imageUrl,
+        };
       }
     }
 
@@ -143,5 +189,13 @@ export class PlotService {
 
   private getStoredPlotsKey(userId: number): string {
     return `${this.LOCAL_PLOTS_KEY}_${userId}`;
+  }
+
+  private withoutSyncedPlaceholders(plots: Plot[]): Plot[] {
+    return plots.filter((plot) => !this.isSyncedPlaceholder(plot));
+  }
+
+  private isSyncedPlaceholder(plot: Plot): boolean {
+    return (plot.name || '').trim().toLowerCase() === 'parcela sincronizada';
   }
 }

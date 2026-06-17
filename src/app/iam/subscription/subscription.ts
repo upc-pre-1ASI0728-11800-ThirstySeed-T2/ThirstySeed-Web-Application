@@ -42,7 +42,18 @@ export class SubscriptionComponent {
     }
 
     this.subscriptionService.createSubscription({ userId: user.id, planType }).subscribe({
-      next: () => {
+      next: (subscription) => {
+        localStorage.setItem(`subscription_${user.id}`, JSON.stringify(subscription));
+        user.subscription = {
+          name: plan,
+          price: plan === 'Plus' ? 19 : 39,
+          maxNodes: subscription?.maxNodes ?? (plan === 'Plus' ? 3 : 10),
+          features: plan === 'Plus'
+            ? ['Up to 3 farms', 'Up to 3 IoT nodes', 'Basic plot monitoring', 'Water stress alerts']
+            : ['Up to 10 farms', 'Up to 10 IoT nodes', 'Predictive irrigation', 'Priority alerts and reports'],
+        };
+        this.authService.setCurrentUser(user);
+
         const target = isWaterManager ? '/water-manager/dashboard' : '/dashboard';
         this.router.navigate([target]);
       },
