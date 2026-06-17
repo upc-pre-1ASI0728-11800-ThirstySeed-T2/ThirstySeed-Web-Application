@@ -26,8 +26,9 @@ export class SidebarComponent implements OnInit {
   menuItems: MenuItem[] = [];
   panelTitle = 'Producer Panel';
   showPremiumCard = false;
-  usedNodes = 4;
-  totalNodes = 10;
+  planName = 'Plan';
+  usedNodes = 0;
+  totalNodes = 0;
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -65,6 +66,19 @@ export class SidebarComponent implements OnInit {
         { label: 'Settings',     route: '/settings'     },
       ];
       this.showPremiumCard = true;
+      this.loadProducerPlanSummary(user.id);
     }
+  }
+
+  private loadProducerPlanSummary(userId: number): void {
+    const cachedSubscription = localStorage.getItem(`subscription_${userId}`);
+    const subscription = cachedSubscription ? JSON.parse(cachedSubscription) : null;
+    const planType = subscription?.planType || '';
+
+    this.planName = planType.includes('PREMIUM') ? 'Premium' : 'Plus';
+    this.totalNodes = subscription?.maxNodes ?? (planType.includes('PREMIUM') ? 10 : 3);
+
+    const storedPlots = localStorage.getItem(`configuredPlots_${userId}`);
+    this.usedNodes = storedPlots ? JSON.parse(storedPlots).length : 0;
   }
 }

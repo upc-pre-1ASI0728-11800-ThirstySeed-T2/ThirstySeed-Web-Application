@@ -126,22 +126,60 @@
               </span>
             </div>
             <div class="plot-metrics">
-              <div class="metric">
+              <div class="metric" *ngIf="editingPlotId !== plot.id">
                 <label>LOCATION</label>
                 <span>{{ plot.location || '--' }}</span>
               </div>
-              <div class="metric">
+              <div class="metric" *ngIf="editingPlotId !== plot.id">
                 <label>EXTENSION</label>
                 <span>{{ plot.extension ? plot.extension + ' ha' : '--' }}</span>
               </div>
-              <div class="metric">
+              <div class="metric" *ngIf="editingPlotId !== plot.id">
                 <label>STATUS</label>
                 <span [ngClass]="(plot.status || 'no-data').toLowerCase()">{{ plot.status || '--' }}</span>
               </div>
+
+              <div class="plot-edit-form" *ngIf="editingPlotId === plot.id">
+                <label>
+                  Name
+                  <input [(ngModel)]="editForm.name" name="editName{{ plot.id }}" />
+                </label>
+                <label>
+                  Farm
+                  <select [(ngModel)]="editForm.farmId" name="editFarm{{ plot.id }}">
+                    <option [ngValue]="null" disabled>Select farm</option>
+                    <option *ngFor="let farm of farms" [ngValue]="farm.id">{{ farm.name }}</option>
+                  </select>
+                </label>
+                <label>
+                  Extension
+                  <input type="number" [(ngModel)]="editForm.extension" name="editExtension{{ plot.id }}" />
+                </label>
+                <label>
+                  Status
+                  <select [(ngModel)]="editForm.status" name="editStatus{{ plot.id }}">
+                    <option>Active</option>
+                    <option>Moderate</option>
+                    <option>High</option>
+                    <option>Offline</option>
+                  </select>
+                </label>
+                <label>
+                  Image URL
+                  <input [(ngModel)]="editForm.imageUrl" name="editImage{{ plot.id }}" />
+                </label>
+              </div>
             </div>
             <div class="plot-actions">
-              <button class="btn-edit">Edit</button>
-              <button class="btn-open">Open</button>
+              <ng-container *ngIf="editingPlotId === plot.id; else defaultActions">
+                <button class="btn-edit" (click)="saveEdit(plot)">Save</button>
+                <button class="btn-open" (click)="cancelEdit()">Cancel</button>
+              </ng-container>
+              <ng-template #defaultActions>
+                <button class="btn-edit" (click)="startEdit(plot)">Edit</button>
+                <button class="btn-open" (click)="openPlot(plot)">Open</button>
+                <button class="btn-delete" (click)="deletePlot(plot)">Delete</button>
+              </ng-template>
             </div>
           </div>
         </div>

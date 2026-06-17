@@ -4,7 +4,7 @@
   <div class="filter-card">
     <div class="filter-group">
       <label>Selected Farm</label>
-      <select (change)="onFarmChange($event)">
+      <select [value]="selectedFarmId ?? ''" (change)="onFarmChange($event)">
         <option value="">Select farm</option>
 
         <option
@@ -18,6 +18,7 @@
       <label>Selected Plot</label>
       <select
         [disabled]="!selectedFarmId"
+        [value]="selectedPlotId ?? ''"
         (change)="onPlotChange($event)">
         <option value="">
           Select plot

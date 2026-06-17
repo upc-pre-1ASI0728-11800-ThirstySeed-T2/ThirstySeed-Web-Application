@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { forkJoin } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Farm } from '../model/farm.model';
 import { environment } from '../../../../environments/environment';
 
@@ -26,6 +26,10 @@ export class FarmService {
     return this.http.post<number>(this.baseUrl, farm, { headers: this.getHeaders() });
   }
 
+  deleteFarm(farmId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${farmId}`, { headers: this.getHeaders() });
+  }
+
   // Guarda el ID de la farm en localStorage
   saveFarmId(userId: number, farmId: number): void {
     const key = `farmIds_${userId}`;
@@ -43,9 +47,28 @@ export class FarmService {
     return raw ? JSON.parse(raw) : [];
   }
 
+  removeFarmId(userId: number, farmId: number): void {
+    const key = `farmIds_${userId}`;
+    const ids = this.getSavedFarmIds(userId).filter((id) => id !== farmId);
+    localStorage.setItem(key, JSON.stringify(ids));
+  }
+
+  replaceSavedFarmIds(userId: number, farmIds: number[]): void {
+    localStorage.setItem(`farmIds_${userId}`, JSON.stringify(farmIds));
+  }
+
   // Carga todas las farms guardadas por ID
   getFarmsByIds(ids: number[]): Observable<Farm[]> {
-    const requests = ids.map((id) => this.getFarmById(id));
-    return forkJoin(requests);
+    if (ids.length === 0) {
+      return of([]);
+    }
+
+    const requests = ids.map((id) =>
+      this.getFarmById(id).pipe(catchError(() => of(null))),
+    );
+
+    return forkJoin(requests).pipe(
+      map((farms) => farms.filter((farm): farm is Farm => farm !== null)),
+    );
   }
 }
