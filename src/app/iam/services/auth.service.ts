@@ -93,6 +93,11 @@ export class AuthService {
       return;
     }
 
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      localStorage.removeItem(`subscription_${userId}`);
+    }
+    localStorage.removeItem('userId');
     localStorage.removeItem(this.CURRENT_USER_KEY);
     localStorage.removeItem(this.JWT_KEY);
   }

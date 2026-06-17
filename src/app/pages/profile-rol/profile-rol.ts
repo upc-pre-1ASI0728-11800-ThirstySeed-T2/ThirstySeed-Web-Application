@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../iam/services/auth.service';
 import { Subscription, SubscriptionService } from '../../iam/services/subscription.service';
 
-type PlanType = 'PRODUCER_PLUS' | 'PRODUCER_PREMIUM' | 'WATER_MANAGER_PLUS' | 'WATER_MANAGER_PREMIUM';
+type PlanType = 'PLUS' | 'PREMIUM';
 
 interface PlanOption {
   type: PlanType;
@@ -35,7 +35,7 @@ export class ProfileRol implements OnInit {
 
   private readonly producerPlans: PlanOption[] = [
     {
-      type: 'PRODUCER_PLUS',
+      type: 'PLUS',
       name: 'Plus',
       price: 19,
       maxFarms: 2,
@@ -45,7 +45,7 @@ export class ProfileRol implements OnInit {
       features: ['Up to 2 farms', 'Up to 3 IoT nodes', 'Basic plot monitoring', 'Water stress alerts'],
     },
     {
-      type: 'PRODUCER_PREMIUM',
+      type: 'PREMIUM',
       name: 'Premium',
       price: 39,
       maxFarms: 10,
@@ -58,7 +58,7 @@ export class ProfileRol implements OnInit {
 
   private readonly waterManagerPlans: PlanOption[] = [
     {
-      type: 'WATER_MANAGER_PLUS',
+      type: 'PLUS',
       name: 'Plus',
       price: 19,
       maxFarms: 2,
@@ -68,7 +68,7 @@ export class ProfileRol implements OnInit {
       features: ['Manage 1 producer', 'Up to 2 zones', 'Water distribution planning', 'Consumption reports'],
     },
     {
-      type: 'WATER_MANAGER_PREMIUM',
+      type: 'PREMIUM',
       name: 'Premium',
       price: 39,
       maxFarms: 10,
@@ -192,6 +192,9 @@ export class ProfileRol implements OnInit {
       status: 'ACTIVE',
       active: true,
     };
+
+    // Cache subscription locally so main-layout can verify it when the GET endpoint returns 405
+    localStorage.setItem(`subscription_${this.userId}`, JSON.stringify(this.currentSubscription));
 
     const user = this.authService.getCurrentUser();
     if (!user) return;
