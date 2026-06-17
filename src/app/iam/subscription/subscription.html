@@ -6,13 +6,17 @@
     </div>
 
     <div>
-      <h1>Choose the right plan for your crops.</h1>
-      <p>Select the initial capacity for farms, IoT nodes and monitoring.</p>
+      <h1 *ngIf="!isWaterManager">Choose the right plan for your crops.</h1>
+      <p *ngIf="!isWaterManager">Select the initial capacity for farms, IoT nodes and monitoring.</p>
+
+      <h1 *ngIf="isWaterManager">Choose the right plan for your water zones.</h1>
+      <p *ngIf="isWaterManager">Select the initial capacity to manage producers, zones and distribution plans.</p>
     </div>
 
     <div class="insight-card">
       <strong>After this step</strong>
-      <span>You will enter your producer dashboard and can change your plan later.</span>
+      <span *ngIf="!isWaterManager">You will enter your producer dashboard and can change your plan later.</span>
+      <span *ngIf="isWaterManager">You will enter your water manager dashboard and can change your plan later.</span>
     </div>
   </section>
 
@@ -22,12 +26,13 @@
       <h2>Select your subscription</h2>
       <p class="intro">This plan will be attached to your new account.</p>
 
-      <div class="plans-grid">
+      <!-- PRODUCER PLANS -->
+      <div class="plans-grid" *ngIf="!isWaterManager">
         <div class="plan-box">
           <h3>Plus</h3>
           <div class="price">$19 <small>/mo</small></div>
           <ul>
-            <li>Up to 3 farms</li>
+            <li>Up to 2 farms</li>
             <li>Up to 3 IoT nodes</li>
             <li>Basic plot monitoring</li>
             <li>Water stress alerts</li>
@@ -46,6 +51,38 @@
             <li>Up to 10 IoT nodes</li>
             <li>Predictive irrigation</li>
             <li>Priority alerts and reports</li>
+          </ul>
+          <button type="button" (click)="selectPlan('Premium')" [disabled]="savingPlan === 'Premium'">
+            {{ savingPlan === 'Premium' ? 'Creating...' : 'Select Premium' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- WATER MANAGER PLANS -->
+      <div class="plans-grid" *ngIf="isWaterManager">
+        <div class="plan-box">
+          <h3>Plus</h3>
+          <div class="price">$19 <small>/mo</small></div>
+          <ul>
+            <li>Manage 1 producer</li>
+            <li>Up to 2 zones</li>
+            <li>Water distribution planning</li>
+            <li>Consumption reports</li>
+          </ul>
+          <button type="button" (click)="selectPlan('Plus')" [disabled]="savingPlan === 'Plus'">
+            {{ savingPlan === 'Plus' ? 'Creating...' : 'Select Plus' }}
+          </button>
+        </div>
+
+        <div class="plan-box premium">
+          <span class="recommended">Recommended</span>
+          <h3>Premium</h3>
+          <div class="price">$39 <small>/mo</small></div>
+          <ul>
+            <li>Manage up to 5 producers</li>
+            <li>Up to 10 zones</li>
+            <li>Predictive distribution</li>
+            <li>Critical area alerts &amp; reports</li>
           </ul>
           <button type="button" (click)="selectPlan('Premium')" [disabled]="savingPlan === 'Premium'">
             {{ savingPlan === 'Premium' ? 'Creating...' : 'Select Premium' }}

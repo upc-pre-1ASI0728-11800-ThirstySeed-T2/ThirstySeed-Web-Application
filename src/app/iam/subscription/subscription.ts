@@ -12,6 +12,7 @@ import { CreateSubscriptionRequest, SubscriptionService } from '../services/subs
   styleUrl: './subscription.css',
 })
 export class SubscriptionComponent {
+  isWaterManager = false;
   savingPlan: 'Plus' | 'Premium' | null = null;
   errorMessage = '';
 
@@ -19,7 +20,10 @@ export class SubscriptionComponent {
     private authService: AuthService,
     private router: Router,
     private subscriptionService: SubscriptionService,
-  ) {}
+  ) {
+    const user = this.authService.getCurrentUser();
+    this.isWaterManager = user?.roles?.includes('ROLE_WATER_MANAGER') ?? false;
+  }
 
   selectPlan(plan: 'Plus' | 'Premium'): void {
     const user = this.authService.getCurrentUser();
