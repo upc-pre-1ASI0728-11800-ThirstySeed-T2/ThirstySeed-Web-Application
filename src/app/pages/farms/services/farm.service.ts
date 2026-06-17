@@ -16,6 +16,11 @@ export class FarmService {
     return new HttpHeaders({ Authorization: `Bearer ${token}` });
   }
 
+  // GET /api/v1/farms
+  getAllFarms(): Observable<Farm[]> {
+    return this.http.get<Farm[]>(this.baseUrl, { headers: this.getHeaders() });
+  }
+
   // GET /api/v1/farms/{farmId}
   getFarmById(farmId: number): Observable<Farm> {
     return this.http.get<Farm>(`${this.baseUrl}/${farmId}`, { headers: this.getHeaders() });
