@@ -7,6 +7,7 @@ import { WaterStressAssessment } from '../model/water-stress.model';
 import { TelemetryNode } from '../model/node.model';
 import {
   IrrigationRecommendation,
+  IrrigationSchedule,
   TelemetryReadingPayload,
   TelemetrySnapshot,
 } from '../model/recommendation.model';
@@ -112,6 +113,15 @@ export class TelemetryService {
   getLatestSnapshot(plotId: number): Observable<TelemetrySnapshot> {
     return this.http
       .get<TelemetrySnapshot>(`${this.apiUrl}/api/v1/plots/${plotId}/telemetry/latest`, {
+        headers: this.getHeaders(),
+      })
+      .pipe(catchError((err) => throwError(() => err)));
+  }
+
+  // GET /api/v1/schedules/plot/{plotId}
+  getSchedulesByPlot(plotId: number): Observable<IrrigationSchedule[]> {
+    return this.http
+      .get<IrrigationSchedule[]>(`${this.apiUrl}/api/v1/schedules/plot/${plotId}`, {
         headers: this.getHeaders(),
       })
       .pipe(catchError((err) => throwError(() => err)));

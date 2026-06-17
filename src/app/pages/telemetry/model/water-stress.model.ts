@@ -9,6 +9,8 @@ export interface WaterStressAssessment {
     humidity: number;
     windSpeed: number;
     precipitationProbability: number;
+    droughtForecast: boolean;
+    pestSeasonActive: boolean;
   };
 
   evaluatedAt: string;
