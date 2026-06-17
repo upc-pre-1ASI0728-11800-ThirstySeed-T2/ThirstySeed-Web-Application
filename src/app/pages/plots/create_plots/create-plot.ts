@@ -30,7 +30,7 @@ export class CreatePlotComponent implements OnInit {
   selectedCrop = '';
   selectedSoilType = '';
   selectedIrrigation = '';
-  selectedWaterDemand = 'MEDIUM';
+  selectedWaterDemand: 'HIGH' | 'MODERATE' | 'LOW' = 'MODERATE';
 
   selectedFarmId: number | null = null;
 
@@ -59,7 +59,7 @@ export class CreatePlotComponent implements OnInit {
   cropOptions = ['Corn', 'Rice', 'Coffee', 'Potato', 'Wheat', 'Avocado'];
   soilTypes = ['Clay', 'Loam', 'Sand', 'Silt', 'Mixed'];
   irrigationSystems = ['Drip', 'Sprinkler', 'Surface', 'Manual'];
-  waterDemandOptions = ['LOW', 'MEDIUM', 'HIGH'];
+  waterDemandOptions: Array<'HIGH' | 'MODERATE' | 'LOW'> = ['HIGH', 'MODERATE', 'LOW'];
 
   constructor(
     private plotService: PlotService,
@@ -77,7 +77,6 @@ export class CreatePlotComponent implements OnInit {
     const user = this.authService.getCurrentUser();
     if (!user) return;
 
-    // SUBSCRIPTION — with localStorage fallback when GET /subscriptions/user returns 405
     this.subscriptionService.getByUserId(user.id).subscribe({
       next: (sub) => {
         this.planType = sub.planType;
@@ -95,7 +94,6 @@ export class CreatePlotComponent implements OnInit {
       },
     });
 
-    // PLOTS USAGE
     this.plotService.getPlotsByUser(user.id).subscribe({
       next: (plots) => {
         this.currentNodes = this.plotService.mergeWithStoredPlots(user.id, plots).length;
@@ -105,7 +103,6 @@ export class CreatePlotComponent implements OnInit {
       },
     });
 
-    // FARMS — primary: localStorage IDs; fallback: getAllFarms filtered by producerId
     const farmIds = this.farmService.getSavedFarmIds(user.id);
 
     if (farmIds.length > 0) {
@@ -121,9 +118,6 @@ export class CreatePlotComponent implements OnInit {
     }
   }
 
-  // ======================
-  // FARMS FALLBACK
-  // ======================
   private loadAllFarms(userId: number): void {
     this.farmService.getAllFarms().subscribe({
       next: (farms) => {
@@ -134,16 +128,10 @@ export class CreatePlotComponent implements OnInit {
     });
   }
 
-  // ======================
-  // FARM NAME
-  // ======================
   get selectedFarmName(): string {
     return this.farms.find(f => f.id === this.selectedFarmId)?.name ?? 'No farm selected';
   }
 
-  // ======================
-  // CREATE PLOT (FIX FINAL REAL)
-  // ======================
   createPlot(): void {
 
     const user = this.authService.getCurrentUser();
@@ -153,8 +141,18 @@ export class CreatePlotComponent implements OnInit {
       return;
     }
 
+    if (!this.plotName.trim()) {
+      this.errorMessage = 'Plot name is required';
+      return;
+    }
+
     if (!this.selectedFarmId) {
       this.errorMessage = 'Please select a farm';
+      return;
+    }
+
+    if (this.extension <= 0) {
+      this.errorMessage = 'Area must be greater than 0';
       return;
     }
 
@@ -163,59 +161,49 @@ export class CreatePlotComponent implements OnInit {
       return;
     }
 
-    // 🔥 FIX IMPORTANTE: payload alineado a backend real (evita 500)
     const payload = {
+      name: this.plotName,
       cropName: this.selectedCrop || this.plotName,
       waterDemand: this.selectedWaterDemand,
       area: this.extension,
-      coordinatesJson: JSON.stringify({ name: this.plotName }),
+      soilType: this.selectedSoilType || undefined,
+      irrigationSystem: this.selectedIrrigation || undefined,
+      description: this.description || undefined,
+      coordinatesJson: null,
     };
 
-    console.log('👉 PAYLOAD FINAL:', payload);
-    console.log('👉 FARM ID:', this.selectedFarmId);
-
     this.plotService.createPlotInFarm(this.selectedFarmId, payload).subscribe({
-        next: () => {
-          this.plotService.getPlotsByUser(user.id).subscribe({
-            next: (backendPlots) => {
-              console.log('BACKEND PLOTS AFTER CREATE', backendPlots);
+      next: () => {
+        this.plotService.getPlotsByUser(user.id).subscribe({
+          next: (backendPlots) => {
+            const now = new Date().toISOString();
+            const latestPlot = backendPlots.length > 0 ? backendPlots[backendPlots.length - 1] : null;
 
-              const now = new Date().toISOString();
+            this.plotService.saveStoredPlot(user.id, {
+              id: latestPlot?.id ?? Date.now(),
+              userId: user.id,
+              farmId: this.selectedFarmId!,
+              name: this.plotName,
+              location: this.selectedFarmName,
+              extension: this.extension,
+              status: this.status,
+              imageUrl: this.imageUrl || 'https://placehold.co/600x400',
+              createdAt: now,
+              updatedAt: now,
+            });
 
-              const latestPlot =
-                backendPlots.length > 0
-                  ? backendPlots[backendPlots.length - 1]
-                  : null;
-
-              this.plotService.saveStoredPlot(user.id, {
-                id: latestPlot?.id ?? Date.now(),
-                userId: user.id,
-                farmId: this.selectedFarmId!,
-                name: this.plotName,
-                location: this.selectedFarmName,
-                extension: this.extension,
-                status: this.status,
-                imageUrl: this.imageUrl || 'https://placehold.co/600x400',
-                createdAt: now,
-                updatedAt: now,
-              });
-
-              this.successMessage = 'Plot created successfully';
-              this.router.navigate(['/plots']);
-            },
-          });
-        },
+            this.successMessage = 'Plot created successfully';
+            this.router.navigate(['/plots']);
+          },
+        });
+      },
       error: (err) => {
         console.error('CREATE PLOT ERROR:', err);
-
         this.errorMessage = err?.error?.message || 'Failed to create plot';
       },
     });
   }
 
-  // ======================
-  // BACK
-  // ======================
   goBack(): void {
     this.router.navigate(['/plots']);
   }

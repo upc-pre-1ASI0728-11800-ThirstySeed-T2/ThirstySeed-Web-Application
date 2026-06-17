@@ -13,10 +13,14 @@ export interface CreatePlotRequest {
 }
 
 export interface ConfigurePlotRequest {
+  name: string;
   cropName: string;
-  waterDemand: string;
+  waterDemand: 'HIGH' | 'MODERATE' | 'LOW';
   area: number;
-  coordinatesJson: string;
+  soilType?: string;
+  irrigationSystem?: string;
+  description?: string;
+  coordinatesJson?: string | null;
 }
 
 @Injectable({
