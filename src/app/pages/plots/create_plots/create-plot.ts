@@ -158,27 +158,8 @@ export class CreatePlotComponent implements OnInit {
 
     this.plotService.createPlotInFarm(this.selectedFarmId, payload)
       .subscribe({
-        next: (res) => {
-
-          console.log('PLOT CREATED:', res);
-
-          const now = new Date().toISOString();
-          this.plotService.saveStoredPlot(user.id, {
-            id: Date.now(),
-            userId: user.id,
-            farmId: this.selectedFarmId!,
-            name: this.plotName,
-            location: this.selectedFarmName,
-            extension: this.extension,
-            status: this.status,
-            imageUrl: this.imageUrl || 'https://placehold.co/600x400',
-            createdAt: now,
-            updatedAt: now,
-          });
-
+        next: () => {
           this.successMessage = 'Plot created successfully';
-          this.currentNodes++;
-
           this.router.navigate(['/plots']);
         },
         error: (err) => {

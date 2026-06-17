@@ -121,15 +121,16 @@ export class PlotService {
 
   mergeWithStoredPlots(userId: number, backendPlots: Plot[]): Plot[] {
     const storedPlots = this.getStoredPlots(userId);
+    if (storedPlots.length === 0) return backendPlots;
+
     const merged = [...backendPlots];
 
     for (const storedPlot of storedPlots) {
+      // Backend's PlotResource does not include farmId, so compare by name + extension only
       const alreadyExists = merged.some(
         (plot) =>
           plot.id === storedPlot.id ||
-          (plot.farmId === storedPlot.farmId &&
-            plot.name === storedPlot.name &&
-            plot.extension === storedPlot.extension),
+          (plot.name === storedPlot.name && plot.extension === storedPlot.extension),
       );
 
       if (!alreadyExists) {
