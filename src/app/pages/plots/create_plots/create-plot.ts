@@ -142,9 +142,9 @@ export class CreatePlotComponent implements OnInit {
     const payload = {
       cropName: this.selectedCrop || this.plotName,
       waterDemand: this.selectedWaterDemand,
+      area: this.extension,
       coordinatesJson: JSON.stringify({
         name: this.plotName,
-        area: this.extension,
         farmName: this.selectedFarmName,
         soilType: this.selectedSoilType,
         irrigationSystem: this.selectedIrrigation,
