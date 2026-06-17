@@ -5,10 +5,13 @@ import { environment } from '../../../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const platformId = inject(PLATFORM_ID);
+  const isApiRequest = environment.apiBaseUrl
+    ? req.url.startsWith(environment.apiBaseUrl)
+    : req.url.startsWith('/api/');
 
   if (
     !isPlatformBrowser(platformId) ||
-    !req.url.startsWith(environment.apiBaseUrl) ||
+    !isApiRequest ||
     req.headers.has('Authorization')
   ) {
     return next(req);

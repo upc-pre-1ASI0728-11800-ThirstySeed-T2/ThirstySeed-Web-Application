@@ -83,10 +83,8 @@ export class FarmCreateComponent implements OnInit {
       return;
     }
 
-    const ids = this.farmService.getSavedFarmIds(user.id);
-
-    const doCreate = (maxFarms: number, planType: string) => {
-      if (maxFarms > 0 && ids.length >= maxFarms) {
+    const doCreate = (maxFarms: number, planType: string, currentFarmCount: number) => {
+      if (maxFarms > 0 && currentFarmCount >= maxFarms) {
         this.errorMessage = `Your ${planType} plan only allows ${maxFarms} farm(s).`;
         return;
       }
@@ -95,14 +93,14 @@ export class FarmCreateComponent implements OnInit {
       this.errorMessage = '';
 
       const payload = {
-        name: this.farm.name,
-        totalArea: this.farm.totalArea ?? 0,
-        location: this.farm.location,
+        name: this.farm.name.trim(),
+        totalArea: Number(this.farm.totalArea) || 0,
+        waterManagementZoneId: Number(this.farm.waterManagementZoneId),
+        location: this.farm.location.trim(),
         productionType: this.farm.productionType,
         initialStatus: this.farm.initialStatus,
-        mainCrop: this.farm.mainCrop,
-        description: this.farm.description,
-        waterManagementZoneId: this.farm.waterManagementZoneId,
+        mainCrop: this.farm.mainCrop.trim(),
+        description: this.farm.description.trim(),
       };
 
       this.farmService.createFarm(payload).subscribe({
@@ -112,16 +110,29 @@ export class FarmCreateComponent implements OnInit {
           this.router.navigate(['/farms']);
         },
         error: (err) => {
-          this.errorMessage = 'Failed to create farm.';
+          this.errorMessage = err?.error?.message || err?.error?.detail || 'Failed to create farm.';
           this.loading = false;
           console.error('CREATE FARM ERROR:', err);
+          console.error('CREATE FARM PAYLOAD:', payload);
         },
+      });
+    };
+
+    const verifyFarmUsageAndCreate = (maxFarms: number, planType: string) => {
+      const ids = this.farmService.getSavedFarmIds(user.id);
+
+      this.farmService.getFarmsByIds(ids).subscribe({
+        next: (farms) => {
+          this.farmService.replaceSavedFarmIds(user.id, farms.map((farm) => farm.id));
+          doCreate(maxFarms, planType, farms.length);
+        },
+        error: () => doCreate(maxFarms, planType, 0),
       });
     };
 
     this.subscriptionService.getByUserId(user.id).subscribe({
       next: (subscription) => {
-        doCreate(subscription.maxFarms, subscription.planType);
+        verifyFarmUsageAndCreate(subscription.maxFarms, subscription.planType);
       },
       error: () => {
         // Fallback: use locally cached subscription when GET endpoint returns 405
@@ -129,9 +140,9 @@ export class FarmCreateComponent implements OnInit {
         if (cached) {
           try {
             const sub = JSON.parse(cached);
-            doCreate(sub.maxFarms ?? 0, sub.planType ?? '');
+            verifyFarmUsageAndCreate(sub.maxFarms ?? 0, sub.planType ?? '');
           } catch {
-            doCreate(0, '');
+            verifyFarmUsageAndCreate(0, '');
           }
         } else {
           this.errorMessage = 'Could not verify your subscription. Please try again.';

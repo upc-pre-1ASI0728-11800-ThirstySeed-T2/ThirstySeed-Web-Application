@@ -19,6 +19,7 @@ export class FarmsComponent implements OnInit {
   allPlots: any[] = [];
   loading = false;
   errorMessage = '';
+  successMessage = '';
   subscriptionPlan: string | null = null;
   maxFarms: number | null = null;
 
@@ -45,7 +46,7 @@ export class FarmsComponent implements OnInit {
         this.plotService.getPlotsByUser(user.id).subscribe({
           next: (plots) => {
             console.log('Plots:', plots);
-            this.allPlots = plots;
+            this.allPlots = this.plotService.mergeWithStoredPlots(user.id, plots);
             this.loadFarms(user.id);
           },
           error: (err) => {
@@ -70,6 +71,7 @@ export class FarmsComponent implements OnInit {
 
     if (!ids || ids.length === 0) {
       this.farms = [];
+      this.errorMessage = '';
       this.loading = false;
 
       this.cd.detectChanges();
@@ -78,7 +80,9 @@ export class FarmsComponent implements OnInit {
 
     this.farmService.getFarmsByIds(ids).subscribe({
       next: (farms) => {
+        this.farmService.replaceSavedFarmIds(userId, farms.map((farm) => farm.id));
         this.farms = farms;
+        this.errorMessage = '';
         this.loading = false;
 
         this.cd.detectChanges();
@@ -116,5 +120,26 @@ export class FarmsComponent implements OnInit {
 
   openFarm(farmId: number): void {
     this.router.navigate(['/farms', farmId]);
+  }
+
+  deleteFarm(farm: Farm): void {
+    const plotsCount = this.getPlotsByFarm(farm.id);
+    const message = plotsCount > 0
+      ? `Delete farm "${farm.name}" and remove ${plotsCount} associated plot${plotsCount === 1 ? '' : 's'} from this app?`
+      : `Delete farm "${farm.name}"?`;
+
+    if (!confirm(message)) return;
+
+    const user = this.authService.getCurrentUser();
+    if (!user) return;
+
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.farmService.removeFarmId(user.id, farm.id);
+    this.plotService.deleteStoredPlotsByFarm(user.id, farm.id);
+    this.farms = this.farms.filter((item) => item.id !== farm.id);
+    this.allPlots = this.allPlots.filter((plot) => plot.farmId !== farm.id);
+    this.successMessage = 'Farm removed successfully.';
+    this.cd.detectChanges();
   }
 }

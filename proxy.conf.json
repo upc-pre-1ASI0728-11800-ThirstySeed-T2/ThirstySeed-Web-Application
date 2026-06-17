@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://thirsty-seed-api-ezc5dchyh8bga4gp.canadacentral-01.azurewebsites.net",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

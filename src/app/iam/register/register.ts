@@ -88,9 +88,19 @@ export class RegisterComponent {
       roles: [role],
     }).subscribe({
       next: () => {
-        this.isLoading = false;
-        this.successMessage = 'Account created successfully. Please log in.';
-        setTimeout(() => this.router.navigate(['/login']), 1500);
+        this.authService.signIn(this.username.trim(), this.password).subscribe({
+          next: (user) => {
+            localStorage.setItem('userId', String(user.id));
+            this.isLoading = false;
+            this.successMessage = 'Account created successfully. Choose your plan.';
+            this.router.navigate(['/subscription']);
+          },
+          error: () => {
+            this.isLoading = false;
+            this.successMessage = 'Account created successfully. Please log in to choose your plan.';
+            setTimeout(() => this.router.navigate(['/login']), 1500);
+          },
+        });
       },
       error: (err) => {
         this.isLoading = false;

@@ -102,11 +102,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   get showGate(): boolean {
-    return (
-      this.subscriptionChecked &&
-      !this.hasSubscription &&
-      this.currentUrl !== '/profile-rol'
-    );
+    return false;
   }
 
   get showChecking(): boolean {
@@ -125,6 +121,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       if (!this.destroyed && !this.subscriptionChecked) {
         this.hasSubscription = false;
         this.subscriptionChecked = true;
+        this.redirectToInitialSubscriptionIfNeeded();
         this.cd.detectChanges();
       }
     }, 6000);
@@ -142,6 +139,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           localStorage.removeItem(`subscription_${this.userId}`);
         }
         this.subscriptionChecked = true;
+        this.redirectToInitialSubscriptionIfNeeded();
         this.cd.detectChanges();
       },
       error: () => {
@@ -151,9 +149,20 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
         const cached = localStorage.getItem(`subscription_${this.userId}`);
         this.hasSubscription = !!cached;
         this.subscriptionChecked = true;
+        this.redirectToInitialSubscriptionIfNeeded();
         this.cd.detectChanges();
       },
     });
+  }
+
+  private redirectToInitialSubscriptionIfNeeded(): void {
+    if (
+      !this.hasSubscription &&
+      this.currentUrl !== '/profile-rol' &&
+      this.currentUrl !== '/subscription'
+    ) {
+      this.router.navigate(['/subscription']);
+    }
   }
 
   ngOnDestroy(): void {
