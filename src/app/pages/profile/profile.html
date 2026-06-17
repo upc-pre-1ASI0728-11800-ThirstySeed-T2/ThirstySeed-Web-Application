@@ -1,0 +1,107 @@
+<section class="profile-page">
+
+  <header class="top-nav">
+    <div class="top-nav-left">
+      <span class="page-badge">User Profile</span>
+      <h1>My profile</h1>
+      <p class="subtitle">Manage your personal information. This data is used to personalise your ThirstySeed experience.</p>
+    </div>
+  </header>
+
+  <div class="profile-layout" *ngIf="!loading; else loadingTpl">
+
+    <!-- FORM CARD -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <h2>{{ isEditing ? 'Edit profile' : 'Create your profile' }}</h2>
+        <p>{{ isEditing ? 'Update your personal details.' : 'Complete the form below to set up your profile.' }}</p>
+        <span class="status-badge" [ngClass]="isEditing ? 'badge-active' : 'badge-pending'">
+          {{ isEditing ? 'Profile active' : 'Not configured' }}
+        </span>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-error">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>First name <span class="required">*</span></label>
+          <input type="text" [(ngModel)]="firstName" placeholder="John" [disabled]="saving" />
+        </div>
+
+        <div class="form-group">
+          <label>Last name <span class="required">*</span></label>
+          <input type="text" [(ngModel)]="lastName" placeholder="Doe" [disabled]="saving" />
+        </div>
+
+        <div class="form-group">
+          <label>Email <span class="required">*</span></label>
+          <input type="email" [(ngModel)]="email" placeholder="john.doe@example.com" [disabled]="saving" />
+        </div>
+
+        <div class="form-group">
+          <label>Phone number</label>
+          <input type="tel" [(ngModel)]="phoneNumber" placeholder="+51 999 000 111" [disabled]="saving" />
+        </div>
+
+        <div class="form-group full-width">
+          <label>Location</label>
+          <input type="text" [(ngModel)]="location" placeholder="City, region or country" [disabled]="saving" />
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-save" (click)="save()" [disabled]="saving">
+          <span class="spinner" *ngIf="saving"></span>
+          {{ saving ? 'Saving…' : (isEditing ? 'Save changes' : 'Create profile') }}
+        </button>
+      </div>
+    </div>
+
+    <!-- PREVIEW CARD -->
+    <div class="preview-card">
+      <div class="avatar-wrap">
+        <div class="avatar-circle">
+          {{ firstName ? firstName[0].toUpperCase() : '?' }}
+        </div>
+      </div>
+      <h3 class="preview-name">{{ fullName }}</h3>
+      <p class="preview-email">{{ email || '—' }}</p>
+
+      <div class="preview-section">
+        <div class="preview-row">
+          <span>Phone</span>
+          <strong>{{ phoneNumber || '—' }}</strong>
+        </div>
+        <div class="preview-row">
+          <span>Location</span>
+          <strong>{{ location || '—' }}</strong>
+        </div>
+        <div class="preview-row" *ngIf="existingProfile">
+          <span>Profile ID</span>
+          <strong>#{{ existingProfile.id }}</strong>
+        </div>
+      </div>
+
+      <div class="info-hint" *ngIf="!isEditing">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        Fill in your details to complete your profile. This helps identify your account and contact information.
+      </div>
+    </div>
+
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="loading-state">
+      <div class="spinner-lg"></div>
+      <p>Loading profile…</p>
+    </div>
+  </ng-template>
+
+</section>
