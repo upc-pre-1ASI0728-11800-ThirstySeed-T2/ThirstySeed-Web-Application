@@ -77,13 +77,49 @@
 
         <div class="form-group">
           <label>Main crop or activity</label>
-          <input type="text" placeholder="Corn, tomatoes, avocado, vegetables..." />
+          <input type="text" [(ngModel)]="farm.mainCrop" placeholder="Corn, tomatoes, avocado, vegetables..." />
         </div>
 
         <div class="form-group full-width">
           <label>Description</label>
           <textarea [(ngModel)]="farm.description" rows="3"
             placeholder="Add notes about this farm: its irrigation system, main crops or monitoring needs."></textarea>
+        </div>
+
+        <!-- WATER MANAGEMENT ZONE -->
+        <div class="form-group full-width">
+          <label>Water management zone <span class="required-mark">*</span></label>
+          <select
+            [ngModel]="farm.waterManagementZoneId"
+            (ngModelChange)="farm.waterManagementZoneId = +$event; onZoneChange()"
+            [disabled]="loadingZones">
+            <option [ngValue]="undefined" disabled selected>
+              {{ loadingZones ? 'Loading zones...' : 'Select a water management zone' }}
+            </option>
+            <option *ngFor="let z of zones" [value]="z.id">{{ z.name }} — {{ z.location }}</option>
+          </select>
+        </div>
+
+        <!-- ZONE DETAILS (shown once a zone is selected) -->
+        <div *ngIf="selectedZone" class="zone-info full-width">
+          <div class="zone-info-header">
+            <span class="zone-badge">ZONE DETAILS</span>
+            <strong>{{ selectedZone.name }}</strong>
+          </div>
+          <div class="zone-detail-grid">
+            <div class="zone-detail-item">
+              <span>Location</span>
+              <strong>{{ selectedZone.location || '—' }}</strong>
+            </div>
+            <div class="zone-detail-item">
+              <span>Status</span>
+              <strong class="zone-status">{{ selectedZone.status || '—' }}</strong>
+            </div>
+            <div class="zone-detail-item full">
+              <span>Description</span>
+              <strong>{{ selectedZone.description || '—' }}</strong>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -132,13 +168,17 @@
           <span>LOCATION</span><strong>{{ farm.location || '—' }}</strong>
         </div>
         <div class="preview-row">
+          <span>ZONE</span>
+          <strong>{{ selectedZone ? selectedZone.name : '—' }}</strong>
+        </div>
+        <div class="preview-row">
+          <span>CROP</span><strong>{{ farm.mainCrop || '—' }}</strong>
+        </div>
+        <div class="preview-row">
           <span>PLOTS</span><strong>0</strong>
         </div>
         <div class="preview-row">
           <span>NODES</span><strong>0</strong>
-        </div>
-        <div class="preview-row">
-          <span>RISK</span><strong>None</strong>
         </div>
         <div class="preview-row">
           <span>STATUS</span>
