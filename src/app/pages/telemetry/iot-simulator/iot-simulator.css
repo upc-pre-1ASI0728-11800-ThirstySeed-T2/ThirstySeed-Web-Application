@@ -908,6 +908,90 @@ span.high     { color: #1565c0; font-weight: 600; }
   box-shadow: 0 4px 14px rgba(18, 121, 55, 0.3);
 }
 
+/* ── Assessment card ── */
+.ai-card.assessment {
+  border-left: 4px solid #10754F;
+  background: #fff;
+}
+
+.rec-hero.small strong {
+  font-size: 28px;
+}
+
+.rec-hero.small span {
+  font-size: 13px;
+}
+
+.weather-context {
+  margin-top: 16px;
+}
+
+.weather-context h4 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6B7280;
+  margin-bottom: 10px;
+}
+
+.weather-context h4 svg {
+  width: 14px;
+  height: 14px;
+  stroke: #6B7280;
+}
+
+.weather-grid-sim {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.wx-item {
+  background: #f8faf7;
+  border: 1px solid #e5ede2;
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wx-item span {
+  font-size: 11px;
+  color: #9CA3AF;
+  font-weight: 500;
+}
+
+.wx-item strong {
+  font-size: 13px;
+  color: #1a2e1a;
+  font-weight: 600;
+}
+
+.wx-item.flag.active {
+  background: #fff3e0;
+  border-color: #ffcc80;
+}
+
+.wx-item.flag.active strong {
+  color: #e65100;
+}
+
+/* Stress level badge colours */
+.stress-high   { background: #ffebee; color: #c62828; border-color: #ffcdd2; }
+.stress-medium { background: #fff8e1; color: #e65100; border-color: #ffe082; }
+.stress-low    { background: #e2f0da; color: #127937; border-color: #c3e6cb; }
+
+/* ── Schedule card ── */
+.ai-card.schedule {
+  border-left: 4px solid #1976D2;
+  background: #fff;
+}
+
 .btn-accept:disabled {
   background: #6eaa80;
   cursor: not-allowed;
