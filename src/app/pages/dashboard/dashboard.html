@@ -197,26 +197,34 @@
           </p>
         </div>
 
+        <div class="no-alerts" *ngIf="latestAlerts.length === 0">
+          <span>✅</span> No pending alerts
+        </div>
+
         <div
           class="alert-item"
-          *ngFor="
-        let alert of latestAlerts
-      "
+          *ngFor="let alert of latestAlerts"
+          [ngClass]="{ 'alert-critical': alert.status === 'CRITICAL' }"
         >
+          <div class="alert-icon">⚠️</div>
 
-          <div class="alert-icon">
-            ⚠️
+          <div class="alert-body">
+            <h4>{{ alert.title }}</h4>
+            <p>{{ alert.description }}</p>
+            <span class="alert-time">{{ alert.createdAt | date:'dd MMM · HH:mm' }}</span>
           </div>
 
-          <div>
-            <h4>
-              {{ alert.title }}
-            </h4>
-
-            <p>
-              {{ alert.description }}
-            </p>
-          </div>
+          <button
+            class="btn-acknowledge"
+            (click)="acknowledgeAlert(alert.id)"
+            [disabled]="acknowledgingId === alert.id"
+            title="Mark as acknowledged"
+          >
+            <span *ngIf="acknowledgingId === alert.id" class="ack-spinner"></span>
+            <svg *ngIf="acknowledgingId !== alert.id" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </button>
         </div>
       </div>
     </div>

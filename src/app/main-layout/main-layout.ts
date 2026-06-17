@@ -145,9 +145,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       error: () => {
         clearTimeout(this.fallbackTimer);
         if (this.destroyed) return;
-        // Fallback: use locally cached subscription when endpoint is unavailable (e.g. 405)
-        const cached = localStorage.getItem(`subscription_${this.userId}`);
-        this.hasSubscription = !!cached;
+        this.hasSubscription = false;
         this.subscriptionChecked = true;
         this.redirectToInitialSubscriptionIfNeeded();
         this.cd.detectChanges();

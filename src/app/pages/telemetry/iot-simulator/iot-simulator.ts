@@ -14,6 +14,7 @@ import {
   TransmissionLogEntry,
 } from '../model/recommendation.model';
 import { WaterStressAssessment } from '../model/water-stress.model';
+import { TelemetryNode } from '../model/node.model';
 import { User } from '../../../iam/services/auth.service';
 
 @Component({
@@ -40,6 +41,12 @@ export class IotSimulatorComponent implements OnInit {
   isAccepting = false;
   errorMessage = '';
   successMessage = '';
+
+  // ── Node management ────────────────────────────────────────
+  plotNodes: TelemetryNode[] = [];
+  nodeLocation = '';
+  isRegisteringNode = false;
+  nodeErrorMessage = '';
 
   // ── AI results ─────────────────────────────────────────────
   latestRecommendation: IrrigationRecommendation | null = null;
@@ -100,6 +107,49 @@ export class IotSimulatorComponent implements OnInit {
     this.latestSchedule = null;
     this.errorMessage = '';
     this.successMessage = '';
+    this.plotNodes = [];
+    this.nodeLocation = '';
+    this.nodeErrorMessage = '';
+    if (this.selectedPlotId) this.loadNodes(this.selectedPlotId);
+  }
+
+  private loadNodes(plotId: number): void {
+    this.telemetryService.getNodesByPlot(plotId).subscribe({
+      next: (nodes) => {
+        this.plotNodes = nodes;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.plotNodes = [];
+        this.cd.detectChanges();
+      },
+    });
+  }
+
+  get hasNode(): boolean {
+    return this.plotNodes.length > 0;
+  }
+
+  registerNode(): void {
+    if (!this.selectedPlotId || !this.nodeLocation.trim() || this.isRegisteringNode) return;
+    this.isRegisteringNode = true;
+    this.nodeErrorMessage = '';
+
+    this.telemetryService.createNode(this.selectedPlotId, this.nodeLocation.trim()).pipe(
+      switchMap(() => this.telemetryService.getNodesByPlot(this.selectedPlotId!)),
+    ).subscribe({
+      next: (nodes) => {
+        this.plotNodes = nodes;
+        this.nodeLocation = '';
+        this.isRegisteringNode = false;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.nodeErrorMessage = 'Failed to register node. Check plot ID and try again.';
+        this.isRegisteringNode = false;
+        this.cd.detectChanges();
+      },
+    });
   }
 
   get filteredPlots(): Plot[] {
@@ -115,6 +165,7 @@ export class IotSimulatorComponent implements OnInit {
     return (
       !this.isSimulating &&
       this.selectedPlotId !== null &&
+      this.hasNode &&
       this.soilMoisture >= 0 &&
       this.soilMoisture <= 100
     );

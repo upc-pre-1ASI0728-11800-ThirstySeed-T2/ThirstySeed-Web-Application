@@ -235,3 +235,28 @@ nav {
 .logout-btn:hover span {
   color: #ff8080;
 }
+
+/* ── Alert badge on nav icon ── */
+.icon {
+  position: relative;
+}
+
+.alert-badge {
+  position: absolute;
+  top: -5px;
+  right: -6px;
+  background: #e53935;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  line-height: 1;
+  border: 1.5px solid #1d9148;
+  pointer-events: none;
+}

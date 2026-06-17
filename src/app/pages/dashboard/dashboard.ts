@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardService } from './services/dashboard.service';
+import { AlertService } from './services/alert.service';
 import { AlertCard, DashboardMetrics, PlotCard, WaterStressCard } from './model/dashboard.model';
 import { BaseChartDirective } from 'ng2-charts';
 
@@ -66,8 +67,11 @@ export class DashboardComponent implements OnInit {
     },
   };
 
+  acknowledgingId: number | null = null;
+
   constructor(
     private dashboardService: DashboardService,
+    private alertService: AlertService,
     private cd: ChangeDetectorRef,
   ) {}
 
@@ -148,6 +152,22 @@ export class DashboardComponent implements OnInit {
       },
       error: (err) => {
         console.error('TREND ERROR', err);
+      },
+    });
+  }
+
+  acknowledgeAlert(alertId: number): void {
+    if (this.acknowledgingId === alertId) return;
+    this.acknowledgingId = alertId;
+    this.alertService.acknowledgeAlert(alertId).subscribe({
+      next: () => {
+        this.latestAlerts = this.latestAlerts.filter((a) => a.id !== alertId);
+        this.acknowledgingId = null;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.acknowledgingId = null;
+        this.cd.detectChanges();
       },
     });
   }

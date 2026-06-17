@@ -216,3 +216,81 @@
 .chart-container {
   height: 280px;
 }
+
+/* ── Alert acknowledge ── */
+.alert-item {
+  align-items: flex-start;
+  transition: background 0.15s;
+}
+
+.alert-item.alert-critical {
+  border-color: #ffcdd2;
+  background: #fff8f8;
+}
+
+.alert-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.alert-time {
+  font-size: 11px;
+  color: #9ca3af;
+  display: block;
+  margin-top: 2px;
+}
+
+.no-alerts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  background: #f1f8f4;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #127937;
+  margin-top: 10px;
+}
+
+.btn-acknowledge {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  margin-top: 2px;
+}
+
+.btn-acknowledge svg {
+  width: 14px;
+  height: 14px;
+  stroke: #6b7280;
+}
+
+.btn-acknowledge:hover:not(:disabled) {
+  border-color: #127937;
+  background: #e2f0da;
+}
+
+.btn-acknowledge:hover:not(:disabled) svg {
+  stroke: #127937;
+}
+
+.btn-acknowledge:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ack-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #d1d5db;
+  border-top-color: #127937;
+  border-radius: 50%;
+  animation: ack-spin 0.6s linear infinite;
+}
+
+@keyframes ack-spin { to { transform: rotate(360deg); } }

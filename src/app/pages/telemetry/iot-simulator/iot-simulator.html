@@ -102,6 +102,69 @@
             <span><strong>{{ selectedPlot.name }}</strong> · {{ selectedPlot.location }} · {{ selectedPlot.extension }} ha</span>
           </div>
 
+          <!-- NODE STATUS / REGISTER -->
+          <div class="node-section" *ngIf="selectedPlotId">
+
+            <!-- Has nodes -->
+            <div class="node-registered" *ngIf="hasNode">
+              <div class="node-registered-header">
+                <span class="node-status-dot active"></span>
+                <strong>IoT Node registered</strong>
+                <span class="node-count-badge">{{ plotNodes.length }} node{{ plotNodes.length > 1 ? 's' : '' }}</span>
+              </div>
+              <div class="node-list">
+                <div class="node-item" *ngFor="let node of plotNodes">
+                  <span class="node-icon">📡</span>
+                  <div class="node-item-info">
+                    <strong>Node #{{ node.id }}</strong>
+                    <span>{{ node.location }}</span>
+                  </div>
+                  <span class="node-status-badge" [ngClass]="node.status.toLowerCase()">
+                    {{ node.status }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- No nodes — registration form -->
+            <div class="node-register-card" *ngIf="!hasNode">
+              <div class="node-register-header">
+                <span class="node-status-dot inactive"></span>
+                <strong>No IoT node registered</strong>
+                <span class="node-warning-badge">Register required</span>
+              </div>
+              <p class="node-register-hint">
+                Register a physical node (e.g. ESP32 + DHT22) to enable telemetry transmission for this plot.
+                The node location helps identify where it is placed in the field.
+              </p>
+              <div *ngIf="nodeErrorMessage" class="alert alert-error node-alert">{{ nodeErrorMessage }}</div>
+              <div class="node-register-form">
+                <div class="form-group">
+                  <label>Node location</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="nodeLocation"
+                    placeholder="e.g. North sector, Row A, Greenhouse 2"
+                    [disabled]="isRegisteringNode"
+                  />
+                </div>
+                <button
+                  class="btn-register-node"
+                  (click)="registerNode()"
+                  [disabled]="!nodeLocation.trim() || isRegisteringNode"
+                >
+                  <span class="spinner" *ngIf="isRegisteringNode"></span>
+                  <svg *ngIf="!isRegisteringNode" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/>
+                    <line x1="8" y1="12" x2="16" y2="12"/>
+                  </svg>
+                  {{ isRegisteringNode ? 'Registering…' : 'Register IoT node' }}
+                </button>
+              </div>
+            </div>
+
+          </div>
+
           <!-- Sensor inputs -->
           <div class="sensor-grid">
 
@@ -177,6 +240,13 @@
                 <line x1="12" y1="16" x2="12.01" y2="16"/>
               </svg>
               Select a farm and a plot to enable transmission
+            </div>
+            <div class="transmit-info warn" *ngIf="selectedPlotId && !hasNode">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              Register an IoT node above to enable transmission
             </div>
             <button
               class="btn-transmit"

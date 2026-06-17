@@ -992,6 +992,195 @@ span.high     { color: #1565c0; font-weight: 600; }
   background: #fff;
 }
 
+/* ── IoT Node section ── */
+.node-section {
+  margin: 12px 0 4px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}
+
+.node-registered {
+  background: #f1f8f4;
+  padding: 12px 16px;
+}
+
+.node-registered-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 13.5px;
+  color: #1a3d2a;
+}
+
+.node-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.node-status-dot.active   { background: #127937; }
+.node-status-dot.inactive { background: #e65100; }
+
+.node-count-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  background: #127937;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.node-warning-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  background: #fff3e0;
+  color: #e65100;
+  border: 1px solid #ffe082;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.node-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.node-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #d4eadb;
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.node-icon { font-size: 16px; }
+
+.node-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.node-item-info strong { font-size: 13px; color: #1a3d2a; }
+.node-item-info span   { font-size: 11.5px; color: #6b8c6b; }
+
+.node-status-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+
+.node-status-badge.active   { background: #e2f0da; color: #127937; }
+.node-status-badge.inactive { background: #fff3e0; color: #e65100; }
+
+.node-register-card {
+  background: #fffcf4;
+  padding: 14px 16px;
+}
+
+.node-register-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13.5px;
+  color: #4a3000;
+}
+
+.node-register-hint {
+  font-size: 12.5px;
+  color: #6b7c5c;
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.node-alert {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+}
+
+.node-register-form {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.node-register-form .form-group {
+  flex: 1;
+  margin: 0;
+}
+
+.node-register-form label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #4a3000;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.node-register-form input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #e0c97a;
+  border-radius: 8px;
+  font-size: 13px;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.node-register-form input:focus {
+  border-color: #127937;
+}
+
+.btn-register-node {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  background: #127937;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.btn-register-node svg {
+  width: 15px;
+  height: 15px;
+  stroke: #fff;
+}
+
+.btn-register-node:hover:not(:disabled) { background: #0e5e2b; }
+.btn-register-node:disabled { background: #9abfa6; cursor: not-allowed; }
+
+/* Transmit info warning variant */
+.transmit-info.warn {
+  background: #fff8e1;
+  color: #7a4f00;
+  border-color: #ffe082;
+}
+
+.transmit-info.warn svg { stroke: #e65100; }
+
+/* ── */
 .btn-accept:disabled {
   background: #6eaa80;
   cursor: not-allowed;

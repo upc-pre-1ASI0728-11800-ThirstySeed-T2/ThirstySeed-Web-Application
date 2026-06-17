@@ -73,10 +73,21 @@ export class TelemetryService {
     );
   }
 
-  getNodesByPlot(plotId: number) {
+  getNodesByPlot(plotId: number): Observable<TelemetryNode[]> {
     return this.http.get<TelemetryNode[]>(`${this.apiUrl}/api/v1/nodes/plot/${plotId}`, {
       headers: this.getHeaders(),
     });
+  }
+
+  // POST /api/v1/nodes — returns node ID (number)
+  createNode(plotId: number, location: string): Observable<number> {
+    return this.http
+      .post<number>(
+        `${this.apiUrl}/api/v1/nodes`,
+        { plotId, location, moisture: 0 },
+        { headers: this.getHeaders() },
+      )
+      .pipe(catchError((err) => throwError(() => err)));
   }
 
   // POST /api/v1/telemetry/readings — envía UNA lectura (llámalo dos veces: moisture luego temp)

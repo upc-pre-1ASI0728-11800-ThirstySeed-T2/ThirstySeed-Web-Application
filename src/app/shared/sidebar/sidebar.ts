@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from '../../iam/services/auth.service';
+import { PlotService } from '../../pages/plots/services/plot.service';
+import { AlertService } from '../../pages/dashboard/services/alert.service';
+import { SubscriptionService } from '../../iam/services/subscription.service';
 
 export interface MenuItem {
   label: string;
@@ -13,7 +18,7 @@ export interface MenuItem {
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,     // ← registra routerLink, routerLinkActive, ngSwitch
+    RouterModule,
     NgSwitch,
     NgSwitchCase,
     NgSwitchDefault,
@@ -29,8 +34,15 @@ export class SidebarComponent implements OnInit {
   planName = 'Plan';
   usedNodes = 0;
   totalNodes = 0;
+  pendingAlertCount = 0;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private plotService: PlotService,
+    private alertService: AlertService,
+    private subscriptionService: SubscriptionService,
+  ) {}
 
   logout(): void {
     this.authService.logout();
@@ -57,28 +69,66 @@ export class SidebarComponent implements OnInit {
     } else {
       this.panelTitle = 'Producer Panel';
       this.menuItems = [
-        { label: 'Dashboard',    route: '/dashboard'    },
-        { label: 'Farms',        route: '/farms'        },
-        { label: 'Plots',        route: '/plots'        },
-        { label: 'Telemetry',    route: '/telemetry'    },
-        { label: 'IoT Simulator', route: '/iot-simulator' },
-        { label: 'Subscription', route: '/profile-rol'  },
-        { label: 'Settings',     route: '/settings'     },
+        { label: 'Dashboard',     route: '/dashboard'      },
+        { label: 'Farms',         route: '/farms'          },
+        { label: 'Plots',         route: '/plots'          },
+        { label: 'Telemetry',     route: '/telemetry'      },
+        { label: 'IoT Simulator', route: '/iot-simulator'  },
+        { label: 'Profile',       route: '/profile'        },
+        { label: 'Subscription',  route: '/profile-rol'    },
+        { label: 'Settings',      route: '/settings'       },
       ];
       this.showPremiumCard = true;
       this.loadProducerPlanSummary(user.id);
+      this.loadAlertCount(user.id);
     }
   }
 
   private loadProducerPlanSummary(userId: number): void {
-    const cachedSubscription = localStorage.getItem(`subscription_${userId}`);
-    const subscription = cachedSubscription ? JSON.parse(cachedSubscription) : null;
-    const planType = subscription?.planType || '';
+    this.subscriptionService.getByUserId(userId).subscribe({
+      next: (sub) => {
+        this.planName = sub.planType?.includes('PREMIUM') ? 'Premium' : 'Plus';
+        this.totalNodes = sub.maxNodes ?? 3;
+      },
+      error: () => {
+        const cached = localStorage.getItem(`subscription_${userId}`);
+        if (cached) {
+          try {
+            const sub = JSON.parse(cached);
+            this.planName = sub.planType?.includes('PREMIUM') ? 'Premium' : 'Plus';
+            this.totalNodes = sub.maxNodes ?? 3;
+          } catch { /* defaults */ }
+        }
+      },
+    });
 
-    this.planName = planType.includes('PREMIUM') ? 'Premium' : 'Plus';
-    this.totalNodes = subscription?.maxNodes ?? (planType.includes('PREMIUM') ? 10 : 3);
+    this.plotService.getPlotsByUser(userId).subscribe({
+      next: (plots) => {
+        this.usedNodes = this.plotService.mergeWithStoredPlots(userId, plots).length;
+      },
+      error: () => {
+        this.usedNodes = this.plotService.getStoredPlots(userId).length;
+      },
+    });
+  }
 
-    const storedPlots = localStorage.getItem(`configuredPlots_${userId}`);
-    this.usedNodes = storedPlots ? JSON.parse(storedPlots).length : 0;
+  private loadAlertCount(userId: number): void {
+    this.plotService.getPlotsByUser(userId).pipe(
+      catchError(() => of(this.plotService.getStoredPlots(userId))),
+      switchMap((plots) => {
+        if (!plots.length) return of([]);
+        const requests = plots.map((p) =>
+          this.alertService.getAlertsByPlot(p.id).pipe(catchError(() => of([]))),
+        );
+        return forkJoin(requests);
+      }),
+    ).subscribe({
+      next: (allAlerts) => {
+        const flat = (allAlerts as any[]).flat();
+        this.pendingAlertCount = flat.filter(
+          (a: any) => a.status !== 'ACKNOWLEDGED',
+        ).length;
+      },
+    });
   }
 }

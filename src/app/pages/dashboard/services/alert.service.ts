@@ -24,4 +24,11 @@ export class AlertService {
       headers: this.getHeaders(),
     });
   }
+
+  // PUT /api/v1/alerts/{alertId}/acknowledge
+  acknowledgeAlert(alertId: number) {
+    return this.http.put<void>(`${this.apiUrl}/alerts/${alertId}/acknowledge`, {}, {
+      headers: this.getHeaders(),
+    });
+  }
 }

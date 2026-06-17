@@ -17,6 +17,7 @@ import { CreateWaterZoneComponent } from './pages/water-zones/create-water-zone/
 import { waterManagerGuard } from './iam/guards/water-manager.guard';
 import { SettingsComponent } from './pages/settings/settings';
 import { ProfileRol } from './pages/profile-rol/profile-rol';
+import { ProfileComponent } from './pages/profile/profile';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -37,6 +38,7 @@ export const routes: Routes = [
       { path: 'telemetry', component: TelemetryComponent },
       { path: 'iot-simulator', component: IotSimulatorComponent },
       { path: 'profile-rol', component: ProfileRol },
+      { path: 'profile', component: ProfileComponent },
       { path: 'settings', component: SettingsComponent },
       {
         path: 'water-manager',

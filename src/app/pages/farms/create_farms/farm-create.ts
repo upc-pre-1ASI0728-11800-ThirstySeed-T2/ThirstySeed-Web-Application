@@ -78,6 +78,11 @@ export class FarmCreateComponent implements OnInit {
       return;
     }
 
+    if (!this.farm.totalArea || this.farm.totalArea <= 0) {
+      this.errorMessage = 'Total area must be greater than 0.';
+      return;
+    }
+
     if (!this.farm.waterManagementZoneId) {
       this.errorMessage = 'Please select a water management zone.';
       return;
