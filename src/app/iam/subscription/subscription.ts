@@ -34,7 +34,12 @@ export class SubscriptionComponent {
 
     const isWaterManager = user.roles?.includes('ROLE_WATER_MANAGER') ?? false;
 
-    const planType: CreateSubscriptionRequest['planType'] = plan === 'Plus' ? 'PLUS' : 'PREMIUM';
+    let planType: CreateSubscriptionRequest['planType'];
+    if (isWaterManager) {
+      planType = plan === 'Plus' ? 'WATER_MANAGER_PLUS' : 'WATER_MANAGER_PREMIUM';
+    } else {
+      planType = plan === 'Plus' ? 'PRODUCER_PLUS' : 'PRODUCER_PREMIUM';
+    }
 
     this.subscriptionService.createSubscription({ userId: user.id, planType }).subscribe({
       next: () => {
