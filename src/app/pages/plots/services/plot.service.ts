@@ -116,7 +116,19 @@ export class PlotService {
     }
   }
   updatePlot(plotId: number, plot: Partial<Plot>): Observable<Plot> {
-    return this.http.put<Plot>(`${this.baseUrl}/${plotId}`, plot);
+    return this.http.put<Plot>(`${this.baseUrl}/plots/${plotId}`, plot, { headers: this.getHeaders() });
+  }
+
+  deletePlot(plotId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/plots/${plotId}`, { headers: this.getHeaders() });
+  }
+
+  supplyWater(plotId: number): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/plots/${plotId}/stocks`, {}, { headers: this.getHeaders() });
+  }
+
+  cutWater(plotId: number): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/plots/${plotId}/outages`, {}, { headers: this.getHeaders() });
   }
 
   mergeWithStoredPlots(userId: number, backendPlots: Plot[]): Plot[] {
