@@ -77,36 +77,61 @@ export class CreatePlotComponent implements OnInit {
     const user = this.authService.getCurrentUser();
     if (!user) return;
 
-    // SUBSCRIPTION
+    // SUBSCRIPTION — with localStorage fallback when GET /subscriptions/user returns 405
     this.subscriptionService.getByUserId(user.id).subscribe({
       next: (sub) => {
         this.planType = sub.planType;
         this.maxNodes = sub.maxNodes;
-      }
+      },
+      error: () => {
+        const cached = localStorage.getItem(`subscription_${user.id}`);
+        if (cached) {
+          try {
+            const sub = JSON.parse(cached);
+            this.planType = sub.planType ?? '';
+            this.maxNodes = sub.maxNodes ?? 0;
+          } catch { /* leave defaults */ }
+        }
+      },
     });
 
     // PLOTS USAGE
     this.plotService.getPlotsByUser(user.id).subscribe({
+      next: (plots) => { this.currentNodes = plots.length; },
+      error: () => { this.currentNodes = 0; },
       next: (plots) => {
         this.currentNodes = this.plotService.mergeWithStoredPlots(user.id, plots).length;
       },
       error: () => this.currentNodes = this.plotService.getStoredPlots(user.id).length
     });
 
-    // FARMS
+    // FARMS — primary: localStorage IDs; fallback: getAllFarms filtered by producerId
     const farmIds = this.farmService.getSavedFarmIds(user.id);
 
     if (farmIds.length > 0) {
       this.farmService.getFarmsByIds(farmIds).subscribe({
         next: (farms) => {
           this.farms = farms;
-
-          if (farms.length > 0) {
-            this.selectedFarmId = farms[0].id!;
-          }
-        }
+          if (farms.length > 0) this.selectedFarmId = farms[0].id!;
+        },
+        error: () => this.loadAllFarms(user.id),
       });
+    } else {
+      this.loadAllFarms(user.id);
     }
+  }
+
+  // ======================
+  // FARMS FALLBACK
+  // ======================
+  private loadAllFarms(userId: number): void {
+    this.farmService.getAllFarms().subscribe({
+      next: (farms) => {
+        this.farms = farms.filter(f => f.producerId === userId);
+        if (this.farms.length > 0) this.selectedFarmId = this.farms[0].id!;
+      },
+      error: () => { /* no farms available */ },
+    });
   }
 
   // ======================
@@ -133,8 +158,8 @@ export class CreatePlotComponent implements OnInit {
       return;
     }
 
-    if (this.currentNodes >= this.maxNodes) {
-      this.errorMessage = `Plan ${this.planType} limit reached`;
+    if (this.maxNodes > 0 && this.currentNodes >= this.maxNodes) {
+      this.errorMessage = `Plan ${this.planType} limit reached (${this.currentNodes}/${this.maxNodes})`;
       return;
     }
 
