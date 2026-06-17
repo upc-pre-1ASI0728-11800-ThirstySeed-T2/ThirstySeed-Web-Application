@@ -29,6 +29,7 @@ export interface TelemetrySnapshot {
   recordedAt: string;
 }
 
+// GET /api/v1/schedules/plot/{plotId} — aligned to ScheduleResource Swagger schema
 export interface IrrigationSchedule {
   id: number;
   plotId: number;
@@ -40,16 +41,6 @@ export interface IrrigationSchedule {
   startTime: string;
   angle: number;
   isAutomatic: boolean;
-}
-
-export interface IrrigationSchedule {
-  id: number;
-  plotId: number;
-  scheduledStartTime: string;
-  durationHours: number;
-  waterAmountM3: number;
-  status: string;
-  createdAt: string;
 }
 
 export interface TransmissionLogEntry {

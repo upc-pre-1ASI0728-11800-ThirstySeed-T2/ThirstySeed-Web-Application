@@ -168,8 +168,7 @@ export class CreatePlotComponent implements OnInit {
       area: this.extension,
       soilType: this.selectedSoilType || undefined,
       irrigationSystem: this.selectedIrrigation || undefined,
-      description: this.description || undefined,
-      coordinatesJson: null,
+      coordinatesJson: '{}',
     };
 
     this.plotService.createPlotInFarm(this.selectedFarmId, payload).subscribe({

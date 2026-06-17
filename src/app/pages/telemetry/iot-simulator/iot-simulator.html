@@ -410,9 +410,9 @@
             <span class="ai-icon-sm">📅</span>
             <div>
               <h3>Irrigation Schedule</h3>
-              <p class="section-sub">Created {{ latestSchedule.createdAt | date:'short' }}</p>
+              <p class="section-sub">{{ latestSchedule.isAutomatic ? 'AI-generated' : 'Manual' }} schedule</p>
             </div>
-            <span class="rec-badge pending">{{ latestSchedule.status }}</span>
+            <span class="rec-badge accepted">CREATED</span>
           </div>
 
           <div class="rec-details">
@@ -423,9 +423,9 @@
                   <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
                   <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
-                Scheduled start
+                Start time
               </div>
-              <strong>{{ latestSchedule.scheduledStartTime | date:'HH:mm · dd MMM' }}</strong>
+              <strong>{{ latestSchedule.startTime }}</strong>
             </div>
             <div class="rec-row">
               <div class="rec-label">
@@ -441,9 +441,19 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
                 </svg>
-                Water volume
+                Water amount
               </div>
-              <strong>{{ latestSchedule.waterAmountM3 | number:'1.0-2' }} m³</strong>
+              <strong>{{ latestSchedule.waterAmount | number:'1.0-1' }} L</strong>
+            </div>
+            <div class="rec-row">
+              <div class="rec-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/>
+                  <line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
+                Pressure
+              </div>
+              <strong>{{ latestSchedule.pressure | number:'1.0-1' }} bar</strong>
             </div>
           </div>
         </div>
