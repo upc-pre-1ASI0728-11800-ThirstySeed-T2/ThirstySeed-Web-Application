@@ -22,7 +22,6 @@ export interface ConfigurePlotRequest {
   providedIn: 'root',
 })
 export class PlotService {
-
   private baseUrl = `${environment.apiBaseUrl}/api/v1`;
   private readonly LOCAL_PLOTS_KEY = 'configuredPlots';
 
@@ -40,7 +39,7 @@ export class PlotService {
 
     return new HttpHeaders({
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     });
   }
 
@@ -48,52 +47,39 @@ export class PlotService {
   // GET ALL PLOTS
   // =========================
   getAllPlots(): Observable<Plot[]> {
-    return this.http.get<Plot[]>(
-      `${this.baseUrl}/plots`,
-      { headers: this.getHeaders() }
-    );
+    return this.http.get<Plot[]>(`${this.baseUrl}/plots`, { headers: this.getHeaders() });
   }
 
   // =========================
   // GET BY USER
   // =========================
   getPlotsByUser(userId: number): Observable<Plot[]> {
-    return this.http.get<Plot[]>(
-      `${this.baseUrl}/plots/user/${userId}`,
-      { headers: this.getHeaders() }
-    ).pipe(map((plots) => this.withoutSyncedPlaceholders(plots)));
+    return this.http.get<Plot[]>(`${this.baseUrl}/plots/user/${userId}`, {
+      headers: this.getHeaders(),
+    });
   }
 
   // =========================
   // GET BY ID
   // =========================
   getPlotById(plotId: number): Observable<Plot> {
-    return this.http.get<Plot>(
-      `${this.baseUrl}/plots/${plotId}`,
-      { headers: this.getHeaders() }
-    );
+    return this.http.get<Plot>(`${this.baseUrl}/plots/${plotId}`, { headers: this.getHeaders() });
   }
 
   // =========================
   // CREATE PLOT
   // =========================
   createPlot(payload: CreatePlotRequest): Observable<number> {
-    return this.http.post<number>(
-      `${this.baseUrl}/plots`,
-      payload,
-      { headers: this.getHeaders() }
-    );
+    return this.http.post<number>(`${this.baseUrl}/plots`, payload, { headers: this.getHeaders() });
   }
 
   // =========================
   // CONFIGURE PLOT IN FARM
   // =========================
   createPlotInFarm(farmId: number, payload: ConfigurePlotRequest): Observable<any> {
-    return this.http.post(
-      `${this.baseUrl}/farms/${farmId}/plots`,
-      payload,
-      { headers: this.getHeaders() }
-    );
+    return this.http.post(`${this.baseUrl}/farms/${farmId}/plots`, payload, {
+      headers: this.getHeaders(),
+    });
   }
 
   getStoredPlots(userId: number): Plot[] {
@@ -121,18 +107,15 @@ export class PlotService {
     }
   }
   updatePlot(plotId: number, plot: Partial<Plot>): Observable<Plot> {
-    return this.http.put<Plot>(
-      `${this.baseUrl}/plots/${plotId}`,
-      plot,
-      { headers: this.getHeaders() },
-    );
+    return this.http.put<Plot>(`${this.baseUrl}/plots/${plotId}`, plot, {
+      headers: this.getHeaders(),
+    });
   }
 
   deletePlot(plotId: number): Observable<void> {
-    return this.http.delete<void>(
-      `${this.baseUrl}/plots/${plotId}`,
-      { headers: this.getHeaders() },
-    );
+    return this.http.delete<void>(`${this.baseUrl}/plots/${plotId}`, {
+      headers: this.getHeaders(),
+    });
   }
 
   updateStoredPlot(userId: number, updatedPlot: Plot): void {
@@ -164,11 +147,7 @@ export class PlotService {
 
     for (const storedPlot of storedPlots) {
       // Backend's PlotResource does not include farmId, so compare by name + extension only
-      const existingIndex = merged.findIndex(
-        (plot) =>
-          plot.id === storedPlot.id ||
-          (plot.name === storedPlot.name && plot.extension === storedPlot.extension),
-      );
+      const existingIndex = merged.findIndex((plot) => plot.id === storedPlot.id);
       const alreadyExists = existingIndex >= 0;
 
       if (!alreadyExists) {
@@ -176,6 +155,9 @@ export class PlotService {
       } else {
         merged[existingIndex] = {
           ...merged[existingIndex],
+
+          name: storedPlot.name || merged[existingIndex].name,
+          extension: storedPlot.extension || merged[existingIndex].extension,
           farmId: storedPlot.farmId ?? merged[existingIndex].farmId,
           location: storedPlot.location || merged[existingIndex].location,
           status: storedPlot.status || merged[existingIndex].status,

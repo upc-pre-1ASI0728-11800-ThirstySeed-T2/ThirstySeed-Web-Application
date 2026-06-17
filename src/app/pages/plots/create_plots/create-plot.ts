@@ -181,35 +181,43 @@ export class CreatePlotComponent implements OnInit {
     console.log('👉 PAYLOAD FINAL:', payload);
     console.log('👉 FARM ID:', this.selectedFarmId);
 
-    this.plotService.createPlotInFarm(this.selectedFarmId, payload)
-      .subscribe({
+    this.plotService.createPlotInFarm(this.selectedFarmId, payload).subscribe({
         next: () => {
-          const now = new Date().toISOString();
+          this.plotService.getPlotsByUser(user.id).subscribe({
+            next: (backendPlots) => {
+              console.log('BACKEND PLOTS AFTER CREATE', backendPlots);
 
-          this.plotService.saveStoredPlot(user.id, {
-            id: Date.now(),
-            userId: user.id,
-            farmId: this.selectedFarmId!,
-            name: this.plotName,
-            location: this.selectedFarmName,
-            extension: this.extension,
-            status: this.status,
-            imageUrl: this.imageUrl || 'https://placehold.co/600x400',
-            createdAt: now,
-            updatedAt: now,
+              const now = new Date().toISOString();
+
+              const latestPlot =
+                backendPlots.length > 0
+                  ? backendPlots[backendPlots.length - 1]
+                  : null;
+
+              this.plotService.saveStoredPlot(user.id, {
+                id: latestPlot?.id ?? Date.now(),
+                userId: user.id,
+                farmId: this.selectedFarmId!,
+                name: this.plotName,
+                location: this.selectedFarmName,
+                extension: this.extension,
+                status: this.status,
+                imageUrl: this.imageUrl || 'https://placehold.co/600x400',
+                createdAt: now,
+                updatedAt: now,
+              });
+
+              this.successMessage = 'Plot created successfully';
+              this.router.navigate(['/plots']);
+            },
           });
-
-          this.successMessage = 'Plot created successfully';
-          this.router.navigate(['/plots']);
         },
-        error: (err) => {
+      error: (err) => {
+        console.error('CREATE PLOT ERROR:', err);
 
-          console.error('CREATE PLOT ERROR:', err);
-
-          this.errorMessage =
-            err?.error?.message || 'Failed to create plot';
-        }
-      });
+        this.errorMessage = err?.error?.message || 'Failed to create plot';
+      },
+    });
   }
 
   // ======================
