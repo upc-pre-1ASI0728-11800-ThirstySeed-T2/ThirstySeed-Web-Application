@@ -1,0 +1,229 @@
+<div class="support-page">
+
+  <!-- Top nav -->
+  <div class="top-nav">
+    <div class="top-nav-left">
+      <span class="page-badge">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+        Support
+      </span>
+      <h1>Support Tickets</h1>
+      <p class="subtitle">Open a ticket and chat with the admin team</p>
+    </div>
+    <button class="btn-new" (click)="openNewTicket()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      New Ticket
+    </button>
+  </div>
+
+  <!-- Main layout -->
+  <div class="support-layout">
+
+    <!-- LEFT — ticket list -->
+    <div class="ticket-list-panel">
+
+      <div class="panel-header">
+        <span class="panel-label">My Tickets</span>
+        <span class="ticket-count" *ngIf="!loadingTickets">{{ tickets.length }}</span>
+      </div>
+
+      <!-- Loading -->
+      <div class="list-loading" *ngIf="loadingTickets">
+        <div class="spinner-sm"></div>
+        <span>Loading tickets…</span>
+      </div>
+
+      <!-- Error -->
+      <div class="list-error" *ngIf="ticketError && !loadingTickets">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        {{ ticketError }}
+        <button class="retry-btn" (click)="loadTickets()">Retry</button>
+      </div>
+
+      <!-- Empty state -->
+      <div class="list-empty" *ngIf="!loadingTickets && !ticketError && tickets.length === 0">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#b0ccb0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+        <p>No tickets yet.</p>
+        <button class="btn-new-sm" (click)="openNewTicket()">Open your first ticket</button>
+      </div>
+
+      <!-- Ticket cards -->
+      <div class="ticket-item"
+           *ngFor="let t of tickets"
+           [class.selected]="selectedTicket?.id === t.id"
+           (click)="openDetail(t)">
+        <div class="ticket-item-top">
+          <span class="ticket-title">{{ t.title }}</span>
+          <span class="status-badge" [ngClass]="statusClass(t.status)">{{ t.status }}</span>
+        </div>
+        <div class="ticket-item-meta">
+          <span class="category-tag">{{ t.category }}</span>
+          <span class="priority-badge" [ngClass]="priorityClass(t.priority)">{{ t.priority }}</span>
+          <span class="ticket-date">{{ formatDate(t.createdAt) }}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT — panel -->
+    <div class="detail-panel">
+
+      <!-- Empty state -->
+      <div class="panel-empty" *ngIf="panel === 'empty'">
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#c8dfc0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+        <h3>Select a ticket</h3>
+        <p>Choose a ticket from the list or open a new one to get started.</p>
+        <button class="btn-new" (click)="openNewTicket()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          New Ticket
+        </button>
+      </div>
+
+      <!-- New ticket form -->
+      <div class="new-ticket-form" *ngIf="panel === 'new'">
+        <div class="form-header">
+          <h2>New Support Ticket</h2>
+          <p>Describe your issue and our team will get back to you.</p>
+        </div>
+
+        <div class="alert alert-error" *ngIf="createError">{{ createError }}</div>
+
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>Title <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="newTitle" placeholder="Brief summary of your issue" [disabled]="creating"/>
+          </div>
+
+          <div class="form-group">
+            <label>Category <span class="required">*</span></label>
+            <select [(ngModel)]="newCategory" [disabled]="creating">
+              <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Priority <span class="required">*</span></label>
+            <select [(ngModel)]="newPriority" [disabled]="creating">
+              <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Description <span class="required">*</span></label>
+            <textarea
+              [(ngModel)]="newDescription"
+              placeholder="Describe your issue in detail…"
+              rows="6"
+              [disabled]="creating">
+            </textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-cancel" (click)="cancelNew()" [disabled]="creating">Cancel</button>
+          <button class="btn-save" (click)="submitTicket()" [disabled]="creating">
+            <div class="spinner" *ngIf="creating"></div>
+            <span>{{ creating ? 'Creating…' : 'Submit Ticket' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Ticket detail + chat -->
+      <div class="ticket-detail" *ngIf="panel === 'detail' && selectedTicket">
+
+        <!-- Ticket header -->
+        <div class="detail-header">
+          <div class="detail-header-left">
+            <span class="status-badge lg" [ngClass]="statusClass(selectedTicket.status)">{{ selectedTicket.status }}</span>
+            <h2>{{ selectedTicket.title }}</h2>
+            <p class="detail-meta">
+              <span class="category-tag">{{ selectedTicket.category }}</span>
+              <span class="priority-badge" [ngClass]="priorityClass(selectedTicket.priority)">{{ selectedTicket.priority }}</span>
+              <span class="meta-sep">·</span>
+              <span class="meta-date">Opened {{ formatDate(selectedTicket.createdAt) }}</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Description card -->
+        <div class="description-card">
+          <div class="desc-label">Description</div>
+          <p class="desc-text">{{ selectedTicket.description }}</p>
+        </div>
+
+        <!-- Chat section -->
+        <div class="chat-section">
+          <div class="chat-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+            </svg>
+            Conversation
+          </div>
+
+          <!-- Messages -->
+          <div class="chat-messages">
+            <div class="messages-loading" *ngIf="loadingMessages">
+              <div class="spinner-sm"></div>
+              <span>Loading messages…</span>
+            </div>
+
+            <div class="chat-empty" *ngIf="!loadingMessages && messages.length === 0">
+              <p>No messages yet. Send the first message below.</p>
+            </div>
+
+            <div class="message-bubble"
+                 *ngFor="let msg of messages"
+                 [class.own]="isOwnMessage(msg)"
+                 [class.admin]="!isOwnMessage(msg)">
+              <div class="bubble-meta">
+                <span class="bubble-sender">
+                  {{ isOwnMessage(msg) ? 'You' : msg.senderUsername }}
+                </span>
+                <span class="bubble-time">{{ formatTime(msg.createdAt) }}</span>
+              </div>
+              <div class="bubble-content">{{ msg.content }}</div>
+            </div>
+
+            <div #chatEnd></div>
+          </div>
+
+          <!-- Message input -->
+          <div class="chat-input-row" [class.disabled]="selectedTicket.status === 'CLOSED'">
+            <textarea
+              class="chat-input"
+              [(ngModel)]="messageContent"
+              (keydown)="onMsgKeydown($event)"
+              placeholder="{{ selectedTicket.status === 'CLOSED' ? 'This ticket is closed.' : 'Type a message… (Enter to send)' }}"
+              rows="1"
+              [disabled]="sending || selectedTicket.status === 'CLOSED'">
+            </textarea>
+            <button class="send-btn"
+                    (click)="sendMessage()"
+                    [disabled]="sending || !messageContent.trim() || selectedTicket.status === 'CLOSED'">
+              <div class="spinner-white" *ngIf="sending"></div>
+              <svg *ngIf="!sending" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

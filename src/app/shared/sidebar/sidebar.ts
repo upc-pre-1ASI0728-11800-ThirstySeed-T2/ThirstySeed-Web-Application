@@ -62,6 +62,7 @@ export class SidebarComponent implements OnInit {
         { label: 'Critical Areas',  route: '/critical-areas'             },
         { label: 'Reports',         route: '/reports'                    },
         { label: 'Regional Alerts', route: '/regional-alerts'            },
+        { label: 'Support',         route: '/support'                    },
         { label: 'Settings',        route: '/settings'                   },
       ];
       this.showPremiumCard = false;
@@ -75,6 +76,7 @@ export class SidebarComponent implements OnInit {
         { label: 'Telemetry',     route: '/telemetry'      },
         { label: 'IoT Simulator', route: '/iot-simulator'  },
         { label: 'AI Crop Planner', route: '/digital-twin'  },
+        { label: 'Support',       route: '/support'        },
         { label: 'Profile',       route: '/profile'        },
         { label: 'Subscription',  route: '/profile-rol'    },
         { label: 'Settings',      route: '/settings'       },
