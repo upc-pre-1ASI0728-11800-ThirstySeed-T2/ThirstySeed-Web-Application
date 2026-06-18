@@ -68,15 +68,21 @@ export class IotSimulatorComponent implements OnInit {
     if (!user) return;
     this.currentUser = user;
 
-    const farmIds = this.farmService.getSavedFarmIds(user.id);
-    if (farmIds.length > 0) {
-      this.farmService.getFarmsByIds(farmIds).subscribe({
-        next: (farms) => {
-          this.farms = farms;
-          this.cd.detectChanges();
-        },
-      });
-    }
+    this.farmService.getMyFarms().subscribe({
+      next: (farms) => {
+        this.farms = farms;
+        this.farmService.replaceSavedFarmIds(user.id, farms.map((f) => f.id));
+        this.cd.detectChanges();
+      },
+      error: () => {
+        const ids = this.farmService.getSavedFarmIds(user.id);
+        if (ids.length > 0) {
+          this.farmService.getFarmsByIds(ids).subscribe({
+            next: (farms) => { this.farms = farms; this.cd.detectChanges(); },
+          });
+        }
+      },
+    });
 
     this.plotService.getPlotsByUser(user.id).subscribe({
       next: (plots) => {
