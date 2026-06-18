@@ -19,6 +19,7 @@ import { SettingsComponent } from './pages/settings/settings';
 import { ProfileRol } from './pages/profile-rol/profile-rol';
 import { ProfileComponent } from './pages/profile/profile';
 import { DigitalTwinComponent } from './pages/digital-twin/digital-twin';
+import { SupportComponent } from './pages/support/support';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -39,6 +40,7 @@ export const routes: Routes = [
       { path: 'telemetry', component: TelemetryComponent },
       { path: 'iot-simulator', component: IotSimulatorComponent },
       { path: 'digital-twin', component: DigitalTwinComponent },
+      { path: 'support', component: SupportComponent },
       { path: 'profile-rol', component: ProfileRol },
       { path: 'profile', component: ProfileComponent },
       { path: 'settings', component: SettingsComponent },
