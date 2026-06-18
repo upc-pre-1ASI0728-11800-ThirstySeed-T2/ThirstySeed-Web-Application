@@ -16,6 +16,11 @@ export class FarmService {
     return new HttpHeaders({ Authorization: `Bearer ${token}` });
   }
 
+  // GET /api/v1/farms/producer/me — farms del productor autenticado (JWT)
+  getMyFarms(): Observable<Farm[]> {
+    return this.http.get<Farm[]>(`${this.baseUrl}/producer/me`, { headers: this.getHeaders() });
+  }
+
   // GET /api/v1/farms
   getAllFarms(): Observable<Farm[]> {
     return this.http.get<Farm[]>(this.baseUrl, { headers: this.getHeaders() });

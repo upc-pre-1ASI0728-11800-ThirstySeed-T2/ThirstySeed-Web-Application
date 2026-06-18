@@ -67,31 +67,36 @@ export class FarmsComponent implements OnInit {
   loadFarms(userId: number): void {
     this.loading = true;
 
-    const ids = this.farmService.getSavedFarmIds(userId);
-
-    if (!ids || ids.length === 0) {
-      this.farms = [];
-      this.errorMessage = '';
-      this.loading = false;
-
-      this.cd.detectChanges();
-      return;
-    }
-
-    this.farmService.getFarmsByIds(ids).subscribe({
+    this.farmService.getMyFarms().subscribe({
       next: (farms) => {
-        this.farmService.replaceSavedFarmIds(userId, farms.map((farm) => farm.id));
         this.farms = farms;
+        // Sync IDs to localStorage so other components can use them
+        this.farmService.replaceSavedFarmIds(userId, farms.map((f) => f.id));
         this.errorMessage = '';
         this.loading = false;
-
         this.cd.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'Could not load farms.';
-        this.loading = false;
-
-        this.cd.detectChanges();
+        // Fallback: load from saved IDs when /producer/me fails
+        const ids = this.farmService.getSavedFarmIds(userId);
+        if (!ids.length) {
+          this.farms = [];
+          this.loading = false;
+          this.cd.detectChanges();
+          return;
+        }
+        this.farmService.getFarmsByIds(ids).subscribe({
+          next: (farms) => {
+            this.farms = farms;
+            this.loading = false;
+            this.cd.detectChanges();
+          },
+          error: () => {
+            this.errorMessage = 'Could not load farms.';
+            this.loading = false;
+            this.cd.detectChanges();
+          },
+        });
       },
     });
   }
