@@ -18,6 +18,7 @@ import { waterManagerGuard } from './iam/guards/water-manager.guard';
 import { SettingsComponent } from './pages/settings/settings';
 import { ProfileRol } from './pages/profile-rol/profile-rol';
 import { ProfileComponent } from './pages/profile/profile';
+import { DigitalTwinComponent } from './pages/digital-twin/digital-twin';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -37,6 +38,7 @@ export const routes: Routes = [
       { path: 'farms/create', component: FarmCreateComponent },
       { path: 'telemetry', component: TelemetryComponent },
       { path: 'iot-simulator', component: IotSimulatorComponent },
+      { path: 'digital-twin', component: DigitalTwinComponent },
       { path: 'profile-rol', component: ProfileRol },
       { path: 'profile', component: ProfileComponent },
       { path: 'settings', component: SettingsComponent },

@@ -74,6 +74,7 @@ export class SidebarComponent implements OnInit {
         { label: 'Plots',         route: '/plots'          },
         { label: 'Telemetry',     route: '/telemetry'      },
         { label: 'IoT Simulator', route: '/iot-simulator'  },
+        { label: 'Digital Twin',  route: '/digital-twin'  },
         { label: 'Profile',       route: '/profile'        },
         { label: 'Subscription',  route: '/profile-rol'    },
         { label: 'Settings',      route: '/settings'       },
