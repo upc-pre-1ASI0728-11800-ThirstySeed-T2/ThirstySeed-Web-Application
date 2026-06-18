@@ -103,28 +103,25 @@ export class CreatePlotComponent implements OnInit {
       },
     });
 
-    const farmIds = this.farmService.getSavedFarmIds(user.id);
-
-    if (farmIds.length > 0) {
-      this.farmService.getFarmsByIds(farmIds).subscribe({
-        next: (farms) => {
-          this.farms = farms;
-          if (farms.length > 0) this.selectedFarmId = farms[0].id!;
-        },
-        error: () => this.loadAllFarms(user.id),
-      });
-    } else {
-      this.loadAllFarms(user.id);
-    }
-  }
-
-  private loadAllFarms(userId: number): void {
-    this.farmService.getAllFarms().subscribe({
+    this.farmService.getMyFarms().subscribe({
       next: (farms) => {
-        this.farms = farms.filter(f => f.producerId === userId);
-        if (this.farms.length > 0) this.selectedFarmId = this.farms[0].id!;
+        this.farms = farms;
+        if (farms.length > 0) this.selectedFarmId = farms[0].id!;
+        // Sync to localStorage for offline fallback
+        this.farmService.replaceSavedFarmIds(user.id, farms.map((f) => f.id));
       },
-      error: () => { /* no farms available */ },
+      error: () => {
+        // Fallback to saved IDs
+        const ids = this.farmService.getSavedFarmIds(user.id);
+        if (ids.length > 0) {
+          this.farmService.getFarmsByIds(ids).subscribe({
+            next: (farms) => {
+              this.farms = farms;
+              if (farms.length > 0) this.selectedFarmId = farms[0].id!;
+            },
+          });
+        }
+      },
     });
   }
 
