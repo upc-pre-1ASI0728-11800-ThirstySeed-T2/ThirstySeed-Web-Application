@@ -555,11 +555,25 @@
       "START_LABEL": "Suggested Action / Schedule",
       "REASONING_TITLE": "Technical Reasoning (AI)",
       "ACCEPT": "Accept & create irrigation schedule",
-      "ACCEPTED": "Schedule created ✓"
+      "ACCEPTED": "Schedule created ✓",
+      "SAVED_PREFIX": "Simulation",
+      "SAVED_SUFFIX": "saved ✓"
     },
     "ERROR": {
       "TITLE": "Simulation Failed",
       "SIM_FAILED": "Simulation failed. Verify that the plot has an active IoT node and try again."
+    },
+    "HISTORY": {
+      "TITLE": "Simulation history",
+      "SUBTITLE": "All AI Crop Planner simulations run by your account.",
+      "RELOAD": "Reload",
+      "EMPTY": "No simulations yet. Run your first one above.",
+      "LOADING": "Loading history…",
+      "COL_DATE": "Date",
+      "COL_SCOPE": "Scope",
+      "COL_WATER": "Water",
+      "COL_RISK": "Risk level",
+      "COL_COVERAGE": "Coverage"
     }
   },
   "SUPPORT": {

@@ -1,7 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { switchMap, tap, delay } from 'rxjs/operators';
 import { AuthService, User } from '../../iam/services/auth.service';
@@ -21,7 +20,7 @@ export type WindLevel = 'calm' | 'breezy' | 'strong' | 'gale';
 @Component({
   selector: 'app-digital-twin',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslatePipe],
+  imports: [CommonModule, FormsModule],
   templateUrl: './digital-twin.html',
   styleUrl: './digital-twin.css',
 })
@@ -126,10 +125,7 @@ export class DigitalTwinComponent implements OnInit {
 
   get moistureLabel(): string {
     const map: Record<MoistureLevel, string> = {
-      optimal: 'DIGITAL_TWIN.MOISTURE.OPTIMAL',
-      normal: 'DIGITAL_TWIN.MOISTURE.NORMAL',
-      low: 'DIGITAL_TWIN.MOISTURE.LOW',
-      critical: 'DIGITAL_TWIN.MOISTURE.CRITICAL',
+      optimal: 'Optimal', normal: 'Normal', low: 'Low', critical: 'Critical',
     };
     return map[this.moistureLevel];
   }
@@ -150,10 +146,7 @@ export class DigitalTwinComponent implements OnInit {
 
   get windLabel(): string {
     const map: Record<WindLevel, string> = {
-      calm: 'DIGITAL_TWIN.WIND.CALM',
-      breezy: 'DIGITAL_TWIN.WIND.BREEZY',
-      strong: 'DIGITAL_TWIN.WIND.STRONG',
-      gale: 'DIGITAL_TWIN.WIND.GALE',
+      calm: 'Calm', breezy: 'Breezy', strong: 'Strong', gale: 'Gale Force',
     };
     return map[this.windLevel];
   }
@@ -227,7 +220,7 @@ export class DigitalTwinComponent implements OnInit {
         },
         error: () => {
           this.simState = 'error';
-          this.errorMessage = 'DIGITAL_TWIN.ERROR.SIM_FAILED';
+          this.errorMessage = 'Simulation failed. Verify that the plot has an active IoT node and try again.';
           this.cd.detectChanges();
         },
       });

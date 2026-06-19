@@ -555,11 +555,25 @@
       "START_LABEL": "Acción sugerida / Horario",
       "REASONING_TITLE": "Razonamiento técnico (IA)",
       "ACCEPT": "Aceptar y crear horario de riego",
-      "ACCEPTED": "Horario creado ✓"
+      "ACCEPTED": "Horario creado ✓",
+      "SAVED_PREFIX": "Simulación",
+      "SAVED_SUFFIX": "guardada ✓"
     },
     "ERROR": {
       "TITLE": "Simulación fallida",
       "SIM_FAILED": "La simulación falló. Verifica que la parcela tenga un nodo IoT activo e intenta de nuevo."
+    },
+    "HISTORY": {
+      "TITLE": "Historial de simulaciones",
+      "SUBTITLE": "Todas las simulaciones del AI Crop Planner ejecutadas por tu cuenta.",
+      "RELOAD": "Recargar",
+      "EMPTY": "Aún no hay simulaciones. Ejecuta la primera arriba.",
+      "LOADING": "Cargando historial…",
+      "COL_DATE": "Fecha",
+      "COL_SCOPE": "Alcance",
+      "COL_WATER": "Agua",
+      "COL_RISK": "Nivel de riesgo",
+      "COL_COVERAGE": "Cobertura"
     }
   },
   "SUPPORT": {
