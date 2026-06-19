@@ -4,6 +4,7 @@ import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { DashboardService } from './services/dashboard.service';
 import { AlertService } from './services/alert.service';
 import { AlertCard, DashboardMetrics, PlotCard, WaterStressCard } from './model/dashboard.model';
+import { AuthService } from '../../iam/services/auth.service';
 import { BaseChartDirective } from 'ng2-charts';
 
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
@@ -70,9 +71,35 @@ export class DashboardComponent implements OnInit {
 
   acknowledgingId: number | null = null;
 
+  dismissedBanner = false;
+
+  get planName(): string {
+    return this.authService.getCurrentUser()?.subscription?.name ?? 'Plus';
+  }
+
+  get nodeUsagePct(): number {
+    if (!this.metrics.totalNodes) return 0;
+    return Math.round((this.metrics.connectedNodes / this.metrics.totalNodes) * 100);
+  }
+
+  get nodeUsageClass(): string {
+    if (this.nodeUsagePct >= 90) return 'usage-critical';
+    if (this.nodeUsagePct >= 70) return 'usage-warn';
+    return 'usage-ok';
+  }
+
+  get criticalAlerts(): AlertCard[] {
+    return this.latestAlerts.filter(a => a.status === 'CRITICAL');
+  }
+
+  get otherAlerts(): AlertCard[] {
+    return this.latestAlerts.filter(a => a.status !== 'CRITICAL');
+  }
+
   constructor(
     private dashboardService: DashboardService,
     private alertService: AlertService,
+    private authService: AuthService,
     private cd: ChangeDetectorRef,
   ) {}
 

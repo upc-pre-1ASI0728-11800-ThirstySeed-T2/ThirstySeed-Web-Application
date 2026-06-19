@@ -102,7 +102,8 @@
       "VIEW_ALL": "Ver todas las parcelas",
       "SOIL_MOISTURE": "HUMEDAD DEL SUELO",
       "TEMPERATURE": "TEMPERATURA",
-      "OPEN": "Abrir"
+      "OPEN": "Abrir",
+      "NO_PLOTS": "Aún no hay parcelas para monitorear."
     },
     "CHART": {
       "TITLE": "Tendencia de humedad del suelo",
@@ -120,7 +121,12 @@
       "TITLE": "Últimas alertas",
       "SUBTITLE": "Eventos recientes de tus parcelas monitoreadas.",
       "NO_ALERTS": "Sin alertas pendientes",
-      "ACKNOWLEDGE": "Marcar como revisada"
+      "ACKNOWLEDGE": "Marcar como revisada",
+      "CRITICAL_BANNER": "alerta(s) crítica(s) activa(s)",
+      "CRITICAL_BANNER_DESC": "Revisa las alertas a continuación.",
+      "ALL_CLEAR": "Todos los sistemas funcionan con normalidad.",
+      "CRITICAL": "Crítico",
+      "OTHER": "Otras alertas"
     }
   },
   "FARMS": {

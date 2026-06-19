@@ -102,7 +102,8 @@
       "VIEW_ALL": "View all plots",
       "SOIL_MOISTURE": "SOIL MOISTURE",
       "TEMPERATURE": "TEMPERATURE",
-      "OPEN": "Open"
+      "OPEN": "Open",
+      "NO_PLOTS": "No plots to monitor yet."
     },
     "CHART": {
       "TITLE": "Soil moisture trend",
@@ -120,7 +121,12 @@
       "TITLE": "Latest alerts",
       "SUBTITLE": "Recent events from your monitored plots.",
       "NO_ALERTS": "No pending alerts",
-      "ACKNOWLEDGE": "Mark as acknowledged"
+      "ACKNOWLEDGE": "Mark as acknowledged",
+      "CRITICAL_BANNER": "critical alert(s) active",
+      "CRITICAL_BANNER_DESC": "Please review the alerts below.",
+      "ALL_CLEAR": "All systems are running normally.",
+      "CRITICAL": "Critical",
+      "OTHER": "Other alerts"
     }
   },
   "FARMS": {
