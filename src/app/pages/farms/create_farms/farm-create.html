@@ -41,9 +41,52 @@
           <input type="text" [(ngModel)]="farm.name" placeholder="Example: Farm Santa Rosa" />
         </div>
 
-        <div class="form-group">
-          <label>Location</label>
-          <input type="text" [(ngModel)]="farm.location" placeholder="City, region or rural area" />
+        <div class="form-group full-width">
+          <label>
+            Location
+            <span class="geo-optional">— auto-detect improves weather accuracy</span>
+          </label>
+
+          <!-- Geo bar -->
+          <div class="geo-bar">
+            <button type="button" class="btn-detect"
+                    (click)="detectLocation()"
+                    [disabled]="geoState === 'detecting'">
+              <span class="detect-spinner" *ngIf="geoState === 'detecting'"></span>
+              <svg *ngIf="geoState !== 'detecting'"
+                   viewBox="0 0 24 24" fill="none" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="10" r="3"/>
+                <path d="M12 2a8 8 0 018 8c0 5.25-8 14-8 14S4 15.25 4 10a8 8 0 018-8z"/>
+              </svg>
+              {{ geoState === 'detecting' ? 'Detecting…' : 'Use my location' }}
+            </button>
+
+            <!-- Success chip -->
+            <div class="geo-coords" *ngIf="geoState === 'done' && latitude !== null">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              {{ latitude | number:'1.4-4' }}°, {{ longitude | number:'1.4-4' }}°
+            </div>
+
+            <!-- Error chip -->
+            <div class="geo-error-chip" *ngIf="geoState === 'error'">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              {{ geoError }}
+            </div>
+          </div>
+
+          <!-- Editable text (auto-filled by reverse geocode, user can override) -->
+          <input type="text" [(ngModel)]="farm.location"
+                 placeholder="Or type city, region or rural area"
+                 [class.geo-filled]="geoState === 'done'"/>
         </div>
 
         <div class="form-group">
@@ -166,6 +209,10 @@
         </div>
         <div class="preview-row">
           <span>LOCATION</span><strong>{{ farm.location || '—' }}</strong>
+        </div>
+        <div class="preview-row" *ngIf="latitude !== null">
+          <span>GPS</span>
+          <strong class="gps-preview">{{ latitude | number:'1.4-4' }}°, {{ longitude | number:'1.4-4' }}°</strong>
         </div>
         <div class="preview-row">
           <span>ZONE</span>

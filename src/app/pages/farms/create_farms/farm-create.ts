@@ -33,6 +33,12 @@ export class FarmCreateComponent implements OnInit {
   loadingZones = false;
   errorMessage = '';
 
+  // ── Geolocation ────────────────────────
+  geoState: 'idle' | 'detecting' | 'done' | 'error' = 'idle';
+  geoError = '';
+  latitude: number | null = null;
+  longitude: number | null = null;
+
   constructor(
     private farmService: FarmService,
     private authService: AuthService,
@@ -62,6 +68,52 @@ export class FarmCreateComponent implements OnInit {
   onZoneChange(): void {
     this.selectedZone =
       this.zones.find((z) => z.id === this.farm.waterManagementZoneId) ?? null;
+  }
+
+  detectLocation(): void {
+    if (!navigator.geolocation) {
+      this.geoState = 'error';
+      this.geoError = 'Geolocation is not supported by your browser.';
+      return;
+    }
+    this.geoState = 'detecting';
+    this.geoError = '';
+
+    new Promise<GeolocationPosition>((resolve, reject) =>
+      navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 10000 }),
+    )
+      .then(async (pos) => {
+        this.latitude = pos.coords.latitude;
+        this.longitude = pos.coords.longitude;
+        await this.reverseGeocode(this.latitude, this.longitude);
+      })
+      .catch((err: GeolocationPositionError) => {
+        this.geoState = 'error';
+        this.geoError =
+          err.code === 1
+            ? 'Location access denied. Please allow location in your browser.'
+            : 'Could not determine location. Try again.';
+      });
+  }
+
+  private async reverseGeocode(lat: number, lon: number): Promise<void> {
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=en`;
+      const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+      const data = await res.json();
+      const a = data.address ?? {};
+      const parts = [
+        a.city || a.town || a.village || a.county,
+        a.state,
+        a.country,
+      ].filter(Boolean);
+      this.farm.location = parts.length
+        ? parts.join(', ')
+        : (data.display_name ?? `${lat.toFixed(5)}, ${lon.toFixed(5)}`);
+    } catch {
+      this.farm.location = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+    }
+    this.geoState = 'done';
   }
 
   createFarm(): void {
@@ -97,7 +149,7 @@ export class FarmCreateComponent implements OnInit {
       this.loading = true;
       this.errorMessage = '';
 
-      const payload = {
+      const payload: Record<string, unknown> = {
         name: this.farm.name.trim(),
         totalArea: Number(this.farm.totalArea) || 0,
         waterManagementZoneId: Number(this.farm.waterManagementZoneId),
@@ -107,6 +159,8 @@ export class FarmCreateComponent implements OnInit {
         mainCrop: this.farm.mainCrop.trim(),
         description: this.farm.description.trim(),
       };
+      if (this.latitude !== null)  payload['latitude']  = this.latitude;
+      if (this.longitude !== null) payload['longitude'] = this.longitude;
 
       this.farmService.createFarm(payload).subscribe({
         next: (farmId: number) => {

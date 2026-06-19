@@ -7,6 +7,8 @@ export interface Farm {
   mainCrop?: string;
   createdAt?: string;
   location?: string;
+  latitude?: number;
+  longitude?: number;
   initialStatus?: string;
   description?: string;
   productionType?: string;
