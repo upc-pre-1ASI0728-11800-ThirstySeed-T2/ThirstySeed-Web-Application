@@ -36,7 +36,7 @@ export class SupportComponent implements OnInit, AfterViewChecked {
   messageContent = '';
   sending = false;
 
-  categories = ['IRRIGATION', 'TECHNICAL', 'BILLING', 'OTHER'];
+  categories = ['IRRIGATION', 'SENSORS', 'WATER_ZONE', 'ALERTS', 'PROFILE', 'SUBSCRIPTION', 'OTHER'];
   priorities = ['LOW', 'MEDIUM', 'HIGH'];
 
   private currentUserId = 0;
