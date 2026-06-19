@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../../iam/services/auth.service';
 import { SettingsService, ProfilePayload } from './services/settings.service';
@@ -8,7 +9,7 @@ import { SettingsService, ProfilePayload } from './services/settings.service';
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, TranslateDirective],
   templateUrl: './settings.html',
   styleUrls: ['./settings.css'],
 })

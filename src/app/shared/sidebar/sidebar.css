@@ -260,3 +260,7 @@ nav {
   border: 1.5px solid #1d9148;
   pointer-events: none;
 }
+
+.lang-switcher-wrap {
+  padding: 6px 0 4px;
+}

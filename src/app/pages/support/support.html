@@ -7,16 +7,16 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
         </svg>
-        Support
+        {{ 'SUPPORT.BADGE' | translate }}
       </span>
-      <h1>Support Tickets</h1>
-      <p class="subtitle">Open a ticket and chat with the admin team</p>
+      <h1>{{ 'SUPPORT.TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'SUPPORT.SUBTITLE' | translate }}</p>
     </div>
     <button class="btn-new" (click)="openNewTicket()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
       </svg>
-      New Ticket
+      {{ 'SUPPORT.NEW_TICKET' | translate }}
     </button>
   </div>
 
@@ -27,14 +27,14 @@
     <div class="ticket-list-panel">
 
       <div class="panel-header">
-        <span class="panel-label">My Tickets</span>
+        <span class="panel-label">{{ 'SUPPORT.MY_TICKETS' | translate }}</span>
         <span class="ticket-count" *ngIf="!loadingTickets">{{ tickets.length }}</span>
       </div>
 
       <!-- Loading -->
       <div class="list-loading" *ngIf="loadingTickets">
         <div class="spinner-sm"></div>
-        <span>Loading tickets…</span>
+        <span>{{ 'SUPPORT.LOADING_TICKETS' | translate }}</span>
       </div>
 
       <!-- Error -->
@@ -43,7 +43,7 @@
           <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
         {{ ticketError }}
-        <button class="retry-btn" (click)="loadTickets()">Retry</button>
+        <button class="retry-btn" (click)="loadTickets()">{{ 'SUPPORT.RETRY' | translate }}</button>
       </div>
 
       <!-- Empty state -->
@@ -51,8 +51,8 @@
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#b0ccb0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
         </svg>
-        <p>No tickets yet.</p>
-        <button class="btn-new-sm" (click)="openNewTicket()">Open your first ticket</button>
+        <p>{{ 'SUPPORT.NO_TICKETS' | translate }}</p>
+        <button class="btn-new-sm" (click)="openNewTicket()">{{ 'SUPPORT.FIRST_TICKET' | translate }}</button>
       </div>
 
       <!-- Ticket cards -->
@@ -81,50 +81,50 @@
         <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#c8dfc0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
         </svg>
-        <h3>Select a ticket</h3>
-        <p>Choose a ticket from the list or open a new one to get started.</p>
+        <h3>{{ 'SUPPORT.SELECT_TICKET' | translate }}</h3>
+        <p>{{ 'SUPPORT.SELECT_HINT' | translate }}</p>
         <button class="btn-new" (click)="openNewTicket()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
-          New Ticket
+          {{ 'SUPPORT.NEW_TICKET' | translate }}
         </button>
       </div>
 
       <!-- New ticket form -->
       <div class="new-ticket-form" *ngIf="panel === 'new'">
         <div class="form-header">
-          <h2>New Support Ticket</h2>
-          <p>Describe your issue and our team will get back to you.</p>
+          <h2>{{ 'SUPPORT.FORM.TITLE' | translate }}</h2>
+          <p>{{ 'SUPPORT.FORM.SUBTITLE' | translate }}</p>
         </div>
 
         <div class="alert alert-error" *ngIf="createError">{{ createError }}</div>
 
         <div class="form-grid">
           <div class="form-group full-width">
-            <label>Title <span class="required">*</span></label>
-            <input type="text" [(ngModel)]="newTitle" placeholder="Brief summary of your issue" [disabled]="creating"/>
+            <label>{{ 'SUPPORT.FORM.TICKET_TITLE' | translate }} <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="newTitle" [placeholder]="'SUPPORT.FORM.TITLE_PLACEHOLDER' | translate" [disabled]="creating"/>
           </div>
 
           <div class="form-group">
-            <label>Category <span class="required">*</span></label>
+            <label>{{ 'SUPPORT.FORM.CATEGORY' | translate }} <span class="required">*</span></label>
             <select [(ngModel)]="newCategory" [disabled]="creating">
-              <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+              <option *ngFor="let c of categories" [value]="c">{{ ('SUPPORT.CATEGORY.' + c) | translate }}</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label>Priority <span class="required">*</span></label>
+            <label>{{ 'SUPPORT.FORM.PRIORITY' | translate }} <span class="required">*</span></label>
             <select [(ngModel)]="newPriority" [disabled]="creating">
-              <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+              <option *ngFor="let p of priorities" [value]="p">{{ ('SUPPORT.PRIORITY.' + p) | translate }}</option>
             </select>
           </div>
 
           <div class="form-group full-width">
-            <label>Description <span class="required">*</span></label>
+            <label>{{ 'SUPPORT.FORM.DESCRIPTION' | translate }} <span class="required">*</span></label>
             <textarea
               [(ngModel)]="newDescription"
-              placeholder="Describe your issue in detail…"
+              [placeholder]="'SUPPORT.FORM.DESCRIPTION_PLACEHOLDER' | translate"
               rows="6"
               [disabled]="creating">
             </textarea>
@@ -132,10 +132,10 @@
         </div>
 
         <div class="form-actions">
-          <button class="btn-cancel" (click)="cancelNew()" [disabled]="creating">Cancel</button>
+          <button class="btn-cancel" (click)="cancelNew()" [disabled]="creating">{{ 'SUPPORT.FORM.CANCEL' | translate }}</button>
           <button class="btn-save" (click)="submitTicket()" [disabled]="creating">
             <div class="spinner" *ngIf="creating"></div>
-            <span>{{ creating ? 'Creating…' : 'Submit Ticket' }}</span>
+            <span>{{ creating ? ('SUPPORT.FORM.CREATING' | translate) : ('SUPPORT.FORM.SUBMIT' | translate) }}</span>
           </button>
         </div>
       </div>
@@ -152,14 +152,14 @@
               <span class="category-tag">{{ selectedTicket.category }}</span>
               <span class="priority-badge" [ngClass]="priorityClass(selectedTicket.priority)">{{ selectedTicket.priority }}</span>
               <span class="meta-sep">·</span>
-              <span class="meta-date">Opened {{ formatDate(selectedTicket.createdAt) }}</span>
+              <span class="meta-date">{{ 'SUPPORT.DETAIL.OPENED' | translate }} {{ formatDate(selectedTicket.createdAt) }}</span>
             </p>
           </div>
         </div>
 
         <!-- Description card -->
         <div class="description-card">
-          <div class="desc-label">Description</div>
+          <div class="desc-label">{{ 'SUPPORT.DETAIL.DESCRIPTION_LABEL' | translate }}</div>
           <p class="desc-text">{{ selectedTicket.description }}</p>
         </div>
 
@@ -169,18 +169,18 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
             </svg>
-            Conversation
+            {{ 'SUPPORT.DETAIL.CONVERSATION' | translate }}
           </div>
 
           <!-- Messages -->
           <div class="chat-messages">
             <div class="messages-loading" *ngIf="loadingMessages">
               <div class="spinner-sm"></div>
-              <span>Loading messages…</span>
+              <span>{{ 'SUPPORT.CHAT.LOADING' | translate }}</span>
             </div>
 
             <div class="chat-empty" *ngIf="!loadingMessages && messages.length === 0">
-              <p>No messages yet. Send the first message below.</p>
+              <p>{{ 'SUPPORT.CHAT.NO_MESSAGES' | translate }}</p>
             </div>
 
             <div class="message-bubble"
@@ -189,7 +189,7 @@
                  [class.admin]="!isOwnMessage(msg)">
               <div class="bubble-meta">
                 <span class="bubble-sender">
-                  {{ isOwnMessage(msg) ? 'You' : msg.senderUsername }}
+                  {{ isOwnMessage(msg) ? ('SUPPORT.CHAT.YOU' | translate) : msg.senderUsername }}
                 </span>
                 <span class="bubble-time">{{ formatTime(msg.createdAt) }}</span>
               </div>
@@ -205,7 +205,7 @@
               class="chat-input"
               [(ngModel)]="messageContent"
               (keydown)="onMsgKeydown($event)"
-              placeholder="{{ selectedTicket.status === 'CLOSED' ? 'This ticket is closed.' : 'Type a message… (Enter to send)' }}"
+              [placeholder]="(selectedTicket.status === 'CLOSED' ? 'SUPPORT.CHAT.PLACEHOLDER_CLOSED' : 'SUPPORT.CHAT.PLACEHOLDER') | translate"
               rows="1"
               [disabled]="sending || selectedTicket.status === 'CLOSED'">
             </textarea>

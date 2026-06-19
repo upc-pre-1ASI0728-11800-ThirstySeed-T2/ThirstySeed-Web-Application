@@ -3,14 +3,17 @@ import { CommonModule, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/
 import { Router, RouterModule } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { AuthService } from '../../iam/services/auth.service';
 import { PlotService } from '../../pages/plots/services/plot.service';
 import { AlertService } from '../../pages/dashboard/services/alert.service';
 import { SubscriptionService } from '../../iam/services/subscription.service';
+import { LanguageSwitcherComponent } from '../language/language-switcher';
 
 export interface MenuItem {
   label: string;
   route: string;
+  translateKey: string;
 }
 
 @Component({
@@ -22,6 +25,8 @@ export interface MenuItem {
     NgSwitch,
     NgSwitchCase,
     NgSwitchDefault,
+    TranslatePipe, TranslateDirective,
+    LanguageSwitcherComponent,
   ],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
@@ -29,7 +34,7 @@ export interface MenuItem {
 export class SidebarComponent implements OnInit {
 
   menuItems: MenuItem[] = [];
-  panelTitle = 'Producer Panel';
+  panelTitle = 'SIDEBAR.PRODUCER_PANEL';
   showPremiumCard = false;
   planName = 'Plan';
   usedNodes = 0;
@@ -54,32 +59,32 @@ export class SidebarComponent implements OnInit {
     if (!user) return;
 
     if (user.roles?.includes('ROLE_WATER_MANAGER')) {
-      this.panelTitle = 'Water Manager Panel';
+      this.panelTitle = 'SIDEBAR.WATER_MANAGER_PANEL';
       this.menuItems = [
-        { label: 'Dashboard',       route: '/water-manager/dashboard'    },
-        { label: 'Zones',           route: '/water-manager/zones/create' },
-        { label: 'Water Demand',    route: '/water-demand'               },
-        { label: 'Critical Areas',  route: '/critical-areas'             },
-        { label: 'Reports',         route: '/reports'                    },
-        { label: 'Regional Alerts', route: '/regional-alerts'            },
-        { label: 'Support',         route: '/support'                    },
-        { label: 'Settings',        route: '/settings'                   },
+        { label: 'Dashboard',       route: '/water-manager/dashboard',    translateKey: 'SIDEBAR.DASHBOARD'        },
+        { label: 'Zones',           route: '/water-manager/zones/create', translateKey: 'SIDEBAR.ZONES'            },
+        { label: 'Water Demand',    route: '/water-demand',               translateKey: 'SIDEBAR.WATER_DEMAND'     },
+        { label: 'Critical Areas',  route: '/critical-areas',             translateKey: 'SIDEBAR.CRITICAL_AREAS'   },
+        { label: 'Reports',         route: '/reports',                    translateKey: 'SIDEBAR.REPORTS'          },
+        { label: 'Regional Alerts', route: '/regional-alerts',            translateKey: 'SIDEBAR.REGIONAL_ALERTS'  },
+        { label: 'Support',         route: '/support',                    translateKey: 'SIDEBAR.SUPPORT'          },
+        { label: 'Settings',        route: '/settings',                   translateKey: 'SIDEBAR.SETTINGS'         },
       ];
       this.showPremiumCard = false;
 
     } else {
-      this.panelTitle = 'Producer Panel';
+      this.panelTitle = 'SIDEBAR.PRODUCER_PANEL';
       this.menuItems = [
-        { label: 'Dashboard',     route: '/dashboard'      },
-        { label: 'Farms',         route: '/farms'          },
-        { label: 'Plots',         route: '/plots'          },
-        { label: 'Telemetry',     route: '/telemetry'      },
-        { label: 'IoT Simulator', route: '/iot-simulator'  },
-        { label: 'AI Crop Planner', route: '/digital-twin'  },
-        { label: 'Support',       route: '/support'        },
-        { label: 'Profile',       route: '/profile'        },
-        { label: 'Subscription',  route: '/profile-rol'    },
-        { label: 'Settings',      route: '/settings'       },
+        { label: 'Dashboard',       route: '/dashboard',     translateKey: 'SIDEBAR.DASHBOARD'       },
+        { label: 'Farms',           route: '/farms',         translateKey: 'SIDEBAR.FARMS'           },
+        { label: 'Plots',           route: '/plots',         translateKey: 'SIDEBAR.PLOTS'           },
+        { label: 'Telemetry',       route: '/telemetry',     translateKey: 'SIDEBAR.TELEMETRY'       },
+        { label: 'IoT Simulator',   route: '/iot-simulator', translateKey: 'SIDEBAR.IOT_SIMULATOR'   },
+        { label: 'AI Crop Planner', route: '/digital-twin',  translateKey: 'SIDEBAR.AI_CROP_PLANNER' },
+        { label: 'Support',         route: '/support',       translateKey: 'SIDEBAR.SUPPORT'         },
+        { label: 'Profile',         route: '/profile',       translateKey: 'SIDEBAR.PROFILE'         },
+        { label: 'Subscription',    route: '/profile-rol',   translateKey: 'SIDEBAR.SUBSCRIPTION'    },
+        { label: 'Settings',        route: '/settings',      translateKey: 'SIDEBAR.SETTINGS'        },
       ];
       this.showPremiumCard = true;
       this.loadProducerPlanSummary(user.id);

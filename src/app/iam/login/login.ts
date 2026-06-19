@@ -3,12 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { NgIf } from '@angular/common';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule, NgIf, TranslatePipe, TranslateDirective],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

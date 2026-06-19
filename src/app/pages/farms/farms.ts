@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { FarmService } from './services/farm.service';
 import { Farm } from './model/farm.model';
 import { AuthService } from '../../iam/services/auth.service';
@@ -10,7 +11,7 @@ import { PlotService } from '../plots/services/plot.service';
 @Component({
   selector: 'app-farms',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslatePipe, TranslateDirective],
   templateUrl: './farms.html',
   styleUrl: './farms.css',
 })

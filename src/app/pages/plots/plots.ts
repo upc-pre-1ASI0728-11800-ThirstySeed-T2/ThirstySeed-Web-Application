@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { PlotService } from '../../pages/plots/services/plot.service';
 import { Plot } from '../../pages/plots/model/plot.model';
 import { AuthService } from '../../iam/services/auth.service';
@@ -12,7 +13,7 @@ import { Farm } from '../farms/model/farm.model';
 @Component({
   selector: 'app-plots',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, TranslatePipe, TranslateDirective],
   templateUrl: './plots.html',
   styleUrl: './plots.css',
 })

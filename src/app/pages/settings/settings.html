@@ -3,7 +3,7 @@
     <div class="profile-mark">{{ getInitials(displayName) }}</div>
 
     <div class="profile-title">
-      <span class="page-badge">Account settings</span>
+      <span class="page-badge">{{ 'SETTINGS.BADGE' | translate }}</span>
       <h1>{{ displayName }}</h1>
       <p>{{ displayEmail }}</p>
     </div>
@@ -13,62 +13,62 @@
     </div>
   </header>
 
-  <div class="loading" *ngIf="loading">Loading profile...</div>
+  <div class="loading" *ngIf="loading">{{ 'SETTINGS.LOADING' | translate }}</div>
 
   <div class="settings-grid" *ngIf="!loading">
     <aside class="account-panel">
-      <h2>Profile overview</h2>
+      <h2>{{ 'SETTINGS.PANEL.TITLE' | translate }}</h2>
 
       <div class="info-row">
-        <span>User ID</span>
+        <span>{{ 'SETTINGS.PANEL.USER_ID' | translate }}</span>
         <strong>#{{ userId }}</strong>
       </div>
 
       <div class="info-row">
-        <span>Profile ID</span>
-        <strong>{{ profileId || 'Local draft' }}</strong>
+        <span>{{ 'SETTINGS.PANEL.PROFILE_ID' | translate }}</span>
+        <strong>{{ profileId || ('SETTINGS.PANEL.LOCAL_DRAFT' | translate) }}</strong>
       </div>
 
       <div class="info-row">
-        <span>Role</span>
+        <span>{{ 'SETTINGS.PANEL.ROLE' | translate }}</span>
         <strong>{{ roleLabel }}</strong>
       </div>
 
       <div class="info-row">
-        <span>Subscription</span>
+        <span>{{ 'SETTINGS.PANEL.SUBSCRIPTION' | translate }}</span>
         <strong>{{ planType }}</strong>
       </div>
 
       <p class="notice" *ngIf="profileMissing">
-        Your profile details are ready to save. Changes will create your profile record.
+        {{ 'SETTINGS.PANEL.DRAFT_NOTICE' | translate }}
       </p>
     </aside>
 
     <main class="edit-panel">
       <div class="panel-heading">
         <div>
-          <span class="page-badge">Editable information</span>
-          <h2>Personal data</h2>
+          <span class="page-badge">{{ 'SETTINGS.EDIT.BADGE' | translate }}</span>
+          <h2>{{ 'SETTINGS.EDIT.TITLE' | translate }}</h2>
         </div>
         <button class="save-button" type="button" (click)="updateProfile()" [disabled]="saving">
-          {{ saving ? 'Saving...' : 'Save changes' }}
+          {{ saving ? ('SETTINGS.EDIT.SAVING' | translate) : ('SETTINGS.EDIT.SAVE' | translate) }}
         </button>
       </div>
 
       <form [formGroup]="form" class="profile-form">
         <label>
-          Full name
-          <input type="text" formControlName="name" placeholder="Your full name" />
+          {{ 'SETTINGS.EDIT.FULL_NAME' | translate }}
+          <input type="text" formControlName="name" [placeholder]="'SETTINGS.EDIT.FULL_NAME_PLACEHOLDER' | translate" />
           <small *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
-            Name is required.
+            {{ 'SETTINGS.EDIT.NAME_REQUIRED' | translate }}
           </small>
         </label>
 
         <label>
-          Email
-          <input type="email" formControlName="email" placeholder="you@example.com" />
+          {{ 'SETTINGS.EDIT.EMAIL' | translate }}
+          <input type="email" formControlName="email" [placeholder]="'SETTINGS.EDIT.EMAIL_PLACEHOLDER' | translate" />
           <small *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
-            Enter a valid email.
+            {{ 'SETTINGS.EDIT.EMAIL_REQUIRED' | translate }}
           </small>
         </label>
       </form>
@@ -80,21 +80,21 @@
 
   <section class="security-panel" *ngIf="!loading">
     <div>
-      <span class="page-badge">Security</span>
-      <h2>Password changes</h2>
-      <p>Password editing is not enabled because the backend contract does not expose a password update endpoint.</p>
+      <span class="page-badge">{{ 'SETTINGS.SECURITY.BADGE' | translate }}</span>
+      <h2>{{ 'SETTINGS.SECURITY.TITLE' | translate }}</h2>
+      <p>{{ 'SETTINGS.SECURITY.DESCRIPTION' | translate }}</p>
     </div>
   </section>
 
   <section class="danger-panel" *ngIf="!loading">
     <div>
-      <span class="page-badge danger">Danger zone</span>
-      <h2>Delete account</h2>
-      <p>This permanently removes your account data and signs you out.</p>
+      <span class="page-badge danger">{{ 'SETTINGS.DANGER.BADGE' | translate }}</span>
+      <h2>{{ 'SETTINGS.DANGER.TITLE' | translate }}</h2>
+      <p>{{ 'SETTINGS.DANGER.DESCRIPTION' | translate }}</p>
     </div>
 
     <button class="danger-button" type="button" (click)="deleteAccount()">
-      Delete account
+      {{ 'SETTINGS.DANGER.BUTTON' | translate }}
     </button>
   </section>
 </section>

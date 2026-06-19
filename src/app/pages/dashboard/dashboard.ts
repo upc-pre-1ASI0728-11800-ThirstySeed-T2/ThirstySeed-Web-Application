@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { DashboardService } from './services/dashboard.service';
 import { AlertService } from './services/alert.service';
 import { AlertCard, DashboardMetrics, PlotCard, WaterStressCard } from './model/dashboard.model';
@@ -11,7 +12,7 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective, RouterLink],
+  imports: [CommonModule, BaseChartDirective, RouterLink, TranslatePipe, TranslateDirective],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

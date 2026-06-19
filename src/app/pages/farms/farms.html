@@ -3,23 +3,19 @@
   <!-- TOP NAV -->
   <header class="top-nav">
     <div class="top-nav-left">
-      <span class="page-badge">● Farm management</span>
-      <h1>Your registered farms</h1>
+      <span class="page-badge">● {{ 'FARMS.BADGE' | translate }}</span>
+      <h1>{{ 'FARMS.TITLE' | translate }}</h1>
       <p class="subscription-info">
-        {{ subscriptionPlan ?? '—' }}
-        Plan ·
-        {{ farms.length }}/{{ maxFarms ?? 0 }}
-        farms used
+        {{ subscriptionPlan ?? '—' }} Plan · {{ farms.length }}/{{ maxFarms ?? 0 }} {{ 'FARMS.STATS.REGISTERED' | translate | lowercase }}
       </p>
-      <p class="subtitle">Review your farms, monitor their active plots and manage the agricultural spaces connected to Thirsty Seed.</p>
-
+      <p class="subtitle">{{ 'FARMS.SUBTITLE' | translate }}</p>
     </div>
     <div class="top-nav-right">
       <div class="search-bar">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input type="text" placeholder="Search farms" />
+        <input type="text" [placeholder]="'FARMS.SEARCH_PLACEHOLDER' | translate" />
       </div>
       <button class="icon-btn notif">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -31,18 +27,18 @@
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
         </svg>
-        <span>Producer</span>
+        <span>{{ 'COMMON.PRODUCER' | translate }}</span>
       </button>
       <button
         class="add-button"
         (click)="goToCreate()"
         [disabled]="farms.length >= (maxFarms ?? 0)"
-      >+ Add farm</button>
+      >{{ 'FARMS.ADD_FARM' | translate }}</button>
     </div>
   </header>
 
   <!-- LOADING / ERROR -->
-  <div *ngIf="loading" class="state-msg">Loading farms...</div>
+  <div *ngIf="loading" class="state-msg">{{ 'FARMS.LOADING' | translate }}</div>
   <div *ngIf="errorMessage" class="state-msg error">{{ errorMessage }}</div>
   <div *ngIf="successMessage && !errorMessage" class="state-msg success">{{ successMessage }}</div>
 
@@ -54,35 +50,35 @@
         <div class="stat-icon">🌾</div>
         <div class="stat-body">
           <strong>{{ totalFarms }}</strong>
-          <p>Registered farms</p>
+          <p>{{ 'FARMS.STATS.REGISTERED' | translate }}</p>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">🌱</div>
         <div class="stat-body">
           <strong>{{ totalActivePlots }}</strong>
-          <p>Total active plots</p>
+          <p>{{ 'FARMS.STATS.ACTIVE_PLOTS' | translate }}</p>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">📡</div>
         <div class="stat-body">
           <strong>{{ farmsWithNodes }}</strong>
-          <p>Farms with IoT nodes</p>
+          <p>{{ 'FARMS.STATS.IOT_FARMS' | translate }}</p>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">⚠️</div>
         <div class="stat-body">
           <strong>{{ farmsWithRisk }}</strong>
-          <p>Farm with critical risk</p>
+          <p>{{ 'FARMS.STATS.CRITICAL_RISK' | translate }}</p>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">📦</div>
         <div class="stat-body">
           <strong>{{ farms.length }}/{{ maxFarms }}</strong>
-          <p>{{ subscriptionPlan }} Farm Usage</p>
+          <p>{{ subscriptionPlan }} {{ 'FARMS.STATS.USAGE' | translate }}</p>
         </div>
       </div>
     </div>
@@ -94,13 +90,13 @@
       <div class="left-col">
         <div class="section-header">
           <div>
-            <h2>Farms list</h2>
-            <p class="section-sub">Manage your farms and access to plot distribution.</p>
+            <h2>{{ 'FARMS.LIST.TITLE' | translate }}</h2>
+            <p class="section-sub">{{ 'FARMS.LIST.SUBTITLE' | translate }}</p>
           </div>
-          <button class="outline-btn">Sort by risk</button>
+          <button class="outline-btn">{{ 'FARMS.LIST.SORT_RISK' | translate }}</button>
         </div>
 
-        <div *ngIf="farms.length === 0" class="state-msg">No farms registered yet.</div>
+        <div *ngIf="farms.length === 0" class="state-msg">{{ 'FARMS.NO_FARMS' | translate }}</div>
 
         <div class="farms-grid">
           <div *ngFor="let farm of farms" class="farm-card">
@@ -117,25 +113,25 @@
 
             <div class="farm-metrics">
               <div class="metric">
-                <label>PLOTS</label>
+                <label>{{ 'FARMS.LIST.PLOTS' | translate }}</label>
                 <span>{{ getPlotsByFarm(farm.id) }}</span>
               </div>
               <div class="metric">
-                <label>NODES</label>
+                <label>{{ 'FARMS.LIST.NODES' | translate }}</label>
                 <span>—</span>
               </div>
               <div class="metric">
-                <label>RISK</label>
+                <label>{{ 'FARMS.LIST.RISK' | translate }}</label>
                 <span>—</span>
               </div>
             </div>
 
-            <p class="farm-meta">Updated just now</p>
+            <p class="farm-meta">{{ 'FARMS.LIST.UPDATED' | translate }}</p>
 
             <div class="farm-actions">
-              <button class="btn-edit">Edit</button>
-              <button class="btn-open" (click)="openFarm(farm.id)">Open</button>
-              <button class="btn-delete" (click)="deleteFarm(farm)">Delete</button>
+              <button class="btn-edit">{{ 'FARMS.LIST.EDIT' | translate }}</button>
+              <button class="btn-open" (click)="openFarm(farm.id)">{{ 'FARMS.LIST.OPEN' | translate }}</button>
+              <button class="btn-delete" (click)="deleteFarm(farm)">{{ 'FARMS.LIST.DELETE' | translate }}</button>
             </div>
           </div>
         </div>
@@ -143,13 +139,13 @@
         <!-- ADD FARM CARD -->
         <div class="add-farm-card">
           <div class="add-farm-icon">🌿</div>
-          <h3>Farm management</h3>
-          <p>Register your farms, assign plots and manage the agricultural spaces connected to it.</p>
+          <h3>{{ 'FARMS.ADD_CARD.TITLE' | translate }}</h3>
+          <p>{{ 'FARMS.ADD_CARD.DESCRIPTION' | translate }}</p>
           <button
             class="add-button-sm"
             (click)="goToCreate()"
             [disabled]="farms.length >= (maxFarms ?? 0)">
-            Add farm
+            {{ 'FARMS.ADD_CARD.BUTTON' | translate }}
           </button>
         </div>
       </div>
@@ -159,8 +155,8 @@
 
         <!-- MAP PLACEHOLDER -->
         <div class="map-card">
-          <h3>Farm locations</h3>
-          <p class="section-sub">Geographic overview of all registered farms.</p>
+          <h3>{{ 'FARMS.MAP.TITLE' | translate }}</h3>
+          <p class="section-sub">{{ 'FARMS.MAP.SUBTITLE' | translate }}</p>
           <div class="map-placeholder">
             <div class="map-pin pin-1">
               <span class="pin-dot moderate"></span>
@@ -171,24 +167,24 @@
               <span class="pin-label">F2</span>
             </div>
             <p class="map-legend">
-              <span class="dot moderate"></span> Moderate / Critical
+              <span class="dot moderate"></span> {{ 'FARMS.MAP.MODERATE' | translate }}
             </p>
           </div>
         </div>
 
         <!-- RECENT ACTIVITY -->
         <div class="activity-card">
-          <h3>Recent farm activity</h3>
-          <p class="section-sub">Last updates from your farms.</p>
+          <h3>{{ 'FARMS.ACTIVITY.TITLE' | translate }}</h3>
+          <p class="section-sub">{{ 'FARMS.ACTIVITY.SUBTITLE' | translate }}</p>
 
-          <div *ngIf="farms.length === 0" class="activity-empty">No recent activity.</div>
+          <div *ngIf="farms.length === 0" class="activity-empty">{{ 'FARMS.ACTIVITY.NO_ACTIVITY' | translate }}</div>
 
           <div class="activity-list">
             <div *ngFor="let farm of farms.slice(0, 3)" class="activity-row">
               <div class="activity-icon">🌾</div>
               <div class="activity-body">
                 <strong>{{ farm.name }}</strong>
-                <p>{{ farm.description || 'Farm registered and added successfully.' }}</p>
+                <p>{{ farm.description || ('FARMS.ACTIVITY.REGISTERED_MSG' | translate) }}</p>
               </div>
             </div>
           </div>

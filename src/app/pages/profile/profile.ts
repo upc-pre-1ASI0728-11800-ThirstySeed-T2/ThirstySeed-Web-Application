@@ -1,13 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { AuthService } from '../../iam/services/auth.service';
 import { ProfileService, UserProfile } from '../../iam/services/profile.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe, TranslateDirective],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })

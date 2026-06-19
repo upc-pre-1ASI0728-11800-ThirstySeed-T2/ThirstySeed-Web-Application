@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { AuthService } from '../../iam/services/auth.service';
 import { SupportService } from './services/support.service';
 import { SupportTicket, TicketMessage } from './model/support.model';
@@ -10,7 +11,7 @@ type Panel = 'empty' | 'new' | 'detail';
 @Component({
   selector: 'app-support',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe, TranslateDirective],
   templateUrl: './support.html',
   styleUrl: './support.css',
 })

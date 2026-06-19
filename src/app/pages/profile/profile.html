@@ -2,9 +2,9 @@
 
   <header class="top-nav">
     <div class="top-nav-left">
-      <span class="page-badge">User Profile</span>
-      <h1>My profile</h1>
-      <p class="subtitle">Manage your personal information. This data is used to personalise your ThirstySeed experience.</p>
+      <span class="page-badge">{{ 'PROFILE.BADGE' | translate }}</span>
+      <h1>{{ 'PROFILE.TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'PROFILE.SUBTITLE' | translate }}</p>
     </div>
   </header>
 
@@ -13,10 +13,10 @@
     <!-- FORM CARD -->
     <div class="form-card">
       <div class="form-card-header">
-        <h2>{{ isEditing ? 'Edit profile' : 'Create your profile' }}</h2>
-        <p>{{ isEditing ? 'Update your personal details.' : 'Complete the form below to set up your profile.' }}</p>
+        <h2>{{ (isEditing ? 'PROFILE.EDIT_TITLE' : 'PROFILE.CREATE_TITLE') | translate }}</h2>
+        <p>{{ (isEditing ? 'PROFILE.EDIT_SUBTITLE' : 'PROFILE.CREATE_SUBTITLE') | translate }}</p>
         <span class="status-badge" [ngClass]="isEditing ? 'badge-active' : 'badge-pending'">
-          {{ isEditing ? 'Profile active' : 'Not configured' }}
+          {{ (isEditing ? 'PROFILE.BADGE_ACTIVE' : 'PROFILE.BADGE_PENDING') | translate }}
         </span>
       </div>
 
@@ -26,28 +26,28 @@
       <div class="form-grid">
 
         <div class="form-group">
-          <label>First name <span class="required">*</span></label>
-          <input type="text" [(ngModel)]="firstName" placeholder="John" [disabled]="saving" />
+          <label>{{ 'PROFILE.FIRST_NAME' | translate }} <span class="required">*</span></label>
+          <input type="text" [(ngModel)]="firstName" [placeholder]="'PROFILE.PLACEHOLDER_FIRST' | translate" [disabled]="saving" />
         </div>
 
         <div class="form-group">
-          <label>Last name <span class="required">*</span></label>
-          <input type="text" [(ngModel)]="lastName" placeholder="Doe" [disabled]="saving" />
+          <label>{{ 'PROFILE.LAST_NAME' | translate }} <span class="required">*</span></label>
+          <input type="text" [(ngModel)]="lastName" [placeholder]="'PROFILE.PLACEHOLDER_LAST' | translate" [disabled]="saving" />
         </div>
 
         <div class="form-group">
-          <label>Email <span class="required">*</span></label>
-          <input type="email" [(ngModel)]="email" placeholder="john.doe@example.com" [disabled]="saving" />
+          <label>{{ 'PROFILE.EMAIL' | translate }} <span class="required">*</span></label>
+          <input type="email" [(ngModel)]="email" [placeholder]="'PROFILE.PLACEHOLDER_EMAIL' | translate" [disabled]="saving" />
         </div>
 
         <div class="form-group">
-          <label>Phone number</label>
-          <input type="tel" [(ngModel)]="phoneNumber" placeholder="+51 999 000 111" [disabled]="saving" />
+          <label>{{ 'PROFILE.PHONE' | translate }}</label>
+          <input type="tel" [(ngModel)]="phoneNumber" [placeholder]="'PROFILE.PLACEHOLDER_PHONE' | translate" [disabled]="saving" />
         </div>
 
         <div class="form-group full-width">
-          <label>Location</label>
-          <input type="text" [(ngModel)]="location" placeholder="City, region or country" [disabled]="saving" />
+          <label>{{ 'PROFILE.LOCATION' | translate }}</label>
+          <input type="text" [(ngModel)]="location" [placeholder]="'PROFILE.PLACEHOLDER_LOCATION' | translate" [disabled]="saving" />
         </div>
 
       </div>
@@ -55,7 +55,7 @@
       <div class="form-actions">
         <button class="btn-save" (click)="save()" [disabled]="saving">
           <span class="spinner" *ngIf="saving"></span>
-          {{ saving ? 'Saving…' : (isEditing ? 'Save changes' : 'Create profile') }}
+          {{ saving ? ('PROFILE.SAVING' | translate) : ((isEditing ? 'PROFILE.SAVE_CHANGES' : 'PROFILE.CREATE') | translate) }}
         </button>
       </div>
     </div>
@@ -72,15 +72,15 @@
 
       <div class="preview-section">
         <div class="preview-row">
-          <span>Phone</span>
+          <span>{{ 'PROFILE.PHONE_LABEL' | translate }}</span>
           <strong>{{ phoneNumber || '—' }}</strong>
         </div>
         <div class="preview-row">
-          <span>Location</span>
+          <span>{{ 'PROFILE.LOCATION_LABEL' | translate }}</span>
           <strong>{{ location || '—' }}</strong>
         </div>
         <div class="preview-row" *ngIf="existingProfile">
-          <span>Profile ID</span>
+          <span>{{ 'PROFILE.PROFILE_ID' | translate }}</span>
           <strong>#{{ existingProfile.id }}</strong>
         </div>
       </div>
@@ -91,7 +91,7 @@
           <line x1="12" y1="8" x2="12" y2="12"/>
           <line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
-        Fill in your details to complete your profile. This helps identify your account and contact information.
+        {{ 'PROFILE.INFO_HINT' | translate }}
       </div>
     </div>
 
@@ -100,7 +100,7 @@
   <ng-template #loadingTpl>
     <div class="loading-state">
       <div class="spinner-lg"></div>
-      <p>Loading profile…</p>
+      <p>{{ 'PROFILE.LOADING' | translate }}</p>
     </div>
   </ng-template>
 
