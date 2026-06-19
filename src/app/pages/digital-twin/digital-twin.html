@@ -5,10 +5,10 @@
     <div class="dt-header-left">
       <span class="page-badge">
         <span class="live-dot"></span>
-        Digital Twin
+        {{ 'DIGITAL_TWIN.BADGE' | translate }}
       </span>
-      <h1>Agricultural Digital Twin</h1>
-      <p class="subtitle">Simulate "What-If" scenarios to predict AI recommendations before real irrigation decisions.</p>
+      <h1>{{ 'DIGITAL_TWIN.TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'DIGITAL_TWIN.SUBTITLE' | translate }}</p>
     </div>
     <div class="dt-header-right">
       <div class="user-pill">
@@ -21,16 +21,16 @@
   <!-- ── SELECTOR BAR ── -->
   <div class="selector-bar">
     <div class="selector-group">
-      <label>Farm</label>
+      <label>{{ 'DIGITAL_TWIN.SELECTOR.FARM' | translate }}</label>
       <select (change)="onFarmChange($event)">
-        <option value="">All farms</option>
+        <option value="">{{ 'DIGITAL_TWIN.SELECTOR.ALL_FARMS' | translate }}</option>
         <option *ngFor="let farm of farms" [value]="farm.id">{{ farm.name }}</option>
       </select>
     </div>
     <div class="selector-group">
-      <label>Plot</label>
+      <label>{{ 'DIGITAL_TWIN.SELECTOR.PLOT' | translate }}</label>
       <select (change)="onPlotChange($event)">
-        <option value="">Select plot to simulate</option>
+        <option value="">{{ 'DIGITAL_TWIN.SELECTOR.SELECT_PLOT' | translate }}</option>
         <option *ngFor="let plot of filteredPlots" [value]="plot.id">{{ plot.name }}</option>
       </select>
     </div>
@@ -41,7 +41,7 @@
     </div>
     <div class="selector-chip inactive" *ngIf="!selectedPlot">
       <span class="chip-dot off"></span>
-      <span>No plot selected — Twin inactive</span>
+      <span>{{ 'DIGITAL_TWIN.SELECTOR.NO_PLOT' | translate }}</span>
     </div>
   </div>
 
@@ -60,7 +60,6 @@
 
         <!-- SKY LAYER -->
         <div class="arena-sky">
-          <!-- Sun -->
           <div class="sun-wrap" [ngClass]="tempLevel">
             <div class="sun">
               <div class="ray" *ngFor="let r of [0,45,90,135,180,225,270,315]"
@@ -68,17 +67,15 @@
             </div>
           </div>
 
-          <!-- Drought clouds -->
           <div class="drought-cloud" *ngIf="droughtForecast">
             <svg viewBox="0 0 90 50" xmlns="http://www.w3.org/2000/svg">
               <ellipse cx="30" cy="32" rx="25" ry="14" fill="rgba(120,70,0,0.25)"/>
               <ellipse cx="52" cy="28" rx="20" ry="13" fill="rgba(140,80,0,0.2)"/>
               <ellipse cx="68" cy="34" rx="18" ry="12" fill="rgba(130,75,0,0.22)"/>
             </svg>
-            <span class="drought-tag">Drought</span>
+            <span class="drought-tag">{{ 'DIGITAL_TWIN.DROUGHT_TAG' | translate }}</span>
           </div>
 
-          <!-- Wind streaks -->
           <div class="wind-layer" *ngIf="windSpeed > 10">
             <div class="wind-streak" *ngFor="let i of [0,1,2,3,4,5,6]"
                  [style.top]="(i * 14 + 4) + '%'"
@@ -88,7 +85,6 @@
             </div>
           </div>
 
-          <!-- Sky temp overlay -->
           <div class="heat-shimmer" *ngIf="tempLevel === 'hot' || tempLevel === 'extreme'"></div>
         </div>
 
@@ -101,18 +97,16 @@
             </div>
             <div class="p-crown"></div>
           </div>
-          <!-- Pest indicator -->
           <div class="pest-overlay" *ngIf="pestSeasonActive">
             <span class="pest-icon">🦟</span>
             <span class="pest-icon" style="left:30%">🐛</span>
             <span class="pest-icon" style="left:60%">🦗</span>
-            <span class="pest-label">PEST SEASON ACTIVE</span>
+            <span class="pest-label">{{ 'DIGITAL_TWIN.PEST_SEASON' | translate }}</span>
           </div>
         </div>
 
         <!-- SOIL LAYER -->
         <div class="arena-soil" [ngClass]="moistureLevel">
-          <!-- Water molecules -->
           <div class="water-molecule"
                *ngFor="let d of waterDots"
                [style.left]="d.x + '%'"
@@ -121,7 +115,6 @@
                [style.height]="d.size + 'px'"
                [style.animation-delay]="d.delay + 's'">
           </div>
-          <!-- Root network -->
           <svg class="roots-svg" viewBox="0 0 400 80" preserveAspectRatio="none">
             <path d="M80 0 C80 20 60 30 50 50 C40 70 30 70 20 80" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none"/>
             <path d="M80 0 C80 25 95 35 100 55 C105 70 110 72 120 80" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none"/>
@@ -132,14 +125,14 @@
           </svg>
         </div>
 
-        <!-- MOISTURE GAUGE OVERLAY (bottom bar) -->
+        <!-- MOISTURE GAUGE OVERLAY -->
         <div class="arena-gauge">
           <div class="gauge-track">
             <div class="gauge-fill" [ngClass]="moistureLevel" [style.width]="soilMoisture + '%'"></div>
           </div>
           <div class="gauge-labels">
-            <span class="gauge-state" [ngClass]="moistureLevel">{{ moistureLabel }}</span>
-            <span class="gauge-pct">{{ soilMoisture }}% Soil Moisture</span>
+            <span class="gauge-state" [ngClass]="moistureLevel">{{ moistureLabel | translate }}</span>
+            <span class="gauge-pct">{{ soilMoisture }}% {{ 'DIGITAL_TWIN.CONTROLS.SOIL_MOISTURE' | translate }}</span>
           </div>
         </div>
 
@@ -153,8 +146,8 @@
               <circle cx="24" cy="34" r="2"/>
             </svg>
           </div>
-          <h3>Digital Twin Inactive</h3>
-          <p>Select a farm and plot above to activate the simulation sandbox.</p>
+          <h3>{{ 'DIGITAL_TWIN.SELECTOR.INACTIVE_TITLE' | translate }}</h3>
+          <p>{{ 'DIGITAL_TWIN.SELECTOR.INACTIVE_DESC' | translate }}</p>
         </div>
 
       </div>
@@ -164,10 +157,10 @@
 
         <div class="controls-header">
           <div>
-            <h3>Scenario Injection</h3>
-            <p class="controls-sub">Define the environmental conditions to simulate</p>
+            <h3>{{ 'DIGITAL_TWIN.CONTROLS.TITLE' | translate }}</h3>
+            <p class="controls-sub">{{ 'DIGITAL_TWIN.CONTROLS.SUBTITLE' | translate }}</p>
           </div>
-          <span class="what-if-badge">What-If</span>
+          <span class="what-if-badge">{{ 'DIGITAL_TWIN.CONTROLS.WHAT_IF' | translate }}</span>
         </div>
 
         <div class="controls-grid">
@@ -179,9 +172,9 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
                 </svg>
-                Soil Moisture
+                {{ 'DIGITAL_TWIN.CONTROLS.SOIL_MOISTURE' | translate }}
               </div>
-              <span class="ctrl-value" [ngClass]="moistureLevel">{{ soilMoisture }}% · {{ moistureLabel }}</span>
+              <span class="ctrl-value" [ngClass]="moistureLevel">{{ soilMoisture }}% · {{ moistureLabel | translate }}</span>
             </div>
             <input type="range" min="0" max="100" step="1"
                    [(ngModel)]="soilMoisture" class="ctrl-slider moisture-slider"/>
@@ -201,9 +194,9 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z"/>
                 </svg>
-                Temperature
+                {{ 'DIGITAL_TWIN.CONTROLS.TEMPERATURE' | translate }}
               </div>
-              <span class="ctrl-value" [ngClass]="tempLevel">{{ temperature }}°C · {{ tempLevel }}</span>
+              <span class="ctrl-value" [ngClass]="tempLevel">{{ temperature }}°C · {{ 'DIGITAL_TWIN.TEMP.' + tempLevel.toUpperCase() | translate }}</span>
             </div>
             <input type="range" min="-10" max="55" step="0.5"
                    [(ngModel)]="temperature" class="ctrl-slider temp-slider"/>
@@ -219,9 +212,9 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2"/>
                 </svg>
-                Wind Speed
+                {{ 'DIGITAL_TWIN.CONTROLS.WIND_SPEED' | translate }}
               </div>
-              <span class="ctrl-value wind" [ngClass]="windLevel">{{ windSpeed }} km/h · {{ windLabel }}</span>
+              <span class="ctrl-value wind" [ngClass]="windLevel">{{ windSpeed }} km/h · {{ windLabel | translate }}</span>
             </div>
             <div class="wind-row">
               <input type="range" min="0" max="120" step="1"
@@ -241,8 +234,8 @@
                   <path d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
                 </svg>
                 <div>
-                  <strong>Drought Forecast</strong>
-                  <span>Simulate dry period ahead</span>
+                  <strong>{{ 'DIGITAL_TWIN.CONTROLS.DROUGHT' | translate }}</strong>
+                  <span>{{ 'DIGITAL_TWIN.CONTROLS.DROUGHT_DESC' | translate }}</span>
                 </div>
               </div>
               <label class="toggle-switch">
@@ -258,8 +251,8 @@
                   <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
                 </svg>
                 <div>
-                  <strong>Pest Season Active</strong>
-                  <span>Simulate pest infestation risk</span>
+                  <strong>{{ 'DIGITAL_TWIN.CONTROLS.PEST' | translate }}</strong>
+                  <span>{{ 'DIGITAL_TWIN.CONTROLS.PEST_DESC' | translate }}</span>
                 </div>
               </div>
               <label class="toggle-switch">
@@ -276,7 +269,7 @@
           <span class="s-chip" [ngClass]="moistureLevel">💧 {{ soilMoisture }}%</span>
           <span class="s-chip" [ngClass]="tempLevel">🌡️ {{ temperature }}°C</span>
           <span class="s-chip" [ngClass]="windLevel">💨 {{ windSpeed }} km/h</span>
-          <span class="s-chip" [class.flag-on]="droughtForecast">☁️ Drought {{ droughtForecast ? 'YES' : 'NO' }}</span>
+          <span class="s-chip" [class.flag-on]="droughtForecast">☁️ {{ 'DIGITAL_TWIN.DROUGHT_TAG' | translate }} {{ droughtForecast ? 'YES' : 'NO' }}</span>
           <span class="s-chip" [class.flag-on]="pestSeasonActive">🦟 Pests {{ pestSeasonActive ? 'YES' : 'NO' }}</span>
         </div>
 
@@ -289,11 +282,11 @@
           <svg *ngIf="simState !== 'running'" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>
           </svg>
-          {{ simState === 'running' ? 'AI Engine processing…' : 'Run Simulation on AI Engine' }}
+          {{ simState === 'running' ? ('DIGITAL_TWIN.RUN.RUNNING' | translate) : ('DIGITAL_TWIN.RUN.BTN' | translate) }}
         </button>
 
         <p class="run-notice" *ngIf="!selectedPlotId">
-          Select a plot above to enable simulation
+          {{ 'DIGITAL_TWIN.RUN.SELECT_PLOT_HINT' | translate }}
         </p>
 
       </div>
@@ -307,27 +300,27 @@
         <div class="output-icon-wrap">
           <div class="output-icon idle-icon">🤖</div>
         </div>
-        <h3>Inference Engine Ready</h3>
-        <p>Configure your scenario parameters and click <strong>"Run Simulation"</strong> to query the AI irrigation engine.</p>
+        <h3>{{ 'DIGITAL_TWIN.IDLE.TITLE' | translate }}</h3>
+        <p>{{ 'DIGITAL_TWIN.IDLE.DESC' | translate }}</p>
         <div class="idle-hints">
           <div class="idle-hint">
             <span class="hint-dot blue"></span>
-            <span>Lower moisture → higher water demand</span>
+            <span>{{ 'DIGITAL_TWIN.IDLE.HINT_1' | translate }}</span>
           </div>
           <div class="idle-hint">
             <span class="hint-dot orange"></span>
-            <span>Higher temperature → urgent schedule</span>
+            <span>{{ 'DIGITAL_TWIN.IDLE.HINT_2' | translate }}</span>
           </div>
           <div class="idle-hint">
             <span class="hint-dot gray"></span>
-            <span>Strong winds → delayed irrigation</span>
+            <span>{{ 'DIGITAL_TWIN.IDLE.HINT_3' | translate }}</span>
           </div>
           <div class="idle-hint">
             <span class="hint-dot amber"></span>
-            <span>Drought + high temp → maximum priority</span>
+            <span>{{ 'DIGITAL_TWIN.IDLE.HINT_4' | translate }}</span>
           </div>
         </div>
-        <div class="engine-badge">FastAPI + Spring Boot Inference Chain</div>
+        <div class="engine-badge">{{ 'DIGITAL_TWIN.IDLE.ENGINE' | translate }}</div>
       </div>
 
       <!-- RUNNING -->
@@ -337,33 +330,33 @@
           <div class="orbit-ring ring2"></div>
           <div class="orbit-core">🤖</div>
         </div>
-        <h3>Running AI model…</h3>
-        <p class="running-sub">Transmitting readings and evaluating heuristic engine</p>
+        <h3>{{ 'DIGITAL_TWIN.RUNNING.TITLE' | translate }}</h3>
+        <p class="running-sub">{{ 'DIGITAL_TWIN.RUNNING.SUBTITLE' | translate }}</p>
 
         <div class="run-steps-list">
           <div class="run-step" [class.step-done]="simStep >= 1" [class.step-active]="simStep === 1">
             <span class="step-dot"></span>
-            <span>POST SOIL_MOISTURE reading</span>
+            <span>{{ 'DIGITAL_TWIN.RUNNING.STEP_1' | translate }}</span>
             <span class="step-check" *ngIf="simStep > 1">✓</span>
           </div>
           <div class="run-step" [class.step-done]="simStep >= 2" [class.step-active]="simStep === 2">
             <span class="step-dot"></span>
-            <span>POST TEMPERATURE reading</span>
+            <span>{{ 'DIGITAL_TWIN.RUNNING.STEP_2' | translate }}</span>
             <span class="step-check" *ngIf="simStep > 2">✓</span>
           </div>
           <div class="run-step" [class.step-done]="simStep >= 3" [class.step-active]="simStep === 3">
             <span class="step-dot"></span>
-            <span>Awaiting stress evaluation</span>
+            <span>{{ 'DIGITAL_TWIN.RUNNING.STEP_3' | translate }}</span>
             <span class="step-check" *ngIf="simStep > 3">✓</span>
           </div>
           <div class="run-step" [class.step-done]="simStep >= 4" [class.step-active]="simStep === 4">
             <span class="step-dot"></span>
-            <span>Fetching water stress assessment</span>
+            <span>{{ 'DIGITAL_TWIN.RUNNING.STEP_4' | translate }}</span>
             <span class="step-check" *ngIf="simStep > 4">✓</span>
           </div>
           <div class="run-step" [class.step-active]="simStep === 5">
             <span class="step-dot"></span>
-            <span>Generating irrigation recommendation</span>
+            <span>{{ 'DIGITAL_TWIN.RUNNING.STEP_5' | translate }}</span>
           </div>
         </div>
       </div>
@@ -375,35 +368,33 @@
         <div class="result-section assessment-section" *ngIf="latestAssessment">
           <div class="result-section-header">
             <span class="section-icon">🌱</span>
-            <h4>Water Stress Assessment</h4>
-            <span class="result-badge" [ngClass]="stressBadgeClass">
-              {{ latestAssessment.stressLevel }}
-            </span>
+            <h4>{{ 'DIGITAL_TWIN.RESULT.ASSESSMENT_TITLE' | translate }}</h4>
+            <span class="result-badge" [ngClass]="stressBadgeClass">{{ latestAssessment.stressLevel }}</span>
           </div>
           <div class="assessment-grid">
             <div class="a-item">
-              <span>Soil reading</span>
+              <span>{{ 'DIGITAL_TWIN.RESULT.SOIL_READING' | translate }}</span>
               <strong>{{ latestAssessment.readingValue | number:'1.0-1' }}%</strong>
             </div>
             <div class="a-item">
-              <span>Temp (weather)</span>
+              <span>{{ 'DIGITAL_TWIN.RESULT.TEMP_WEATHER' | translate }}</span>
               <strong>{{ latestAssessment.weatherContext.temperature }}°C</strong>
             </div>
             <div class="a-item">
-              <span>Humidity (weather)</span>
+              <span>{{ 'DIGITAL_TWIN.RESULT.HUMIDITY_WEATHER' | translate }}</span>
               <strong>{{ latestAssessment.weatherContext.humidity }}%</strong>
             </div>
             <div class="a-item">
-              <span>Wind (weather)</span>
+              <span>{{ 'DIGITAL_TWIN.RESULT.WIND_WEATHER' | translate }}</span>
               <strong>{{ latestAssessment.weatherContext.windSpeed }} km/h</strong>
             </div>
             <div class="a-item flag" [class.flag-warn]="latestAssessment.weatherContext.droughtForecast">
-              <span>Drought forecast</span>
-              <strong>{{ latestAssessment.weatherContext.droughtForecast ? 'Yes ⚠️' : 'No' }}</strong>
+              <span>{{ 'DIGITAL_TWIN.RESULT.DROUGHT' | translate }}</span>
+              <strong>{{ latestAssessment.weatherContext.droughtForecast ? ('DIGITAL_TWIN.RESULT.YES' | translate) : ('DIGITAL_TWIN.RESULT.NO' | translate) }}</strong>
             </div>
             <div class="a-item flag" [class.flag-warn]="latestAssessment.weatherContext.pestSeasonActive">
-              <span>Pest season</span>
-              <strong>{{ latestAssessment.weatherContext.pestSeasonActive ? 'Active ⚠️' : 'Inactive' }}</strong>
+              <span>{{ 'DIGITAL_TWIN.RESULT.PEST' | translate }}</span>
+              <strong>{{ latestAssessment.weatherContext.pestSeasonActive ? ('DIGITAL_TWIN.RESULT.ACTIVE' | translate) : ('DIGITAL_TWIN.RESULT.INACTIVE' | translate) }}</strong>
             </div>
           </div>
         </div>
@@ -411,72 +402,67 @@
         <!-- No recommendation -->
         <div class="no-rec" *ngIf="!latestRecommendation">
           <span>ℹ️</span>
-          <p>Readings transmitted successfully. The AI engine did not generate a new recommendation for this scenario — stress level may be within acceptable range.</p>
+          <p>{{ 'DIGITAL_TWIN.RESULT.NO_REC' | translate }}</p>
         </div>
 
         <!-- Recommendation -->
         <div class="recommendation-section" *ngIf="latestRecommendation">
           <div class="result-section-header">
             <span class="section-icon">🤖</span>
-            <h4>AI Recommendation</h4>
+            <h4>{{ 'DIGITAL_TWIN.RESULT.REC_TITLE' | translate }}</h4>
             <span class="rec-status" [ngClass]="latestRecommendation.status.toLowerCase()">
               {{ latestRecommendation.status }}
             </span>
           </div>
 
-          <!-- Primary metric: Water -->
           <div class="primary-metric">
             <div class="metric-block water">
               <strong>{{ latestRecommendation.suggestedWaterAmount | number:'1.0-1' }}</strong>
-              <span>Litres</span>
+              <span>{{ 'DIGITAL_TWIN.RESULT.LITRES' | translate }}</span>
             </div>
             <div class="metric-block duration">
               <strong>{{ latestRecommendation.suggestedDurationHours }}h</strong>
-              <span>Duration</span>
+              <span>{{ 'DIGITAL_TWIN.RESULT.DURATION' | translate }}</span>
             </div>
           </div>
 
-          <!-- Suggested action — highlighted -->
           <div class="action-card" [class.action-special]="formattedStartTime.isSpecial">
             <div class="action-label">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"/>
                 <polyline points="12 6 12 12 16 14"/>
               </svg>
-              Suggested Action / Schedule
+              {{ 'DIGITAL_TWIN.RESULT.START_LABEL' | translate }}
             </div>
             <div class="action-value">{{ formattedStartTime.label }}</div>
           </div>
 
-          <!-- AI Reasoning -->
           <div class="reasoning-block">
             <div class="reasoning-header">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
               </svg>
-              Technical Reasoning (AI)
+              {{ 'DIGITAL_TWIN.RESULT.REASONING_TITLE' | translate }}
             </div>
             <p>{{ latestRecommendation.aiReasoning }}</p>
           </div>
 
-          <!-- Accept button -->
           <button class="btn-accept"
                   (click)="acceptRecommendation()"
                   [disabled]="latestRecommendation.status === 'ACCEPTED'">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
-            {{ latestRecommendation.status === 'ACCEPTED' ? 'Schedule created ✓' : 'Accept & create irrigation schedule' }}
+            {{ latestRecommendation.status === 'ACCEPTED' ? ('DIGITAL_TWIN.RESULT.ACCEPTED' | translate) : ('DIGITAL_TWIN.RESULT.ACCEPT' | translate) }}
           </button>
         </div>
 
-        <!-- Re-run hint -->
         <button class="btn-rerun" (click)="runSimulation()">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="1 4 1 10 7 10"/>
             <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
           </svg>
-          Re-run with new parameters
+          {{ 'DIGITAL_TWIN.RUN.RERUN' | translate }}
         </button>
 
       </div>
@@ -486,9 +472,9 @@
         <div class="output-icon-wrap">
           <div class="output-icon error-icon">⚠️</div>
         </div>
-        <h3>Simulation Failed</h3>
-        <p>{{ errorMessage }}</p>
-        <button class="btn-rerun" (click)="runSimulation()">Retry simulation</button>
+        <h3>{{ 'DIGITAL_TWIN.ERROR.TITLE' | translate }}</h3>
+        <p>{{ errorMessage | translate }}</p>
+        <button class="btn-rerun" (click)="runSimulation()">{{ 'DIGITAL_TWIN.RUN.RETRY' | translate }}</button>
       </div>
 
     </div>

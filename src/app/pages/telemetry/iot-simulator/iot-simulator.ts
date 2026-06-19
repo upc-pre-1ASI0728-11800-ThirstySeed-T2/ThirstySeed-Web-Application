@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../../../iam/services/auth.service';
 import { PlotService } from '../../plots/services/plot.service';
@@ -20,7 +21,7 @@ import { User } from '../../../iam/services/auth.service';
 @Component({
   selector: 'app-iot-simulator',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './iot-simulator.html',
   styleUrl: './iot-simulator.css',
 })
@@ -151,7 +152,7 @@ export class IotSimulatorComponent implements OnInit {
         this.cd.detectChanges();
       },
       error: () => {
-        this.nodeErrorMessage = 'Failed to register node. Check plot ID and try again.';
+        this.nodeErrorMessage = 'IOT_SIMULATOR.NODE.ERROR';
         this.isRegisteringNode = false;
         this.cd.detectChanges();
       },
@@ -220,14 +221,14 @@ export class IotSimulatorComponent implements OnInit {
           this.addToLog();
           this.isSimulating = false;
           this.successMessage = this.latestRecommendation
-            ? 'AI processed the data and generated a recommendation.'
-            : 'Readings transmitted. No recommendation generated yet.';
+            ? 'IOT_SIMULATOR.TRANSMIT.SUCCESS_WITH_REC'
+            : 'IOT_SIMULATOR.TRANSMIT.SUCCESS_NO_REC';
           this.cd.detectChanges();
         },
 
         error: (err) => {
           console.error('TRANSMISSION ERROR', err);
-          this.errorMessage = 'Transmission failed. Check your connection or plot assignment.';
+          this.errorMessage = 'IOT_SIMULATOR.TRANSMIT.ERROR';
           this.isSimulating = false;
           this.cd.detectChanges();
         },
@@ -279,7 +280,12 @@ export class IotSimulatorComponent implements OnInit {
   }
 
   get moistureLevelLabel(): string {
-    const map = { critical: 'Critical', low: 'Low', optimal: 'Optimal', high: 'High' };
+    const map = {
+      critical: 'IOT_SIMULATOR.MOISTURE_LEVEL.CRITICAL',
+      low: 'IOT_SIMULATOR.MOISTURE_LEVEL.LOW',
+      optimal: 'IOT_SIMULATOR.MOISTURE_LEVEL.OPTIMAL',
+      high: 'IOT_SIMULATOR.MOISTURE_LEVEL.HIGH',
+    };
     return map[this.moistureLevel];
   }
 }

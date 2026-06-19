@@ -5,19 +5,17 @@
     <div class="top-nav-left">
       <span class="page-badge">
         <span class="badge-dot-live"></span>
-        IoT Simulator &amp; Telemetry
+        {{ 'IOT_SIMULATOR.BADGE' | translate }}
       </span>
-      <h1>Sensor data simulator</h1>
-      <p class="subtitle">Inject simulated sensor readings into your plots to trigger the AI irrigation engine and receive optimised recommendations.</p>
+      <h1>{{ 'IOT_SIMULATOR.TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'IOT_SIMULATOR.SUBTITLE' | translate }}</p>
     </div>
     <div class="top-nav-right">
       <div class="user-pill">
-        <div class="user-avatar">
-          {{ (currentUser?.username || 'U')[0].toUpperCase() }}
-        </div>
+        <div class="user-avatar">{{ (currentUser?.username || 'U')[0].toUpperCase() }}</div>
         <div class="user-info">
           <span class="user-name">{{ currentUser?.username || 'Producer' }}</span>
-          <span class="user-role">IoT Producer</span>
+          <span class="user-role">{{ 'IOT_SIMULATOR.ROLE' | translate }}</span>
         </div>
       </div>
     </div>
@@ -30,35 +28,35 @@
         <div class="stat-icon">📡</div>
         <div class="stat-body">
           <strong>{{ transmissionCount }}</strong>
-          <p>Transmissions sent</p>
+          <p>{{ 'IOT_SIMULATOR.STATS.TRANSMISSIONS' | translate }}</p>
         </div>
       </div>
       <div class="stat-card" [ngClass]="'moisture-' + moistureLevel">
         <div class="stat-icon">💧</div>
         <div class="stat-body">
           <strong>{{ soilMoisture }}%</strong>
-          <p>Current soil moisture · <span [ngClass]="moistureLevel">{{ moistureLevelLabel }}</span></p>
+          <p>{{ 'IOT_SIMULATOR.STATS.SOIL_MOISTURE_LABEL' | translate }} · <span [ngClass]="moistureLevel">{{ moistureLevelLabel | translate }}</span></p>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">🌡️</div>
         <div class="stat-body">
           <strong>{{ temperature }}°C</strong>
-          <p>Current temperature</p>
+          <p>{{ 'IOT_SIMULATOR.STATS.TEMPERATURE_LABEL' | translate }}</p>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">🤖</div>
         <div class="stat-body">
           <strong>{{ latestRecommendation ? latestRecommendation.status : 'IDLE' }}</strong>
-          <p>AI engine status</p>
+          <p>{{ 'IOT_SIMULATOR.STATS.AI_STATUS' | translate }}</p>
         </div>
       </div>
     </div>
 
     <!-- MESSAGES -->
-    <div *ngIf="errorMessage" class="alert alert-error">{{ errorMessage }}</div>
-    <div *ngIf="successMessage && !errorMessage" class="alert alert-success">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-error">{{ errorMessage | translate }}</div>
+    <div *ngIf="successMessage && !errorMessage" class="alert alert-success">{{ successMessage | translate }}</div>
 
     <!-- TWO COLUMN -->
     <div class="two-col">
@@ -70,27 +68,27 @@
         <div class="form-card">
           <div class="form-card-header">
             <div>
-              <h2>IoT sensor simulator</h2>
-              <p class="section-sub">Select a plot and inject sensor readings to trigger the AI engine.</p>
+              <h2>{{ 'IOT_SIMULATOR.FORM.TITLE' | translate }}</h2>
+              <p class="section-sub">{{ 'IOT_SIMULATOR.FORM.SUBTITLE' | translate }}</p>
             </div>
             <span class="badge-transmitting" *ngIf="isSimulating">
-              <span class="pulse-dot"></span> Transmitting…
+              <span class="pulse-dot"></span> {{ 'IOT_SIMULATOR.FORM.TRANSMITTING' | translate }}
             </span>
           </div>
 
           <!-- Selectors row -->
           <div class="selectors-row">
             <div class="form-group">
-              <label>Farm</label>
+              <label>{{ 'IOT_SIMULATOR.FORM.FARM' | translate }}</label>
               <select (change)="onFarmChange($event)">
-                <option value="">Select farm</option>
+                <option value="">{{ 'IOT_SIMULATOR.FORM.SELECT_FARM' | translate }}</option>
                 <option *ngFor="let farm of farms" [value]="farm.id">{{ farm.name }}</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Plot (node)</label>
+              <label>{{ 'IOT_SIMULATOR.FORM.PLOT_NODE' | translate }}</label>
               <select (change)="onPlotChange($event)" [disabled]="!selectedFarmId">
-                <option value="">Select plot</option>
+                <option value="">{{ 'IOT_SIMULATOR.FORM.SELECT_PLOT' | translate }}</option>
                 <option *ngFor="let plot of filteredPlots" [value]="plot.id">{{ plot.name }}</option>
               </select>
             </div>
@@ -109,7 +107,7 @@
             <div class="node-registered" *ngIf="hasNode">
               <div class="node-registered-header">
                 <span class="node-status-dot active"></span>
-                <strong>IoT Node registered</strong>
+                <strong>{{ 'IOT_SIMULATOR.NODE.REGISTERED' | translate }}</strong>
                 <span class="node-count-badge">{{ plotNodes.length }} node{{ plotNodes.length > 1 ? 's' : '' }}</span>
               </div>
               <div class="node-list">
@@ -119,9 +117,7 @@
                     <strong>Node #{{ node.id }}</strong>
                     <span>{{ node.location }}</span>
                   </div>
-                  <span class="node-status-badge" [ngClass]="node.status.toLowerCase()">
-                    {{ node.status }}
-                  </span>
+                  <span class="node-status-badge" [ngClass]="node.status.toLowerCase()">{{ node.status }}</span>
                 </div>
               </div>
             </div>
@@ -130,21 +126,18 @@
             <div class="node-register-card" *ngIf="!hasNode">
               <div class="node-register-header">
                 <span class="node-status-dot inactive"></span>
-                <strong>No IoT node registered</strong>
-                <span class="node-warning-badge">Register required</span>
+                <strong>{{ 'IOT_SIMULATOR.NODE.NONE' | translate }}</strong>
+                <span class="node-warning-badge">{{ 'IOT_SIMULATOR.NODE.REGISTER_REQUIRED' | translate }}</span>
               </div>
-              <p class="node-register-hint">
-                Register a physical node (e.g. ESP32 + DHT22) to enable telemetry transmission for this plot.
-                The node location helps identify where it is placed in the field.
-              </p>
-              <div *ngIf="nodeErrorMessage" class="alert alert-error node-alert">{{ nodeErrorMessage }}</div>
+              <p class="node-register-hint">{{ 'IOT_SIMULATOR.NODE.REGISTER_HINT' | translate }}</p>
+              <div *ngIf="nodeErrorMessage" class="alert alert-error node-alert">{{ nodeErrorMessage | translate }}</div>
               <div class="node-register-form">
                 <div class="form-group">
-                  <label>Node location</label>
+                  <label>{{ 'IOT_SIMULATOR.NODE.LOCATION' | translate }}</label>
                   <input
                     type="text"
                     [(ngModel)]="nodeLocation"
-                    placeholder="e.g. North sector, Row A, Greenhouse 2"
+                    [placeholder]="'IOT_SIMULATOR.NODE.LOCATION_PLACEHOLDER' | translate"
                     [disabled]="isRegisteringNode"
                   />
                 </div>
@@ -158,7 +151,7 @@
                     <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/>
                     <line x1="8" y1="12" x2="16" y2="12"/>
                   </svg>
-                  {{ isRegisteringNode ? 'Registering…' : 'Register IoT node' }}
+                  {{ isRegisteringNode ? ('IOT_SIMULATOR.NODE.REGISTERING' | translate) : ('IOT_SIMULATOR.NODE.REGISTER_BTN' | translate) }}
                 </button>
               </div>
             </div>
@@ -172,18 +165,13 @@
               <div class="sensor-header">
                 <span class="sensor-icon">💧</span>
                 <div>
-                  <h4>Soil Moisture</h4>
+                  <h4>{{ 'IOT_SIMULATOR.SENSOR.SOIL_MOISTURE' | translate }}</h4>
                   <p>SOIL_MOISTURE</p>
                 </div>
-                <span class="sensor-badge" [ngClass]="moistureLevel">{{ moistureLevelLabel }}</span>
+                <span class="sensor-badge" [ngClass]="moistureLevel">{{ moistureLevelLabel | translate }}</span>
               </div>
               <div class="sensor-input-wrap">
-                <input
-                  type="range"
-                  min="0" max="100" step="1"
-                  [(ngModel)]="soilMoisture"
-                  class="range-slider"
-                />
+                <input type="range" min="0" max="100" step="1" [(ngModel)]="soilMoisture" class="range-slider"/>
                 <div class="range-labels">
                   <span>0%</span>
                   <strong class="range-value" [ngClass]="moistureLevel">{{ soilMoisture }}%</strong>
@@ -191,9 +179,9 @@
                 </div>
               </div>
               <div class="manual-input">
-                <label>Or type a value</label>
+                <label>{{ 'IOT_SIMULATOR.SENSOR.OR_TYPE' | translate }}</label>
                 <div class="input-suffix">
-                  <input type="number" [(ngModel)]="soilMoisture" min="0" max="100" placeholder="35" />
+                  <input type="number" [(ngModel)]="soilMoisture" min="0" max="100" placeholder="35"/>
                   <span>%</span>
                 </div>
               </div>
@@ -203,18 +191,13 @@
               <div class="sensor-header">
                 <span class="sensor-icon">🌡️</span>
                 <div>
-                  <h4>Temperature</h4>
+                  <h4>{{ 'IOT_SIMULATOR.SENSOR.TEMPERATURE' | translate }}</h4>
                   <p>TEMPERATURE</p>
                 </div>
-                <span class="sensor-badge neutral">Sensor</span>
+                <span class="sensor-badge neutral">{{ 'IOT_SIMULATOR.SENSOR.SENSOR_BADGE' | translate }}</span>
               </div>
               <div class="sensor-input-wrap">
-                <input
-                  type="range"
-                  min="-10" max="55" step="0.5"
-                  [(ngModel)]="temperature"
-                  class="range-slider temp"
-                />
+                <input type="range" min="-10" max="55" step="0.5" [(ngModel)]="temperature" class="range-slider temp"/>
                 <div class="range-labels">
                   <span>-10°C</span>
                   <strong class="range-value">{{ temperature }}°C</strong>
@@ -222,9 +205,9 @@
                 </div>
               </div>
               <div class="manual-input">
-                <label>Or type a value</label>
+                <label>{{ 'IOT_SIMULATOR.SENSOR.OR_TYPE' | translate }}</label>
                 <div class="input-suffix">
-                  <input type="number" [(ngModel)]="temperature" min="-10" max="55" placeholder="28" />
+                  <input type="number" [(ngModel)]="temperature" min="-10" max="55" placeholder="28"/>
                   <span>°C</span>
                 </div>
               </div>
@@ -239,45 +222,41 @@
                 <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
                 <line x1="12" y1="16" x2="12.01" y2="16"/>
               </svg>
-              Select a farm and a plot to enable transmission
+              {{ 'IOT_SIMULATOR.TRANSMIT.SELECT_HINT' | translate }}
             </div>
             <div class="transmit-info warn" *ngIf="selectedPlotId && !hasNode">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
                 <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
               </svg>
-              Register an IoT node above to enable transmission
+              {{ 'IOT_SIMULATOR.TRANSMIT.NODE_HINT' | translate }}
             </div>
-            <button
-              class="btn-transmit"
-              (click)="transmitReadings()"
-              [disabled]="!canTransmit"
-            >
+            <button class="btn-transmit" (click)="transmitReadings()" [disabled]="!canTransmit">
               <svg *ngIf="!isSimulating" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"/>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"/>
               </svg>
               <span class="spinner" *ngIf="isSimulating"></span>
-              {{ isSimulating ? 'Transmitting & waiting for AI…' : 'Transmit readings' }}
+              {{ isSimulating ? ('IOT_SIMULATOR.TRANSMIT.SENDING' | translate) : ('IOT_SIMULATOR.TRANSMIT.BTN' | translate) }}
             </button>
           </div>
 
           <!-- Step indicator -->
           <div class="steps-row" *ngIf="isSimulating">
             <div class="step done">
-              <span class="step-dot"></span>POST SOIL_MOISTURE
+              <span class="step-dot"></span>{{ 'IOT_SIMULATOR.STEPS.POST_MOISTURE' | translate }}
             </div>
             <div class="step-arrow">→</div>
             <div class="step done">
-              <span class="step-dot"></span>POST TEMPERATURE
+              <span class="step-dot"></span>{{ 'IOT_SIMULATOR.STEPS.POST_TEMP' | translate }}
             </div>
             <div class="step-arrow">→</div>
             <div class="step active">
-              <span class="step-dot pulse"></span>AI processing…
+              <span class="step-dot pulse"></span>{{ 'IOT_SIMULATOR.STEPS.AI_PROCESSING' | translate }}
             </div>
             <div class="step-arrow">→</div>
             <div class="step">
-              <span class="step-dot"></span>GET recommendation
+              <span class="step-dot"></span>{{ 'IOT_SIMULATOR.STEPS.GET_REC' | translate }}
             </div>
           </div>
         </div>
@@ -286,17 +265,17 @@
         <div class="log-card" *ngIf="transmissionLog.length > 0">
           <div class="section-header">
             <div>
-              <h2>Transmission log</h2>
-              <p class="section-sub">Last {{ transmissionLog.length }} data injections sent to the backend.</p>
+              <h2>{{ 'IOT_SIMULATOR.LOG.TITLE' | translate }}</h2>
+              <p class="section-sub">{{ 'IOT_SIMULATOR.LOG.SUBTITLE' | translate: { count: transmissionLog.length } }}</p>
             </div>
           </div>
           <table class="log-table">
             <thead>
               <tr>
-                <th>TIME</th>
-                <th>PLOT ID</th>
-                <th>MOISTURE</th>
-                <th>TEMPERATURE</th>
+                <th>{{ 'IOT_SIMULATOR.LOG.TIME' | translate }}</th>
+                <th>{{ 'IOT_SIMULATOR.LOG.PLOT_ID' | translate }}</th>
+                <th>{{ 'IOT_SIMULATOR.LOG.MOISTURE' | translate }}</th>
+                <th>{{ 'IOT_SIMULATOR.LOG.TEMPERATURE' | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -320,11 +299,11 @@
           <div class="ai-icon-wrap">
             <span class="ai-icon">🤖</span>
           </div>
-          <h3>AI engine ready</h3>
-          <p>Transmit sensor readings to trigger the heuristic engine. Your water stress assessment and irrigation recommendation will appear here.</p>
+          <h3>{{ 'IOT_SIMULATOR.AI.IDLE_TITLE' | translate }}</h3>
+          <p>{{ 'IOT_SIMULATOR.AI.IDLE_DESC' | translate }}</p>
           <div class="ai-hint">
             <span>💡</span>
-            <span>Low soil moisture + high temperature → higher water demand recommendation</span>
+            <span>{{ 'IOT_SIMULATOR.AI.IDLE_HINT' | translate }}</span>
           </div>
         </div>
 
@@ -333,8 +312,8 @@
           <div class="ai-icon-wrap">
             <span class="ai-icon spinning">⚙️</span>
           </div>
-          <h3>Processing data…</h3>
-          <p>The AI engine is evaluating your sensor readings and weather context to generate an optimised recommendation.</p>
+          <h3>{{ 'IOT_SIMULATOR.AI.PROCESSING_TITLE' | translate }}</h3>
+          <p>{{ 'IOT_SIMULATOR.AI.PROCESSING_DESC' | translate }}</p>
           <div class="processing-bar">
             <div class="processing-fill"></div>
           </div>
@@ -345,52 +324,48 @@
           <div class="ai-result-header">
             <span class="ai-icon-sm">🌱</span>
             <div>
-              <h3>Water Stress Assessment</h3>
-              <p class="section-sub">Evaluated {{ latestAssessment.evaluatedAt | date:'short' }}</p>
+              <h3>{{ 'IOT_SIMULATOR.AI.ASSESSMENT_TITLE' | translate }}</h3>
+              <p class="section-sub">{{ 'IOT_SIMULATOR.AI.EVALUATED_AT' | translate }} {{ latestAssessment.evaluatedAt | date:'short' }}</p>
             </div>
-            <span class="rec-badge" [ngClass]="stressLevelClass">
-              {{ latestAssessment.stressLevel }}
-            </span>
+            <span class="rec-badge" [ngClass]="stressLevelClass">{{ latestAssessment.stressLevel }}</span>
           </div>
 
-          <!-- Reading value -->
           <div class="rec-hero small">
             <strong>{{ latestAssessment.readingValue | number:'1.0-1' }}</strong>
-            <span>soil moisture reading (%)</span>
+            <span>{{ 'IOT_SIMULATOR.AI.READING_UNIT' | translate }}</span>
           </div>
 
-          <!-- Weather context -->
           <div class="weather-context">
             <h4>
               <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
               </svg>
-              Weather context
+              {{ 'IOT_SIMULATOR.AI.WEATHER_TITLE' | translate }}
             </h4>
             <div class="weather-grid-sim">
               <div class="wx-item">
-                <span>Temperature</span>
+                <span>{{ 'IOT_SIMULATOR.AI.TEMPERATURE' | translate }}</span>
                 <strong>{{ latestAssessment.weatherContext.temperature }}°C</strong>
               </div>
               <div class="wx-item">
-                <span>Humidity</span>
+                <span>{{ 'IOT_SIMULATOR.AI.HUMIDITY' | translate }}</span>
                 <strong>{{ latestAssessment.weatherContext.humidity }}%</strong>
               </div>
               <div class="wx-item">
-                <span>Wind</span>
+                <span>{{ 'IOT_SIMULATOR.AI.WIND' | translate }}</span>
                 <strong>{{ latestAssessment.weatherContext.windSpeed }} km/h</strong>
               </div>
               <div class="wx-item">
-                <span>Rain chance</span>
+                <span>{{ 'IOT_SIMULATOR.AI.RAIN_CHANCE' | translate }}</span>
                 <strong>{{ latestAssessment.weatherContext.precipitationProbability }}%</strong>
               </div>
               <div class="wx-item flag" [class.active]="latestAssessment.weatherContext.droughtForecast">
-                <span>Drought forecast</span>
-                <strong>{{ latestAssessment.weatherContext.droughtForecast ? 'Yes ⚠️' : 'No' }}</strong>
+                <span>{{ 'IOT_SIMULATOR.AI.DROUGHT' | translate }}</span>
+                <strong>{{ latestAssessment.weatherContext.droughtForecast ? ('IOT_SIMULATOR.AI.YES' | translate) : ('IOT_SIMULATOR.AI.NO' | translate) }}</strong>
               </div>
               <div class="wx-item flag" [class.active]="latestAssessment.weatherContext.pestSeasonActive">
-                <span>Pest season</span>
-                <strong>{{ latestAssessment.weatherContext.pestSeasonActive ? 'Active ⚠️' : 'Inactive' }}</strong>
+                <span>{{ 'IOT_SIMULATOR.AI.PEST' | translate }}</span>
+                <strong>{{ latestAssessment.weatherContext.pestSeasonActive ? ('IOT_SIMULATOR.AI.ACTIVE' | translate) : ('IOT_SIMULATOR.AI.INACTIVE' | translate) }}</strong>
               </div>
             </div>
           </div>
@@ -401,28 +376,24 @@
           <div class="ai-result-header">
             <span class="ai-icon-sm">🤖</span>
             <div>
-              <h3>AI Recommendation</h3>
-              <p class="section-sub">Generated {{ latestRecommendation.createdAt | date:'short' }}</p>
+              <h3>{{ 'IOT_SIMULATOR.AI.REC_TITLE' | translate }}</h3>
+              <p class="section-sub">{{ 'IOT_SIMULATOR.AI.GENERATED_AT' | translate }} {{ latestRecommendation.createdAt | date:'short' }}</p>
             </div>
-            <span class="rec-badge" [ngClass]="latestRecommendation.status.toLowerCase()">
-              {{ latestRecommendation.status }}
-            </span>
+            <span class="rec-badge" [ngClass]="latestRecommendation.status.toLowerCase()">{{ latestRecommendation.status }}</span>
           </div>
 
-          <!-- Main metric -->
           <div class="rec-hero">
             <strong>{{ latestRecommendation.suggestedWaterAmount | number:'1.0-1' }}</strong>
-            <span>litres recommended</span>
+            <span>{{ 'IOT_SIMULATOR.AI.LITRES' | translate }}</span>
           </div>
 
-          <!-- Detail rows -->
           <div class="rec-details">
             <div class="rec-row">
               <div class="rec-label">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                 </svg>
-                Duration
+                {{ 'IOT_SIMULATOR.AI.DURATION' | translate }}
               </div>
               <strong>{{ latestRecommendation.suggestedDurationHours }}h</strong>
             </div>
@@ -433,7 +404,7 @@
                   <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
                   <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
-                Start time
+                {{ 'IOT_SIMULATOR.AI.START_TIME' | translate }}
               </div>
               <strong>{{ latestRecommendation.suggestedStartTime | date:'HH:mm · dd MMM' }}</strong>
             </div>
@@ -442,24 +413,22 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
                 </svg>
-                Plot ID
+                {{ 'IOT_SIMULATOR.AI.PLOT_ID' | translate }}
               </div>
               <strong>#{{ latestRecommendation.plotId }}</strong>
             </div>
           </div>
 
-          <!-- Reasoning -->
           <div class="rec-reasoning">
             <h4>
               <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
               </svg>
-              AI reasoning
+              {{ 'IOT_SIMULATOR.AI.REASONING_TITLE' | translate }}
             </h4>
             <p>{{ latestRecommendation.aiReasoning }}</p>
           </div>
 
-          <!-- Action -->
           <button
             class="btn-accept"
             (click)="acceptRecommendation()"
@@ -469,8 +438,8 @@
               <polyline points="20 6 9 17 4 12"/>
             </svg>
             {{ latestRecommendation.status === 'ACCEPTED'
-               ? 'Schedule created ✓'
-               : isAccepting ? 'Accepting…' : 'Accept & create schedule' }}
+               ? ('IOT_SIMULATOR.AI.ACCEPTED' | translate)
+               : isAccepting ? ('IOT_SIMULATOR.AI.ACCEPTING' | translate) : ('IOT_SIMULATOR.AI.ACCEPT' | translate) }}
           </button>
         </div>
 
@@ -479,10 +448,10 @@
           <div class="ai-result-header">
             <span class="ai-icon-sm">📅</span>
             <div>
-              <h3>Irrigation Schedule</h3>
-              <p class="section-sub">{{ latestSchedule.isAutomatic ? 'AI-generated' : 'Manual' }} schedule</p>
+              <h3>{{ 'IOT_SIMULATOR.AI.SCHEDULE_TITLE' | translate }}</h3>
+              <p class="section-sub">{{ latestSchedule.isAutomatic ? ('IOT_SIMULATOR.AI.AI_GENERATED' | translate) : ('IOT_SIMULATOR.AI.MANUAL' | translate) }}</p>
             </div>
-            <span class="rec-badge accepted">CREATED</span>
+            <span class="rec-badge accepted">{{ 'IOT_SIMULATOR.AI.SCHEDULE_CREATED' | translate }}</span>
           </div>
 
           <div class="rec-details">
@@ -493,7 +462,7 @@
                   <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
                   <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
-                Start time
+                {{ 'IOT_SIMULATOR.AI.START_TIME' | translate }}
               </div>
               <strong>{{ latestSchedule.startTime }}</strong>
             </div>
@@ -502,7 +471,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                 </svg>
-                Duration
+                {{ 'IOT_SIMULATOR.AI.DURATION' | translate }}
               </div>
               <strong>{{ latestSchedule.durationHours }}h</strong>
             </div>
@@ -511,7 +480,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
                 </svg>
-                Water amount
+                {{ 'IOT_SIMULATOR.AI.WATER_AMOUNT' | translate }}
               </div>
               <strong>{{ latestSchedule.waterAmount | number:'1.0-1' }} L</strong>
             </div>
@@ -521,7 +490,7 @@
                   <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/>
                   <line x1="8" y1="12" x2="16" y2="12"/>
                 </svg>
-                Pressure
+                {{ 'IOT_SIMULATOR.AI.PRESSURE' | translate }}
               </div>
               <strong>{{ latestSchedule.pressure | number:'1.0-1' }} bar</strong>
             </div>

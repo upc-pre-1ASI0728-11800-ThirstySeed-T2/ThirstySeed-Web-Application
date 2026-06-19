@@ -287,6 +287,275 @@
       "BUTTON": "Eliminar cuenta"
     }
   },
+  "TELEMETRY": {
+    "FILTER": {
+      "FARM": "Granja seleccionada",
+      "PLOT": "Parcela seleccionada",
+      "TIME_RANGE": "Rango de tiempo",
+      "SELECT_FARM": "Seleccionar granja",
+      "SELECT_PLOT": "Seleccionar parcela",
+      "LAST_24H": "Últimas 24 horas",
+      "LAST_7D": "Últimos 7 días",
+      "LAST_30D": "Últimos 30 días",
+      "VIEW_HISTORY": "Ver historial de telemetría →"
+    },
+    "KPI": {
+      "SOIL_MOISTURE": "Última humedad del suelo",
+      "MOISTURE_UNIT": "Contenido volumétrico de agua",
+      "TEMPERATURE": "Última temperatura",
+      "AIR_TEMP": "Temperatura del aire",
+      "NODE_STATUS": "Estado del nodo",
+      "OPERATIONAL": "Todos los sistemas operativos",
+      "LAST_READING": "Última lectura",
+      "UPDATED_NOW": "Actualizado ahora",
+      "OFFLINE": "Desconectado",
+      "MIN_AGO": "hace 2 min"
+    },
+    "MOISTURE_CHART": {
+      "TITLE": "Tendencia de humedad del suelo",
+      "SUBTITLE": "Contenido volumétrico de agua (%)",
+      "CURRENT": "Actual"
+    },
+    "TEMP_CHART": {
+      "TITLE": "Tendencia de temperatura",
+      "SUBTITLE": "Temperatura del aire (°C)"
+    },
+    "STATUS": {
+      "TITLE": "Estado actual de telemetría",
+      "NODE": "Nodo",
+      "STATUS": "Estado",
+      "SIGNAL": "Señal",
+      "LAST_SYNC": "Última sincronización",
+      "SIGNAL_GOOD": "Buena",
+      "DEFAULT_NODE": "Nodo TS-01",
+      "SYNC_AGO": "hace 2 min"
+    },
+    "ANOMALY": {
+      "TITLE": "Detección de anomalías",
+      "RISK": "Riesgo de estrés hídrico",
+      "MOISTURE_BELOW": "La humedad está por debajo del umbral óptimo para este cultivo."
+    },
+    "WEATHER": {
+      "TITLE": "Contexto climático",
+      "TEMPERATURE": "Temperatura",
+      "HUMIDITY": "Humedad",
+      "WIND": "Viento",
+      "RAIN_CHANCE": "Probabilidad de lluvia",
+      "DROUGHT": "Pronóstico de sequía",
+      "PEST": "Temporada de plagas",
+      "YES": "Sí ⚠️",
+      "NO": "No",
+      "ACTIVE": "Activa ⚠️",
+      "INACTIVE": "Inactiva"
+    },
+    "HISTORY": {
+      "TITLE": "Lecturas recientes",
+      "TIME": "Hora",
+      "MOISTURE": "Humedad",
+      "TEMPERATURE": "Temperatura",
+      "STATUS": "Estado"
+    }
+  },
+  "IOT_SIMULATOR": {
+    "BADGE": "Simulador IoT y Telemetría",
+    "TITLE": "Simulador de datos de sensores",
+    "SUBTITLE": "Inyecta lecturas de sensores simuladas en tus parcelas para activar el motor de riego con IA y recibir recomendaciones optimizadas.",
+    "ROLE": "Productor IoT",
+    "STATS": {
+      "TRANSMISSIONS": "Transmisiones enviadas",
+      "SOIL_MOISTURE_LABEL": "Humedad actual del suelo",
+      "TEMPERATURE_LABEL": "Temperatura actual",
+      "AI_STATUS": "Estado del motor IA"
+    },
+    "MOISTURE_LEVEL": {
+      "CRITICAL": "Crítico",
+      "LOW": "Bajo",
+      "OPTIMAL": "Óptimo",
+      "HIGH": "Alto"
+    },
+    "FORM": {
+      "TITLE": "Simulador de sensores IoT",
+      "SUBTITLE": "Selecciona una parcela e inyecta lecturas de sensores para activar el motor IA.",
+      "FARM": "Granja",
+      "PLOT_NODE": "Parcela (nodo)",
+      "SELECT_FARM": "Seleccionar granja",
+      "SELECT_PLOT": "Seleccionar parcela",
+      "TRANSMITTING": "Transmitiendo…"
+    },
+    "NODE": {
+      "REGISTERED": "Nodo IoT registrado",
+      "NONE": "Sin nodo IoT registrado",
+      "REGISTER_REQUIRED": "Registro requerido",
+      "REGISTER_HINT": "Registra un nodo físico (ej. ESP32 + DHT22) para habilitar la transmisión de telemetría en esta parcela. La ubicación del nodo ayuda a identificar dónde está colocado en el campo.",
+      "LOCATION": "Ubicación del nodo",
+      "LOCATION_PLACEHOLDER": "ej. Sector Norte, Fila A, Invernadero 2",
+      "REGISTERING": "Registrando…",
+      "REGISTER_BTN": "Registrar nodo IoT",
+      "ERROR": "Error al registrar el nodo. Verifica el ID de parcela e intenta de nuevo."
+    },
+    "SENSOR": {
+      "SOIL_MOISTURE": "Humedad del suelo",
+      "TEMPERATURE": "Temperatura",
+      "OR_TYPE": "O escribe un valor",
+      "SENSOR_BADGE": "Sensor"
+    },
+    "TRANSMIT": {
+      "SELECT_HINT": "Selecciona una granja y una parcela para habilitar la transmisión",
+      "NODE_HINT": "Registra un nodo IoT arriba para habilitar la transmisión",
+      "BTN": "Transmitir lecturas",
+      "SENDING": "Transmitiendo y esperando IA…",
+      "SUCCESS_WITH_REC": "La IA procesó los datos y generó una recomendación.",
+      "SUCCESS_NO_REC": "Lecturas transmitidas. Aún no se generó ninguna recomendación.",
+      "ERROR": "Transmisión fallida. Verifica tu conexión o asignación de parcela."
+    },
+    "STEPS": {
+      "POST_MOISTURE": "POST SOIL_MOISTURE",
+      "POST_TEMP": "POST TEMPERATURE",
+      "AI_PROCESSING": "IA procesando…",
+      "GET_REC": "GET recomendación"
+    },
+    "LOG": {
+      "TITLE": "Registro de transmisiones",
+      "SUBTITLE": "Últimas {{count}} inyecciones de datos enviadas al backend.",
+      "TIME": "HORA",
+      "PLOT_ID": "ID PARCELA",
+      "MOISTURE": "HUMEDAD",
+      "TEMPERATURE": "TEMPERATURA"
+    },
+    "AI": {
+      "IDLE_TITLE": "Motor IA listo",
+      "IDLE_DESC": "Transmite lecturas de sensores para activar el motor heurístico. Tu evaluación de estrés hídrico y recomendación de riego aparecerán aquí.",
+      "IDLE_HINT": "Humedad baja + temperatura alta → recomendación de mayor demanda hídrica",
+      "PROCESSING_TITLE": "Procesando datos…",
+      "PROCESSING_DESC": "El motor IA está evaluando las lecturas de sensores y el contexto climático para generar una recomendación optimizada.",
+      "ASSESSMENT_TITLE": "Evaluación de estrés hídrico",
+      "EVALUATED_AT": "Evaluado",
+      "READING_UNIT": "lectura de humedad del suelo (%)",
+      "WEATHER_TITLE": "Contexto climático",
+      "TEMPERATURE": "Temperatura",
+      "HUMIDITY": "Humedad",
+      "WIND": "Viento",
+      "RAIN_CHANCE": "Probabilidad de lluvia",
+      "DROUGHT": "Pronóstico de sequía",
+      "PEST": "Temporada de plagas",
+      "YES": "Sí ⚠️",
+      "NO": "No",
+      "ACTIVE": "Activa ⚠️",
+      "INACTIVE": "Inactiva",
+      "REC_TITLE": "Recomendación IA",
+      "GENERATED_AT": "Generado",
+      "LITRES": "litros recomendados",
+      "DURATION": "Duración",
+      "START_TIME": "Hora de inicio",
+      "PLOT_ID": "ID de parcela",
+      "REASONING_TITLE": "Razonamiento IA",
+      "ACCEPT": "Aceptar y crear horario",
+      "ACCEPTING": "Aceptando…",
+      "ACCEPTED": "Horario creado ✓",
+      "SCHEDULE_TITLE": "Horario de riego",
+      "AI_GENERATED": "Generado por IA",
+      "MANUAL": "Manual",
+      "SCHEDULE_CREATED": "CREADO",
+      "WATER_AMOUNT": "Cantidad de agua",
+      "PRESSURE": "Presión"
+    }
+  },
+  "DIGITAL_TWIN": {
+    "BADGE": "Gemelo Digital",
+    "TITLE": "Gemelo Digital Agrícola",
+    "SUBTITLE": "Simula escenarios \"¿Qué pasaría si…?\" para predecir recomendaciones de IA antes de tomar decisiones reales de riego.",
+    "SELECTOR": {
+      "FARM": "Granja",
+      "PLOT": "Parcela",
+      "ALL_FARMS": "Todas las granjas",
+      "SELECT_PLOT": "Seleccionar parcela para simular",
+      "NO_PLOT": "Sin parcela seleccionada — Gemelo inactivo",
+      "INACTIVE_TITLE": "Gemelo Digital Inactivo",
+      "INACTIVE_DESC": "Selecciona una granja y parcela arriba para activar el sandbox de simulación."
+    },
+    "CONTROLS": {
+      "TITLE": "Inyección de escenario",
+      "SUBTITLE": "Define las condiciones ambientales a simular",
+      "WHAT_IF": "¿Qué pasa si…?",
+      "SOIL_MOISTURE": "Humedad del suelo",
+      "TEMPERATURE": "Temperatura",
+      "WIND_SPEED": "Velocidad del viento",
+      "DROUGHT": "Pronóstico de sequía",
+      "DROUGHT_DESC": "Simular período seco próximo",
+      "PEST": "Temporada de plagas activa",
+      "PEST_DESC": "Simular riesgo de infestación de plagas"
+    },
+    "MOISTURE": {
+      "OPTIMAL": "Óptimo",
+      "NORMAL": "Normal",
+      "LOW": "Bajo",
+      "CRITICAL": "Crítico"
+    },
+    "TEMP": {
+      "COOL": "Fresco",
+      "WARM": "Templado",
+      "HOT": "Caluroso",
+      "EXTREME": "Extremo"
+    },
+    "WIND": {
+      "CALM": "Calma",
+      "BREEZY": "Ventoso",
+      "STRONG": "Fuerte",
+      "GALE": "Vendaval"
+    },
+    "DROUGHT_TAG": "Sequía",
+    "PEST_SEASON": "TEMPORADA DE PLAGAS ACTIVA",
+    "RUN": {
+      "BTN": "Ejecutar simulación en motor IA",
+      "RUNNING": "Motor IA procesando…",
+      "SELECT_PLOT_HINT": "Selecciona una parcela arriba para habilitar la simulación",
+      "RERUN": "Re-ejecutar con nuevos parámetros",
+      "RETRY": "Reintentar simulación"
+    },
+    "IDLE": {
+      "TITLE": "Motor de inferencia listo",
+      "DESC": "Configura los parámetros del escenario y haz clic en \"Ejecutar simulación\" para consultar el motor IA de riego.",
+      "HINT_1": "Menor humedad → mayor demanda hídrica",
+      "HINT_2": "Mayor temperatura → horario urgente",
+      "HINT_3": "Vientos fuertes → riego diferido",
+      "HINT_4": "Sequía + temp alta → prioridad máxima",
+      "ENGINE": "Cadena de inferencia FastAPI + Spring Boot"
+    },
+    "RUNNING": {
+      "TITLE": "Ejecutando modelo IA…",
+      "SUBTITLE": "Transmitiendo lecturas y evaluando el motor heurístico",
+      "STEP_1": "POST lectura SOIL_MOISTURE",
+      "STEP_2": "POST lectura TEMPERATURE",
+      "STEP_3": "Esperando evaluación de estrés",
+      "STEP_4": "Obteniendo evaluación de estrés hídrico",
+      "STEP_5": "Generando recomendación de riego"
+    },
+    "RESULT": {
+      "ASSESSMENT_TITLE": "Evaluación de estrés hídrico",
+      "SOIL_READING": "Lectura del suelo",
+      "TEMP_WEATHER": "Temp (climática)",
+      "HUMIDITY_WEATHER": "Humedad (climática)",
+      "WIND_WEATHER": "Viento (climático)",
+      "DROUGHT": "Pronóstico de sequía",
+      "PEST": "Temporada de plagas",
+      "YES": "Sí ⚠️",
+      "NO": "No",
+      "ACTIVE": "Activa ⚠️",
+      "INACTIVE": "Inactiva",
+      "NO_REC": "Lecturas transmitidas correctamente. El motor IA no generó una nueva recomendación para este escenario — el nivel de estrés puede estar dentro del rango aceptable.",
+      "REC_TITLE": "Recomendación IA",
+      "LITRES": "Litros",
+      "DURATION": "Duración",
+      "START_LABEL": "Acción sugerida / Horario",
+      "REASONING_TITLE": "Razonamiento técnico (IA)",
+      "ACCEPT": "Aceptar y crear horario de riego",
+      "ACCEPTED": "Horario creado ✓"
+    },
+    "ERROR": {
+      "TITLE": "Simulación fallida",
+      "SIM_FAILED": "La simulación falló. Verifica que la parcela tenga un nodo IoT activo e intenta de nuevo."
+    }
+  },
   "SUPPORT": {
     "BADGE": "Soporte",
     "TITLE": "Tickets de soporte",

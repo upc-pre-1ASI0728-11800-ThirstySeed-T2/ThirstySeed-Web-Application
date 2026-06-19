@@ -287,6 +287,275 @@
       "BUTTON": "Delete account"
     }
   },
+  "TELEMETRY": {
+    "FILTER": {
+      "FARM": "Selected Farm",
+      "PLOT": "Selected Plot",
+      "TIME_RANGE": "Time Range",
+      "SELECT_FARM": "Select farm",
+      "SELECT_PLOT": "Select plot",
+      "LAST_24H": "Last 24 Hours",
+      "LAST_7D": "Last 7 Days",
+      "LAST_30D": "Last 30 Days",
+      "VIEW_HISTORY": "View telemetry history →"
+    },
+    "KPI": {
+      "SOIL_MOISTURE": "Latest soil moisture",
+      "MOISTURE_UNIT": "Volumetric water content",
+      "TEMPERATURE": "Latest temperature",
+      "AIR_TEMP": "Air temperature",
+      "NODE_STATUS": "Node status",
+      "OPERATIONAL": "All systems operational",
+      "LAST_READING": "Last reading",
+      "UPDATED_NOW": "Updated just now",
+      "OFFLINE": "Offline",
+      "MIN_AGO": "2 min ago"
+    },
+    "MOISTURE_CHART": {
+      "TITLE": "Soil moisture trend",
+      "SUBTITLE": "Volumetric water content (%)",
+      "CURRENT": "Current"
+    },
+    "TEMP_CHART": {
+      "TITLE": "Temperature trend",
+      "SUBTITLE": "Air temperature (°C)"
+    },
+    "STATUS": {
+      "TITLE": "Current telemetry status",
+      "NODE": "Node",
+      "STATUS": "Status",
+      "SIGNAL": "Signal",
+      "LAST_SYNC": "Last Sync",
+      "SIGNAL_GOOD": "Good",
+      "DEFAULT_NODE": "Node TS-01",
+      "SYNC_AGO": "2 min ago"
+    },
+    "ANOMALY": {
+      "TITLE": "Anomaly Detection",
+      "RISK": "Water stress risk",
+      "MOISTURE_BELOW": "Moisture is below the optimal threshold for this crop."
+    },
+    "WEATHER": {
+      "TITLE": "Weather Context",
+      "TEMPERATURE": "Temperature",
+      "HUMIDITY": "Humidity",
+      "WIND": "Wind",
+      "RAIN_CHANCE": "Rain chance",
+      "DROUGHT": "Drought forecast",
+      "PEST": "Pest season",
+      "YES": "Yes ⚠️",
+      "NO": "No",
+      "ACTIVE": "Active ⚠️",
+      "INACTIVE": "Inactive"
+    },
+    "HISTORY": {
+      "TITLE": "Recent Readings",
+      "TIME": "Time",
+      "MOISTURE": "Moisture",
+      "TEMPERATURE": "Temperature",
+      "STATUS": "Status"
+    }
+  },
+  "IOT_SIMULATOR": {
+    "BADGE": "IoT Simulator & Telemetry",
+    "TITLE": "Sensor data simulator",
+    "SUBTITLE": "Inject simulated sensor readings into your plots to trigger the AI irrigation engine and receive optimised recommendations.",
+    "ROLE": "IoT Producer",
+    "STATS": {
+      "TRANSMISSIONS": "Transmissions sent",
+      "SOIL_MOISTURE_LABEL": "Current soil moisture",
+      "TEMPERATURE_LABEL": "Current temperature",
+      "AI_STATUS": "AI engine status"
+    },
+    "MOISTURE_LEVEL": {
+      "CRITICAL": "Critical",
+      "LOW": "Low",
+      "OPTIMAL": "Optimal",
+      "HIGH": "High"
+    },
+    "FORM": {
+      "TITLE": "IoT sensor simulator",
+      "SUBTITLE": "Select a plot and inject sensor readings to trigger the AI engine.",
+      "FARM": "Farm",
+      "PLOT_NODE": "Plot (node)",
+      "SELECT_FARM": "Select farm",
+      "SELECT_PLOT": "Select plot",
+      "TRANSMITTING": "Transmitting…"
+    },
+    "NODE": {
+      "REGISTERED": "IoT Node registered",
+      "NONE": "No IoT node registered",
+      "REGISTER_REQUIRED": "Register required",
+      "REGISTER_HINT": "Register a physical node (e.g. ESP32 + DHT22) to enable telemetry transmission for this plot. The node location helps identify where it is placed in the field.",
+      "LOCATION": "Node location",
+      "LOCATION_PLACEHOLDER": "e.g. North sector, Row A, Greenhouse 2",
+      "REGISTERING": "Registering…",
+      "REGISTER_BTN": "Register IoT node",
+      "ERROR": "Failed to register node. Check plot ID and try again."
+    },
+    "SENSOR": {
+      "SOIL_MOISTURE": "Soil Moisture",
+      "TEMPERATURE": "Temperature",
+      "OR_TYPE": "Or type a value",
+      "SENSOR_BADGE": "Sensor"
+    },
+    "TRANSMIT": {
+      "SELECT_HINT": "Select a farm and a plot to enable transmission",
+      "NODE_HINT": "Register an IoT node above to enable transmission",
+      "BTN": "Transmit readings",
+      "SENDING": "Transmitting & waiting for AI…",
+      "SUCCESS_WITH_REC": "AI processed the data and generated a recommendation.",
+      "SUCCESS_NO_REC": "Readings transmitted. No recommendation generated yet.",
+      "ERROR": "Transmission failed. Check your connection or plot assignment."
+    },
+    "STEPS": {
+      "POST_MOISTURE": "POST SOIL_MOISTURE",
+      "POST_TEMP": "POST TEMPERATURE",
+      "AI_PROCESSING": "AI processing…",
+      "GET_REC": "GET recommendation"
+    },
+    "LOG": {
+      "TITLE": "Transmission log",
+      "SUBTITLE": "Last {{count}} data injections sent to the backend.",
+      "TIME": "TIME",
+      "PLOT_ID": "PLOT ID",
+      "MOISTURE": "MOISTURE",
+      "TEMPERATURE": "TEMPERATURE"
+    },
+    "AI": {
+      "IDLE_TITLE": "AI engine ready",
+      "IDLE_DESC": "Transmit sensor readings to trigger the heuristic engine. Your water stress assessment and irrigation recommendation will appear here.",
+      "IDLE_HINT": "Low soil moisture + high temperature → higher water demand recommendation",
+      "PROCESSING_TITLE": "Processing data…",
+      "PROCESSING_DESC": "The AI engine is evaluating your sensor readings and weather context to generate an optimised recommendation.",
+      "ASSESSMENT_TITLE": "Water Stress Assessment",
+      "EVALUATED_AT": "Evaluated",
+      "READING_UNIT": "soil moisture reading (%)",
+      "WEATHER_TITLE": "Weather context",
+      "TEMPERATURE": "Temperature",
+      "HUMIDITY": "Humidity",
+      "WIND": "Wind",
+      "RAIN_CHANCE": "Rain chance",
+      "DROUGHT": "Drought forecast",
+      "PEST": "Pest season",
+      "YES": "Yes ⚠️",
+      "NO": "No",
+      "ACTIVE": "Active ⚠️",
+      "INACTIVE": "Inactive",
+      "REC_TITLE": "AI Recommendation",
+      "GENERATED_AT": "Generated",
+      "LITRES": "litres recommended",
+      "DURATION": "Duration",
+      "START_TIME": "Start time",
+      "PLOT_ID": "Plot ID",
+      "REASONING_TITLE": "AI reasoning",
+      "ACCEPT": "Accept & create schedule",
+      "ACCEPTING": "Accepting…",
+      "ACCEPTED": "Schedule created ✓",
+      "SCHEDULE_TITLE": "Irrigation Schedule",
+      "AI_GENERATED": "AI-generated",
+      "MANUAL": "Manual",
+      "SCHEDULE_CREATED": "CREATED",
+      "WATER_AMOUNT": "Water amount",
+      "PRESSURE": "Pressure"
+    }
+  },
+  "DIGITAL_TWIN": {
+    "BADGE": "Digital Twin",
+    "TITLE": "Agricultural Digital Twin",
+    "SUBTITLE": "Simulate \"What-If\" scenarios to predict AI recommendations before real irrigation decisions.",
+    "SELECTOR": {
+      "FARM": "Farm",
+      "PLOT": "Plot",
+      "ALL_FARMS": "All farms",
+      "SELECT_PLOT": "Select plot to simulate",
+      "NO_PLOT": "No plot selected — Twin inactive",
+      "INACTIVE_TITLE": "Digital Twin Inactive",
+      "INACTIVE_DESC": "Select a farm and plot above to activate the simulation sandbox."
+    },
+    "CONTROLS": {
+      "TITLE": "Scenario Injection",
+      "SUBTITLE": "Define the environmental conditions to simulate",
+      "WHAT_IF": "What-If",
+      "SOIL_MOISTURE": "Soil Moisture",
+      "TEMPERATURE": "Temperature",
+      "WIND_SPEED": "Wind Speed",
+      "DROUGHT": "Drought Forecast",
+      "DROUGHT_DESC": "Simulate dry period ahead",
+      "PEST": "Pest Season Active",
+      "PEST_DESC": "Simulate pest infestation risk"
+    },
+    "MOISTURE": {
+      "OPTIMAL": "Optimal",
+      "NORMAL": "Normal",
+      "LOW": "Low",
+      "CRITICAL": "Critical"
+    },
+    "TEMP": {
+      "COOL": "Cool",
+      "WARM": "Warm",
+      "HOT": "Hot",
+      "EXTREME": "Extreme"
+    },
+    "WIND": {
+      "CALM": "Calm",
+      "BREEZY": "Breezy",
+      "STRONG": "Strong",
+      "GALE": "Gale Force"
+    },
+    "DROUGHT_TAG": "Drought",
+    "PEST_SEASON": "PEST SEASON ACTIVE",
+    "RUN": {
+      "BTN": "Run Simulation on AI Engine",
+      "RUNNING": "AI Engine processing…",
+      "SELECT_PLOT_HINT": "Select a plot above to enable simulation",
+      "RERUN": "Re-run with new parameters",
+      "RETRY": "Retry simulation"
+    },
+    "IDLE": {
+      "TITLE": "Inference Engine Ready",
+      "DESC": "Configure your scenario parameters and click \"Run Simulation\" to query the AI irrigation engine.",
+      "HINT_1": "Lower moisture → higher water demand",
+      "HINT_2": "Higher temperature → urgent schedule",
+      "HINT_3": "Strong winds → delayed irrigation",
+      "HINT_4": "Drought + high temp → maximum priority",
+      "ENGINE": "FastAPI + Spring Boot Inference Chain"
+    },
+    "RUNNING": {
+      "TITLE": "Running AI model…",
+      "SUBTITLE": "Transmitting readings and evaluating heuristic engine",
+      "STEP_1": "POST SOIL_MOISTURE reading",
+      "STEP_2": "POST TEMPERATURE reading",
+      "STEP_3": "Awaiting stress evaluation",
+      "STEP_4": "Fetching water stress assessment",
+      "STEP_5": "Generating irrigation recommendation"
+    },
+    "RESULT": {
+      "ASSESSMENT_TITLE": "Water Stress Assessment",
+      "SOIL_READING": "Soil reading",
+      "TEMP_WEATHER": "Temp (weather)",
+      "HUMIDITY_WEATHER": "Humidity (weather)",
+      "WIND_WEATHER": "Wind (weather)",
+      "DROUGHT": "Drought forecast",
+      "PEST": "Pest season",
+      "YES": "Yes ⚠️",
+      "NO": "No",
+      "ACTIVE": "Active ⚠️",
+      "INACTIVE": "Inactive",
+      "NO_REC": "Readings transmitted successfully. The AI engine did not generate a new recommendation for this scenario — stress level may be within acceptable range.",
+      "REC_TITLE": "AI Recommendation",
+      "LITRES": "Litres",
+      "DURATION": "Duration",
+      "START_LABEL": "Suggested Action / Schedule",
+      "REASONING_TITLE": "Technical Reasoning (AI)",
+      "ACCEPT": "Accept & create irrigation schedule",
+      "ACCEPTED": "Schedule created ✓"
+    },
+    "ERROR": {
+      "TITLE": "Simulation Failed",
+      "SIM_FAILED": "Simulation failed. Verify that the plot has an active IoT node and try again."
+    }
+  },
   "SUPPORT": {
     "BADGE": "Support",
     "TITLE": "Support Tickets",

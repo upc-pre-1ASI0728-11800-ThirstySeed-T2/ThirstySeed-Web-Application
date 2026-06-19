@@ -3,44 +3,31 @@
   <!-- FILTERS -->
   <div class="filter-card">
     <div class="filter-group">
-      <label>Selected Farm</label>
+      <label>{{ 'TELEMETRY.FILTER.FARM' | translate }}</label>
       <select [value]="selectedFarmId ?? ''" (change)="onFarmChange($event)">
-        <option value="">Select farm</option>
-
-        <option
-          *ngFor="let farm of farms"
-          [value]="farm.id">
-          {{ farm.name }}
-        </option>
+        <option value="">{{ 'TELEMETRY.FILTER.SELECT_FARM' | translate }}</option>
+        <option *ngFor="let farm of farms" [value]="farm.id">{{ farm.name }}</option>
       </select>
     </div>
     <div class="filter-group">
-      <label>Selected Plot</label>
+      <label>{{ 'TELEMETRY.FILTER.PLOT' | translate }}</label>
       <select
         [disabled]="!selectedFarmId"
         [value]="selectedPlotId ?? ''"
         (change)="onPlotChange($event)">
-        <option value="">
-          Select plot
-        </option>
-        <option
-          *ngFor="let plot of filteredPlots"
-          [value]="plot.id">
-          {{ plot.name }}
-        </option>
+        <option value="">{{ 'TELEMETRY.FILTER.SELECT_PLOT' | translate }}</option>
+        <option *ngFor="let plot of filteredPlots" [value]="plot.id">{{ plot.name }}</option>
       </select>
     </div>
     <div class="filter-group">
-      <label>Time Range</label>
+      <label>{{ 'TELEMETRY.FILTER.TIME_RANGE' | translate }}</label>
       <select>
-        <option>Last 24 Hours</option>
-        <option>Last 7 Days</option>
-        <option>Last 30 Days</option>
+        <option>{{ 'TELEMETRY.FILTER.LAST_24H' | translate }}</option>
+        <option>{{ 'TELEMETRY.FILTER.LAST_7D' | translate }}</option>
+        <option>{{ 'TELEMETRY.FILTER.LAST_30D' | translate }}</option>
       </select>
     </div>
-    <button class="history-btn">
-      View telemetry history →
-    </button>
+    <button class="history-btn">{{ 'TELEMETRY.FILTER.VIEW_HISTORY' | translate }}</button>
   </div>
 
   <!-- KPI CARDS -->
@@ -48,35 +35,33 @@
     <div class="kpi-card">
       <div class="icon moisture">💧</div>
       <div>
-        <span>Latest soil moisture</span>
+        <span>{{ 'TELEMETRY.KPI.SOIL_MOISTURE' | translate }}</span>
         <h2>{{ latestReading?.soilMoisture ?? '--' }}%</h2>
-        <small>Volumetric water content</small>
+        <small>{{ 'TELEMETRY.KPI.MOISTURE_UNIT' | translate }}</small>
       </div>
     </div>
     <div class="kpi-card">
       <div class="icon temperature">🌡️</div>
       <div>
-        <span>Latest temperature</span>
+        <span>{{ 'TELEMETRY.KPI.TEMPERATURE' | translate }}</span>
         <h2>{{ latestReading?.temperature ?? '--' }}°C</h2>
-        <small>Air temperature</small>
+        <small>{{ 'TELEMETRY.KPI.AIR_TEMP' | translate }}</small>
       </div>
     </div>
     <div class="kpi-card">
       <div class="icon node">📡</div>
       <div>
-        <span>Node status</span>
-        <h2 class="online">
-          {{ latestReading?.nodeStatus ?? 'Offline' }}
-        </h2>
-        <small>All systems operational</small>
+        <span>{{ 'TELEMETRY.KPI.NODE_STATUS' | translate }}</span>
+        <h2 class="online">{{ latestReading?.nodeStatus ?? ('TELEMETRY.KPI.OFFLINE' | translate) }}</h2>
+        <small>{{ 'TELEMETRY.KPI.OPERATIONAL' | translate }}</small>
       </div>
     </div>
     <div class="kpi-card">
       <div class="icon clock">🕒</div>
       <div>
-        <span>Last reading</span>
-        <h2>2 min ago</h2>
-        <small>Updated just now</small>
+        <span>{{ 'TELEMETRY.KPI.LAST_READING' | translate }}</span>
+        <h2>{{ 'TELEMETRY.KPI.MIN_AGO' | translate }}</h2>
+        <small>{{ 'TELEMETRY.KPI.UPDATED_NOW' | translate }}</small>
       </div>
     </div>
   </div>
@@ -91,22 +76,15 @@
       <div class="card">
         <div class="card-header">
           <div>
-            <h3>💧 Soil moisture trend</h3>
-            <p>Volumetric water content (%)</p>
+            <h3>💧 {{ 'TELEMETRY.MOISTURE_CHART.TITLE' | translate }}</h3>
+            <p>{{ 'TELEMETRY.MOISTURE_CHART.SUBTITLE' | translate }}</p>
           </div>
-
           <div class="badge">
-            {{ latestReading?.soilMoisture ?? '--' }}% Current
+            {{ latestReading?.soilMoisture ?? '--' }}% {{ 'TELEMETRY.MOISTURE_CHART.CURRENT' | translate }}
           </div>
         </div>
-
         <div class="chart-container">
-          <canvas
-            baseChart
-            [data]="moistureChartData"
-            [options]="lineChartOptions"
-            [type]="lineChartType">
-          </canvas>
+          <canvas baseChart [data]="moistureChartData" [options]="lineChartOptions" [type]="lineChartType"></canvas>
         </div>
       </div>
 
@@ -114,22 +92,15 @@
       <div class="card">
         <div class="card-header">
           <div>
-            <h3>🌡️ Temperature trend</h3>
-            <p>Air temperature (°C)</p>
+            <h3>🌡️ {{ 'TELEMETRY.TEMP_CHART.TITLE' | translate }}</h3>
+            <p>{{ 'TELEMETRY.TEMP_CHART.SUBTITLE' | translate }}</p>
           </div>
-
           <div class="badge orange">
-            {{ latestReading?.temperature ?? '--' }}°C Current
+            {{ latestReading?.temperature ?? '--' }}°C {{ 'TELEMETRY.MOISTURE_CHART.CURRENT' | translate }}
           </div>
         </div>
-
         <div class="chart-container">
-          <canvas
-            baseChart
-            [data]="temperatureChartData"
-            [options]="lineChartOptions"
-            [type]="lineChartType">
-          </canvas>
+          <canvas baseChart [data]="temperatureChartData" [options]="lineChartOptions" [type]="lineChartType"></canvas>
         </div>
       </div>
     </div>
@@ -139,80 +110,66 @@
 
       <!-- STATUS -->
       <div class="card">
-        <h3>📡 Current telemetry status</h3>
+        <h3>📡 {{ 'TELEMETRY.STATUS.TITLE' | translate }}</h3>
         <div class="status-grid">
           <div>
-            <span>Node</span>
-            <strong>
-              {{ nodes[0]?.location ?? 'Node TS-01' }}
-            </strong>
+            <span>{{ 'TELEMETRY.STATUS.NODE' | translate }}</span>
+            <strong>{{ nodes[0]?.location ?? ('TELEMETRY.STATUS.DEFAULT_NODE' | translate) }}</strong>
           </div>
           <div>
-            <span>Status</span>
-            <strong class="online">
-              {{ nodes[0]?.status ?? 'Online' }}
-            </strong>
+            <span>{{ 'TELEMETRY.STATUS.STATUS' | translate }}</span>
+            <strong class="online">{{ nodes[0]?.status ?? ('TELEMETRY.KPI.OFFLINE' | translate) }}</strong>
           </div>
           <div>
-            <span>Signal</span>
-            <strong>Good</strong>
+            <span>{{ 'TELEMETRY.STATUS.SIGNAL' | translate }}</span>
+            <strong>{{ 'TELEMETRY.STATUS.SIGNAL_GOOD' | translate }}</strong>
           </div>
           <div>
-            <span>Last Sync</span>
-            <strong>2 min ago</strong>
+            <span>{{ 'TELEMETRY.STATUS.LAST_SYNC' | translate }}</span>
+            <strong>{{ 'TELEMETRY.STATUS.SYNC_AGO' | translate }}</strong>
           </div>
         </div>
       </div>
 
       <!-- ANOMALY -->
-      <div
-        class="card"
-        *ngIf="latestAssessment">
-        <h3>⚠️ Anomaly Detection</h3>
+      <div class="card" *ngIf="latestAssessment">
+        <h3>⚠️ {{ 'TELEMETRY.ANOMALY.TITLE' | translate }}</h3>
         <div class="anomaly">
           <div>
-            <strong>
-              Water stress risk
-            </strong>
-            <div class="risk">
-              {{ latestAssessment.stressLevel }}
-            </div>
+            <strong>{{ 'TELEMETRY.ANOMALY.RISK' | translate }}</strong>
+            <div class="risk">{{ latestAssessment.stressLevel }}</div>
           </div>
-          <p>
-            Moisture is below the optimal threshold for this crop.
-          </p>
+          <p>{{ 'TELEMETRY.ANOMALY.MOISTURE_BELOW' | translate }}</p>
         </div>
       </div>
 
       <!-- WEATHER -->
-      <div
-        class="card"
-        *ngIf="latestAssessment">
-        <h3>🌤️ Weather Context</h3>
+      <div class="card" *ngIf="latestAssessment">
+        <h3>🌤️ {{ 'TELEMETRY.WEATHER.TITLE' | translate }}</h3>
         <div class="weather-grid">
           <div class="weather-item">
-            <span>Temperature</span>
+            <span>{{ 'TELEMETRY.WEATHER.TEMPERATURE' | translate }}</span>
             <strong>{{ latestAssessment.weatherContext.temperature }}°C</strong>
           </div>
           <div class="weather-item">
-            <span>Humidity</span>
+            <span>{{ 'TELEMETRY.WEATHER.HUMIDITY' | translate }}</span>
             <strong>{{ latestAssessment.weatherContext.humidity }}%</strong>
           </div>
           <div class="weather-item">
-            <span>Wind</span>
+            <span>{{ 'TELEMETRY.WEATHER.WIND' | translate }}</span>
             <strong>{{ latestAssessment.weatherContext.windSpeed }} km/h</strong>
           </div>
           <div class="weather-item">
-            <span>Rain chance</span>
+            <span>{{ 'TELEMETRY.WEATHER.RAIN_CHANCE' | translate }}</span>
             <strong>{{ latestAssessment.weatherContext.precipitationProbability }}%</strong>
           </div>
           <div class="weather-item" [class.weather-flag-active]="latestAssessment.weatherContext.droughtForecast">
-            <span>Drought forecast</span>
-            <strong>{{ latestAssessment.weatherContext.droughtForecast ? 'Yes ⚠️' : 'No' }}</strong>
+            <span>{{ 'TELEMETRY.WEATHER.DROUGHT' | translate }}</span>
+            <strong>{{ latestAssessment.weatherContext.droughtForecast ? ('TELEMETRY.WEATHER.YES' | translate) : ('TELEMETRY.WEATHER.NO' | translate) }}</strong>
           </div>
           <div class="weather-item" [class.weather-flag-active]="latestAssessment.weatherContext.pestSeasonActive">
-            <span>Pest season</span>
-            <strong>{{ latestAssessment.weatherContext.pestSeasonActive ? 'Active ⚠️' : 'Inactive' }}</strong>
+            <span>{{ 'TELEMETRY.WEATHER.PEST' | translate }}</span>
+            <strong>{{ latestAssessment.weatherContext.pestSeasonActive ? ('TELEMETRY.WEATHER.ACTIVE' | translate) : ('TELEMETRY.WEATHER.INACTIVE' | translate) }}</strong>
           </div>
         </div>
       </div>
@@ -220,31 +177,23 @@
       <!-- HISTORY -->
       <div class="card">
         <div class="table-header">
-          <h3>Recent Readings</h3>
+          <h3>{{ 'TELEMETRY.HISTORY.TITLE' | translate }}</h3>
         </div>
         <table>
           <thead>
           <tr>
-            <th>Time</th>
-            <th>Moisture</th>
-            <th>Temperature</th>
-            <th>Status</th>
+            <th>{{ 'TELEMETRY.HISTORY.TIME' | translate }}</th>
+            <th>{{ 'TELEMETRY.HISTORY.MOISTURE' | translate }}</th>
+            <th>{{ 'TELEMETRY.HISTORY.TEMPERATURE' | translate }}</th>
+            <th>{{ 'TELEMETRY.HISTORY.STATUS' | translate }}</th>
           </tr>
           </thead>
           <tbody>
           <tr *ngFor="let reading of readings">
             <td>{{ reading.timestamp }}</td>
-            <td>
-              {{ reading.soilMoisture }}%
-            </td>
-            <td>
-              {{ reading.temperature }}°C
-            </td>
-            <td>
-              <span class="online">
-                {{ reading.nodeStatus }}
-              </span>
-            </td>
+            <td>{{ reading.soilMoisture }}%</td>
+            <td>{{ reading.temperature }}°C</td>
+            <td><span class="online">{{ reading.nodeStatus }}</span></td>
           </tr>
           </tbody>
         </table>

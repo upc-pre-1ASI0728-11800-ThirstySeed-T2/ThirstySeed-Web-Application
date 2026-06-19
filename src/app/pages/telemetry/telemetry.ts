@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { FarmService } from '../farms/services/farm.service';
 import { PlotService } from '../plots/services/plot.service';
@@ -39,7 +40,7 @@ Chart.register(
 @Component({
   selector: 'app-telemetry',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [CommonModule, BaseChartDirective, TranslatePipe],
   templateUrl: './telemetry.html',
   styleUrl: './telemetry.css',
 })
