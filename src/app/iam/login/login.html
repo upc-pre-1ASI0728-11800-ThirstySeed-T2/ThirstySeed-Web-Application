@@ -1,0 +1,124 @@
+<main class="signin-page">
+  <section class="signin-shell" aria-label="Thirsty Seed sign in">
+    <aside class="brand-panel">
+      <div class="brand-badge">
+        <span class="seed-mark">
+          <span class="seed-stem"></span>
+        </span>
+        <span>Thirsty Seed</span>
+      </div>
+
+      <div class="brand-copy">
+        <h1>{{ 'AUTH.LOGIN.HEADLINE' | translate }}</h1>
+        <p>{{ 'AUTH.LOGIN.DESCRIPTION' | translate }}</p>
+      </div>
+
+      <div class="insight-grid">
+        <div class="insight-card">
+          <strong>{{ 'AUTH.LOGIN.IOT_LABEL' | translate }}</strong>
+          <span>{{ 'AUTH.LOGIN.IOT_DESC' | translate }}</span>
+        </div>
+        <div class="insight-card">
+          <strong>{{ 'AUTH.LOGIN.AI_LABEL' | translate }}</strong>
+          <span>{{ 'AUTH.LOGIN.AI_DESC' | translate }}</span>
+        </div>
+        <div class="insight-card">
+          <strong>{{ 'AUTH.LOGIN.AVAILABILITY_LABEL' | translate }}</strong>
+          <span>{{ 'AUTH.LOGIN.AVAILABILITY_DESC' | translate }}</span>
+        </div>
+      </div>
+    </aside>
+
+    <section class="form-stage">
+      <article class="signin-card">
+        <div class="secure-badge">
+          <span></span>
+          {{ 'AUTH.LOGIN.SECURE_ACCESS' | translate }}
+        </div>
+
+        <p class="eyebrow">{{ 'AUTH.LOGIN.WELCOME_BACK' | translate }}</p>
+        <h2>{{ 'AUTH.LOGIN.SIGN_IN' | translate }}</h2>
+
+        <p class="intro">{{ 'AUTH.LOGIN.INTRO' | translate }}</p>
+
+        <form class="login-form" (ngSubmit)="handleSignIn()">
+          <div class="form-field">
+            <label for="username">{{ 'AUTH.LOGIN.USERNAME' | translate }}</label>
+            <div class="input-frame">
+              <i class="pi pi-user"></i>
+              <input
+                id="username"
+                name="username"
+                [(ngModel)]="username"
+                autocomplete="username"
+                [placeholder]="'AUTH.LOGIN.USERNAME' | translate"
+                required
+                type="text"
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="password">{{ 'AUTH.LOGIN.PASSWORD' | translate }}</label>
+            <div class="input-frame">
+              <i class="pi pi-lock"></i>
+              <input
+                id="password"
+                name="password"
+                [(ngModel)]="password"
+                [type]="showPassword ? 'text' : 'password'"
+                autocomplete="current-password"
+                [placeholder]="'AUTH.LOGIN.PASSWORD_PLACEHOLDER' | translate"
+                required
+              />
+
+              <button
+                class="password-toggle"
+                type="button"
+                (click)="showPassword = !showPassword"
+              >
+                {{ (showPassword ? 'AUTH.LOGIN.HIDE' : 'AUTH.LOGIN.SHOW') | translate }}
+              </button>
+            </div>
+          </div>
+
+          <div class="form-options">
+            <label class="remember-control" for="remember">
+              <input
+                id="remember"
+                name="remember"
+                [(ngModel)]="rememberMe"
+                type="checkbox"
+              />
+              <span>{{ 'AUTH.LOGIN.REMEMBER_ME' | translate }}</span>
+            </label>
+
+            <a href="#" (click)="goToForgotPassword($event)">{{ 'AUTH.LOGIN.FORGOT_PASSWORD' | translate }}</a>
+          </div>
+          <div class="error-message" *ngIf="errorMessage">
+            {{ errorMessage }}
+          </div>
+
+          <div class="success-message" *ngIf="successMessage">
+            {{ successMessage }}
+          </div>
+          <button class="login-button" type="submit">
+            {{ 'AUTH.LOGIN.LOG_IN' | translate }}
+          </button>
+        </form>
+
+        <div class="divider">
+          <span></span>
+          <small>{{ 'AUTH.LOGIN.OR' | translate }}</small>
+          <span></span>
+        </div>
+
+        <button class="create-account-button" type="button" (click)="goToSignUp()">
+          {{ 'AUTH.LOGIN.CREATE_ACCOUNT' | translate }}
+        </button>
+
+        <p class="footnote">{{ 'AUTH.LOGIN.FOOTNOTE' | translate }}</p>
+      </article>
+    </section>
+  </section>
+</main>

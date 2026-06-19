@@ -1,0 +1,100 @@
+<section class="settings-page" *ngIf="form">
+  <header class="settings-header">
+    <div class="profile-mark">{{ getInitials(displayName) }}</div>
+
+    <div class="profile-title">
+      <span class="page-badge">{{ 'SETTINGS.BADGE' | translate }}</span>
+      <h1>{{ displayName }}</h1>
+      <p>{{ displayEmail }}</p>
+    </div>
+
+    <div class="plan-pill" [ngClass]="planType.toLowerCase()">
+      {{ planType }}
+    </div>
+  </header>
+
+  <div class="loading" *ngIf="loading">{{ 'SETTINGS.LOADING' | translate }}</div>
+
+  <div class="settings-grid" *ngIf="!loading">
+    <aside class="account-panel">
+      <h2>{{ 'SETTINGS.PANEL.TITLE' | translate }}</h2>
+
+      <div class="info-row">
+        <span>{{ 'SETTINGS.PANEL.USER_ID' | translate }}</span>
+        <strong>#{{ userId }}</strong>
+      </div>
+
+      <div class="info-row">
+        <span>{{ 'SETTINGS.PANEL.PROFILE_ID' | translate }}</span>
+        <strong>{{ profileId || ('SETTINGS.PANEL.LOCAL_DRAFT' | translate) }}</strong>
+      </div>
+
+      <div class="info-row">
+        <span>{{ 'SETTINGS.PANEL.ROLE' | translate }}</span>
+        <strong>{{ roleLabel }}</strong>
+      </div>
+
+      <div class="info-row">
+        <span>{{ 'SETTINGS.PANEL.SUBSCRIPTION' | translate }}</span>
+        <strong>{{ planType }}</strong>
+      </div>
+
+      <p class="notice" *ngIf="profileMissing">
+        {{ 'SETTINGS.PANEL.DRAFT_NOTICE' | translate }}
+      </p>
+    </aside>
+
+    <main class="edit-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="page-badge">{{ 'SETTINGS.EDIT.BADGE' | translate }}</span>
+          <h2>{{ 'SETTINGS.EDIT.TITLE' | translate }}</h2>
+        </div>
+        <button class="save-button" type="button" (click)="updateProfile()" [disabled]="saving">
+          {{ saving ? ('SETTINGS.EDIT.SAVING' | translate) : ('SETTINGS.EDIT.SAVE' | translate) }}
+        </button>
+      </div>
+
+      <form [formGroup]="form" class="profile-form">
+        <label>
+          {{ 'SETTINGS.EDIT.FULL_NAME' | translate }}
+          <input type="text" formControlName="name" [placeholder]="'SETTINGS.EDIT.FULL_NAME_PLACEHOLDER' | translate" />
+          <small *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+            {{ 'SETTINGS.EDIT.NAME_REQUIRED' | translate }}
+          </small>
+        </label>
+
+        <label>
+          {{ 'SETTINGS.EDIT.EMAIL' | translate }}
+          <input type="email" formControlName="email" [placeholder]="'SETTINGS.EDIT.EMAIL_PLACEHOLDER' | translate" />
+          <small *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+            {{ 'SETTINGS.EDIT.EMAIL_REQUIRED' | translate }}
+          </small>
+        </label>
+      </form>
+
+      <div class="message success" *ngIf="successMessage">{{ successMessage }}</div>
+      <div class="message error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    </main>
+  </div>
+
+  <section class="security-panel" *ngIf="!loading">
+    <div>
+      <span class="page-badge">{{ 'SETTINGS.SECURITY.BADGE' | translate }}</span>
+      <h2>{{ 'SETTINGS.SECURITY.TITLE' | translate }}</h2>
+      <p>{{ 'SETTINGS.SECURITY.DESCRIPTION' | translate }}</p>
+    </div>
+  </section>
+
+  <section class="danger-panel" *ngIf="!loading">
+    <div>
+      <span class="page-badge danger">{{ 'SETTINGS.DANGER.BADGE' | translate }}</span>
+      <h2>{{ 'SETTINGS.DANGER.TITLE' | translate }}</h2>
+      <p>{{ 'SETTINGS.DANGER.DESCRIPTION' | translate }}</p>
+    </div>
+
+    <button class="danger-button" type="button" (click)="deleteAccount()">
+      {{ 'SETTINGS.DANGER.BUTTON' | translate }}
+    </button>
+  </section>
+</section>

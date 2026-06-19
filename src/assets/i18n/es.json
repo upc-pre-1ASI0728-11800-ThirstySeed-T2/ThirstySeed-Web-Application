@@ -1,0 +1,624 @@
+{
+  "COMMON": {
+    "SAVE": "Guardar",
+    "CANCEL": "Cancelar",
+    "EDIT": "Editar",
+    "DELETE": "Eliminar",
+    "OPEN": "Abrir",
+    "RETRY": "Reintentar",
+    "LOADING": "Cargando…",
+    "SHOW": "Mostrar",
+    "HIDE": "Ocultar",
+    "YES": "Sí",
+    "NO": "No",
+    "SEARCH": "Buscar",
+    "SAVING": "Guardando…",
+    "PRODUCER": "Productor"
+  },
+  "SIDEBAR": {
+    "PRODUCER_PANEL": "Panel de Productor",
+    "WATER_MANAGER_PANEL": "Panel de Gestor de Agua",
+    "DASHBOARD": "Panel principal",
+    "FARMS": "Granjas",
+    "PLOTS": "Parcelas",
+    "TELEMETRY": "Telemetría",
+    "IOT_SIMULATOR": "Simulador IoT",
+    "AI_CROP_PLANNER": "Planificador IA",
+    "SUPPORT": "Soporte",
+    "PROFILE": "Perfil",
+    "SUBSCRIPTION": "Suscripción",
+    "SETTINGS": "Configuración",
+    "ZONES": "Zonas",
+    "WATER_DEMAND": "Demanda hídrica",
+    "CRITICAL_AREAS": "Áreas críticas",
+    "REPORTS": "Informes",
+    "REGIONAL_ALERTS": "Alertas regionales",
+    "PLAN_ACTIVE": "Plan {{plan}} activo",
+    "PLAN_USAGE": "Estás usando {{used}} de {{total}} nodos IoT disponibles en tu suscripción.",
+    "MANAGE_PLAN": "Gestionar plan",
+    "LOGOUT": "Cerrar sesión"
+  },
+  "AUTH": {
+    "LOGIN": {
+      "HEADLINE": "Decisiones de riego inteligentes para cultivos más saludables.",
+      "DESCRIPTION": "Monitorea tus parcelas, comprende el estrés hídrico y recibe recomendaciones de riego predictivo con IoT y datos climáticos.",
+      "IOT_LABEL": "IoT",
+      "IOT_DESC": "Monitoreo de campo en tiempo real",
+      "AI_LABEL": "IA",
+      "AI_DESC": "Alertas hídricas predictivas",
+      "AVAILABILITY_LABEL": "24/7",
+      "AVAILABILITY_DESC": "Visibilidad del riesgo de cultivo",
+      "SECURE_ACCESS": "Acceso seguro",
+      "WELCOME_BACK": "Bienvenido de vuelta",
+      "SIGN_IN": "Inicia sesión en tu cuenta",
+      "INTRO": "Accede a tus parcelas, datos de sensores y recomendaciones de riego desde un panel seguro.",
+      "USERNAME": "Usuario",
+      "PASSWORD": "Contraseña",
+      "PASSWORD_PLACEHOLDER": "Ingresa tu contraseña",
+      "REMEMBER_ME": "Recordarme",
+      "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?",
+      "LOG_IN": "Iniciar sesión",
+      "OR": "o",
+      "CREATE_ACCOUNT": "Crear nueva cuenta",
+      "FOOTNOTE": "El acceso depende del rol asignado y el plan de suscripción activo."
+    },
+    "REGISTER": {
+      "HEADLINE": "Empieza a gestionar tu agua de manera inteligente desde el primer día.",
+      "DESCRIPTION": "Crea tu cuenta para registrar parcelas, conectar sensores y recibir recomendaciones de riego con IoT y datos climáticos.",
+      "PLOTS_LABEL": "Parcelas",
+      "PLOTS_DESC": "Organiza tus granjas y lotes",
+      "ALERTS_LABEL": "Alertas",
+      "ALERTS_DESC": "Detecta el riesgo antes de que sea crítico",
+      "WATER_LABEL": "Agua",
+      "WATER_DESC": "Usa el agua de manera más eficiente",
+      "CREATE_ACCOUNT": "Crear cuenta",
+      "JOIN": "Únete a Thirsty Seed",
+      "FULL_NAME": "Nombre completo",
+      "EMAIL": "Correo electrónico",
+      "USERNAME": "Usuario",
+      "ACCOUNT_TYPE": "Tipo de cuenta",
+      "SELECT_TYPE": "Selecciona el tipo de cuenta",
+      "AGRICULTURAL_PRODUCER": "Productor agrícola",
+      "WATER_MANAGEMENT": "Entidad de gestión hídrica",
+      "PASSWORD": "Contraseña",
+      "PASSWORD_PLACEHOLDER": "Crea una contraseña",
+      "CONFIRM_PASSWORD": "Confirmar contraseña",
+      "CONFIRM_PLACEHOLDER": "Confirma tu contraseña",
+      "TERMS": "Acepto los términos y la política de privacidad.",
+      "SUBMIT": "Crear cuenta",
+      "ALREADY_ACCOUNT": "¿Ya tienes una cuenta?"
+    }
+  },
+  "DASHBOARD": {
+    "METRICS": {
+      "FARMS": "Granjas registradas",
+      "PLOTS": "Parcelas activas",
+      "IOT_NODES": "Nodos IoT conectados",
+      "CRITICAL_ALERTS": "Alertas críticas"
+    },
+    "MONITORING": {
+      "TITLE": "Monitoreo de parcelas",
+      "SUBTITLE": "Últimas lecturas de tus parcelas monitoreadas.",
+      "VIEW_ALL": "Ver todas las parcelas",
+      "SOIL_MOISTURE": "HUMEDAD DEL SUELO",
+      "TEMPERATURE": "TEMPERATURA",
+      "OPEN": "Abrir",
+      "NO_PLOTS": "Aún no hay parcelas para monitorear."
+    },
+    "CHART": {
+      "TITLE": "Tendencia de humedad del suelo",
+      "SUBTITLE": "Lecturas promedio de los últimos 7 días.",
+      "SENSOR_HISTORY": "Historial de sensores"
+    },
+    "STRESS": {
+      "ACTION_NEEDED": "ACCIÓN REQUERIDA",
+      "DETECTED": "estrés hídrico detectado",
+      "DESCRIPTION": "muestra humedad del suelo reducida",
+      "TEMPERATURE": "y una temperatura de",
+      "VIEW_RECOMMENDATION": "Ver recomendación"
+    },
+    "ALERTS": {
+      "TITLE": "Últimas alertas",
+      "SUBTITLE": "Eventos recientes de tus parcelas monitoreadas.",
+      "NO_ALERTS": "Sin alertas pendientes",
+      "ACKNOWLEDGE": "Marcar como revisada",
+      "CRITICAL_BANNER": "alerta(s) crítica(s) activa(s)",
+      "CRITICAL_BANNER_DESC": "Revisa las alertas a continuación.",
+      "ALL_CLEAR": "Todos los sistemas funcionan con normalidad.",
+      "CRITICAL": "Crítico",
+      "OTHER": "Otras alertas"
+    }
+  },
+  "FARMS": {
+    "BADGE": "Gestión de granjas",
+    "TITLE": "Tus granjas registradas",
+    "SUBTITLE": "Revisa tus granjas, monitorea sus parcelas activas y gestiona los espacios agrícolas conectados a Thirsty Seed.",
+    "PLAN_INFO": "Plan {{plan}} · {{used}}/{{max}} granjas usadas",
+    "SEARCH_PLACEHOLDER": "Buscar granjas",
+    "ADD_FARM": "+ Agregar granja",
+    "LOADING": "Cargando granjas...",
+    "NO_FARMS": "No hay granjas registradas aún.",
+    "STATS": {
+      "REGISTERED": "Granjas registradas",
+      "ACTIVE_PLOTS": "Total de parcelas activas",
+      "IOT_FARMS": "Granjas con nodos IoT",
+      "CRITICAL_RISK": "Granja con riesgo crítico",
+      "USAGE": "Uso de granjas"
+    },
+    "LIST": {
+      "TITLE": "Lista de granjas",
+      "SUBTITLE": "Gestiona tus granjas y accede a la distribución de parcelas.",
+      "SORT_RISK": "Ordenar por riesgo",
+      "PLOTS": "PARCELAS",
+      "NODES": "NODOS",
+      "RISK": "RIESGO",
+      "UPDATED": "Actualizado ahora",
+      "EDIT": "Editar",
+      "OPEN": "Abrir",
+      "DELETE": "Eliminar"
+    },
+    "MAP": {
+      "TITLE": "Ubicaciones de granjas",
+      "SUBTITLE": "Vista geográfica de todas las granjas registradas.",
+      "MODERATE": "Moderado / Crítico"
+    },
+    "ACTIVITY": {
+      "TITLE": "Actividad reciente de granjas",
+      "SUBTITLE": "Últimas actualizaciones de tus granjas.",
+      "NO_ACTIVITY": "Sin actividad reciente.",
+      "REGISTERED_MSG": "Granja registrada y añadida exitosamente."
+    },
+    "ADD_CARD": {
+      "TITLE": "Gestión de granjas",
+      "DESCRIPTION": "Registra tus granjas, asigna parcelas y gestiona los espacios agrícolas conectados a ellas.",
+      "BUTTON": "Agregar granja"
+    }
+  },
+  "PLOTS": {
+    "BADGE": "Gestión de parcelas",
+    "TITLE": "Parcelas por granja",
+    "SUBTITLE": "Selecciona una granja para revisar y gestionar solo las parcelas productivas registradas en ella.",
+    "PLAN_INFO": "Plan {{plan}} · {{used}}/{{max}} nodos usados",
+    "SEARCH_PLACEHOLDER": "Buscar parcelas",
+    "ADD_PLOT": "+ Agregar parcela",
+    "LOADING": "Cargando parcelas...",
+    "NO_PLOTS": "No hay parcelas registradas aún.",
+    "SHOWING_PLOTS": "Mostrando parcelas registradas solo dentro de {{farm}}.",
+    "FARM_SELECTOR": {
+      "LABEL": "GRANJA SELECCIONADA",
+      "SORT_RISK": "Ordenar por riesgo",
+      "CONNECTED_NODES": "Nodos conectados"
+    },
+    "STATS": {
+      "REGISTERED": "Parcelas registradas en esta granja",
+      "IOT_NODES": "Parcelas con nodos IoT",
+      "AVG_MOISTURE": "Humedad promedio del suelo",
+      "AT_RISK": "Parcelas en riesgo en esta granja",
+      "NODE_USAGE": "Uso de nodos"
+    },
+    "CARD": {
+      "LOCATION": "UBICACIÓN",
+      "EXTENSION": "EXTENSIÓN",
+      "STATUS": "ESTADO",
+      "NAME": "Nombre",
+      "FARM": "Granja",
+      "SELECT_FARM": "Seleccionar granja",
+      "IMAGE_URL": "URL de imagen",
+      "NO_DATA": "Sin datos",
+      "AT_RISK": "en riesgo",
+      "NONE": "Ninguna"
+    },
+    "ACTIONS": {
+      "EDIT": "Editar",
+      "SAVE": "Guardar",
+      "CANCEL": "Cancelar",
+      "OPEN": "Abrir",
+      "DELETE": "Eliminar"
+    },
+    "SUMMARY": {
+      "TITLE": "Resumen de granja seleccionada",
+      "SUBTITLE": "Datos de la granja conectada a las parcelas seleccionadas.",
+      "FARM": "Granja",
+      "TOTAL_PLOTS": "Total de parcelas",
+      "PLOTS_AT_RISK": "Parcelas en riesgo"
+    },
+    "OVERVIEW": {
+      "TITLE": "Vista general de parcelas",
+      "SUBTITLE": "Estado rápido de todas las parcelas registradas."
+    }
+  },
+  "PROFILE": {
+    "BADGE": "Perfil de usuario",
+    "TITLE": "Mi perfil",
+    "SUBTITLE": "Gestiona tu información personal. Estos datos se usan para personalizar tu experiencia en ThirstySeed.",
+    "EDIT_TITLE": "Editar perfil",
+    "CREATE_TITLE": "Crea tu perfil",
+    "EDIT_SUBTITLE": "Actualiza tus datos personales.",
+    "CREATE_SUBTITLE": "Completa el formulario para configurar tu perfil.",
+    "BADGE_ACTIVE": "Perfil activo",
+    "BADGE_PENDING": "Sin configurar",
+    "FIRST_NAME": "Nombre",
+    "LAST_NAME": "Apellido",
+    "EMAIL": "Correo electrónico",
+    "PHONE": "Número de teléfono",
+    "LOCATION": "Ubicación",
+    "PLACEHOLDER_FIRST": "Juan",
+    "PLACEHOLDER_LAST": "Pérez",
+    "PLACEHOLDER_EMAIL": "juan.perez@ejemplo.com",
+    "PLACEHOLDER_PHONE": "+51 999 000 111",
+    "PLACEHOLDER_LOCATION": "Ciudad, región o país",
+    "SAVE_CHANGES": "Guardar cambios",
+    "CREATE": "Crear perfil",
+    "SAVING": "Guardando…",
+    "PHONE_LABEL": "Teléfono",
+    "LOCATION_LABEL": "Ubicación",
+    "PROFILE_ID": "ID de perfil",
+    "INFO_HINT": "Completa tus datos para finalizar tu perfil. Esto ayuda a identificar tu cuenta e información de contacto.",
+    "LOADING": "Cargando perfil…"
+  },
+  "SETTINGS": {
+    "BADGE": "Configuración de cuenta",
+    "PLAN_LABEL": "Plan",
+    "LOADING": "Cargando perfil...",
+    "PANEL": {
+      "TITLE": "Resumen del perfil",
+      "USER_ID": "ID de usuario",
+      "PROFILE_ID": "ID de perfil",
+      "LOCAL_DRAFT": "Borrador local",
+      "ROLE": "Rol",
+      "SUBSCRIPTION": "Suscripción",
+      "DRAFT_NOTICE": "Los detalles de tu perfil están listos para guardar. Los cambios crearán tu registro de perfil."
+    },
+    "EDIT": {
+      "BADGE": "Información editable",
+      "TITLE": "Datos personales",
+      "SAVE": "Guardar cambios",
+      "SAVING": "Guardando...",
+      "FULL_NAME": "Nombre completo",
+      "FULL_NAME_PLACEHOLDER": "Tu nombre completo",
+      "EMAIL": "Correo electrónico",
+      "EMAIL_PLACEHOLDER": "tu@ejemplo.com",
+      "NAME_REQUIRED": "El nombre es requerido.",
+      "EMAIL_REQUIRED": "Ingresa un correo electrónico válido."
+    },
+    "SECURITY": {
+      "BADGE": "Seguridad",
+      "TITLE": "Cambio de contraseña",
+      "DESCRIPTION": "La edición de contraseña no está habilitada porque el backend no expone un endpoint de actualización de contraseña."
+    },
+    "DANGER": {
+      "BADGE": "Zona de peligro",
+      "TITLE": "Eliminar cuenta",
+      "DESCRIPTION": "Esto elimina permanentemente los datos de tu cuenta y cierra tu sesión.",
+      "BUTTON": "Eliminar cuenta"
+    }
+  },
+  "TELEMETRY": {
+    "FILTER": {
+      "FARM": "Granja seleccionada",
+      "PLOT": "Parcela seleccionada",
+      "TIME_RANGE": "Rango de tiempo",
+      "SELECT_FARM": "Seleccionar granja",
+      "SELECT_PLOT": "Seleccionar parcela",
+      "LAST_24H": "Últimas 24 horas",
+      "LAST_7D": "Últimos 7 días",
+      "LAST_30D": "Últimos 30 días",
+      "VIEW_HISTORY": "Ver historial de telemetría →"
+    },
+    "KPI": {
+      "SOIL_MOISTURE": "Última humedad del suelo",
+      "MOISTURE_UNIT": "Contenido volumétrico de agua",
+      "TEMPERATURE": "Última temperatura",
+      "AIR_TEMP": "Temperatura del aire",
+      "NODE_STATUS": "Estado del nodo",
+      "OPERATIONAL": "Todos los sistemas operativos",
+      "LAST_READING": "Última lectura",
+      "UPDATED_NOW": "Actualizado ahora",
+      "OFFLINE": "Desconectado",
+      "MIN_AGO": "hace 2 min"
+    },
+    "MOISTURE_CHART": {
+      "TITLE": "Tendencia de humedad del suelo",
+      "SUBTITLE": "Contenido volumétrico de agua (%)",
+      "CURRENT": "Actual"
+    },
+    "TEMP_CHART": {
+      "TITLE": "Tendencia de temperatura",
+      "SUBTITLE": "Temperatura del aire (°C)"
+    },
+    "STATUS": {
+      "TITLE": "Estado actual de telemetría",
+      "NODE": "Nodo",
+      "STATUS": "Estado",
+      "SIGNAL": "Señal",
+      "LAST_SYNC": "Última sincronización",
+      "SIGNAL_GOOD": "Buena",
+      "DEFAULT_NODE": "Nodo TS-01",
+      "SYNC_AGO": "hace 2 min"
+    },
+    "ANOMALY": {
+      "TITLE": "Detección de anomalías",
+      "RISK": "Riesgo de estrés hídrico",
+      "MOISTURE_BELOW": "La humedad está por debajo del umbral óptimo para este cultivo."
+    },
+    "WEATHER": {
+      "TITLE": "Contexto climático",
+      "TEMPERATURE": "Temperatura",
+      "HUMIDITY": "Humedad",
+      "WIND": "Viento",
+      "RAIN_CHANCE": "Probabilidad de lluvia",
+      "DROUGHT": "Pronóstico de sequía",
+      "PEST": "Temporada de plagas",
+      "YES": "Sí ⚠️",
+      "NO": "No",
+      "ACTIVE": "Activa ⚠️",
+      "INACTIVE": "Inactiva"
+    },
+    "HISTORY": {
+      "TITLE": "Lecturas recientes",
+      "TIME": "Hora",
+      "MOISTURE": "Humedad",
+      "TEMPERATURE": "Temperatura",
+      "STATUS": "Estado"
+    }
+  },
+  "IOT_SIMULATOR": {
+    "BADGE": "Simulador IoT y Telemetría",
+    "TITLE": "Simulador de datos de sensores",
+    "SUBTITLE": "Inyecta lecturas de sensores simuladas en tus parcelas para activar el motor de riego con IA y recibir recomendaciones optimizadas.",
+    "ROLE": "Productor IoT",
+    "STATS": {
+      "TRANSMISSIONS": "Transmisiones enviadas",
+      "SOIL_MOISTURE_LABEL": "Humedad actual del suelo",
+      "TEMPERATURE_LABEL": "Temperatura actual",
+      "AI_STATUS": "Estado del motor IA"
+    },
+    "MOISTURE_LEVEL": {
+      "CRITICAL": "Crítico",
+      "LOW": "Bajo",
+      "OPTIMAL": "Óptimo",
+      "HIGH": "Alto"
+    },
+    "FORM": {
+      "TITLE": "Simulador de sensores IoT",
+      "SUBTITLE": "Selecciona una parcela e inyecta lecturas de sensores para activar el motor IA.",
+      "FARM": "Granja",
+      "PLOT_NODE": "Parcela (nodo)",
+      "SELECT_FARM": "Seleccionar granja",
+      "SELECT_PLOT": "Seleccionar parcela",
+      "TRANSMITTING": "Transmitiendo…"
+    },
+    "NODE": {
+      "REGISTERED": "Nodo IoT registrado",
+      "NONE": "Sin nodo IoT registrado",
+      "REGISTER_REQUIRED": "Registro requerido",
+      "REGISTER_HINT": "Registra un nodo físico (ej. ESP32 + DHT22) para habilitar la transmisión de telemetría en esta parcela. La ubicación del nodo ayuda a identificar dónde está colocado en el campo.",
+      "LOCATION": "Ubicación del nodo",
+      "LOCATION_PLACEHOLDER": "ej. Sector Norte, Fila A, Invernadero 2",
+      "REGISTERING": "Registrando…",
+      "REGISTER_BTN": "Registrar nodo IoT",
+      "ERROR": "Error al registrar el nodo. Verifica el ID de parcela e intenta de nuevo."
+    },
+    "SENSOR": {
+      "SOIL_MOISTURE": "Humedad del suelo",
+      "TEMPERATURE": "Temperatura",
+      "OR_TYPE": "O escribe un valor",
+      "SENSOR_BADGE": "Sensor"
+    },
+    "TRANSMIT": {
+      "SELECT_HINT": "Selecciona una granja y una parcela para habilitar la transmisión",
+      "NODE_HINT": "Registra un nodo IoT arriba para habilitar la transmisión",
+      "BTN": "Transmitir lecturas",
+      "SENDING": "Transmitiendo y esperando IA…",
+      "SUCCESS_WITH_REC": "La IA procesó los datos y generó una recomendación.",
+      "SUCCESS_NO_REC": "Lecturas transmitidas. Aún no se generó ninguna recomendación.",
+      "ERROR": "Transmisión fallida. Verifica tu conexión o asignación de parcela."
+    },
+    "STEPS": {
+      "POST_MOISTURE": "POST SOIL_MOISTURE",
+      "POST_TEMP": "POST TEMPERATURE",
+      "AI_PROCESSING": "IA procesando…",
+      "GET_REC": "GET recomendación"
+    },
+    "LOG": {
+      "TITLE": "Registro de transmisiones",
+      "SUBTITLE": "Últimas {{count}} inyecciones de datos enviadas al backend.",
+      "TIME": "HORA",
+      "PLOT_ID": "ID PARCELA",
+      "MOISTURE": "HUMEDAD",
+      "TEMPERATURE": "TEMPERATURA"
+    },
+    "AI": {
+      "IDLE_TITLE": "Motor IA listo",
+      "IDLE_DESC": "Transmite lecturas de sensores para activar el motor heurístico. Tu evaluación de estrés hídrico y recomendación de riego aparecerán aquí.",
+      "IDLE_HINT": "Humedad baja + temperatura alta → recomendación de mayor demanda hídrica",
+      "PROCESSING_TITLE": "Procesando datos…",
+      "PROCESSING_DESC": "El motor IA está evaluando las lecturas de sensores y el contexto climático para generar una recomendación optimizada.",
+      "ASSESSMENT_TITLE": "Evaluación de estrés hídrico",
+      "EVALUATED_AT": "Evaluado",
+      "READING_UNIT": "lectura de humedad del suelo (%)",
+      "WEATHER_TITLE": "Contexto climático",
+      "TEMPERATURE": "Temperatura",
+      "HUMIDITY": "Humedad",
+      "WIND": "Viento",
+      "RAIN_CHANCE": "Probabilidad de lluvia",
+      "DROUGHT": "Pronóstico de sequía",
+      "PEST": "Temporada de plagas",
+      "YES": "Sí ⚠️",
+      "NO": "No",
+      "ACTIVE": "Activa ⚠️",
+      "INACTIVE": "Inactiva",
+      "REC_TITLE": "Recomendación IA",
+      "GENERATED_AT": "Generado",
+      "LITRES": "litros recomendados",
+      "DURATION": "Duración",
+      "START_TIME": "Hora de inicio",
+      "PLOT_ID": "ID de parcela",
+      "REASONING_TITLE": "Razonamiento IA",
+      "ACCEPT": "Aceptar y crear horario",
+      "ACCEPTING": "Aceptando…",
+      "ACCEPTED": "Horario creado ✓",
+      "SCHEDULE_TITLE": "Horario de riego",
+      "AI_GENERATED": "Generado por IA",
+      "MANUAL": "Manual",
+      "SCHEDULE_CREATED": "CREADO",
+      "WATER_AMOUNT": "Cantidad de agua",
+      "PRESSURE": "Presión"
+    }
+  },
+  "DIGITAL_TWIN": {
+    "BADGE": "Gemelo Digital",
+    "TITLE": "Gemelo Digital Agrícola",
+    "SUBTITLE": "Simula escenarios \"¿Qué pasaría si…?\" para predecir recomendaciones de IA antes de tomar decisiones reales de riego.",
+    "SELECTOR": {
+      "FARM": "Granja",
+      "PLOT": "Parcela",
+      "ALL_FARMS": "Todas las granjas",
+      "SELECT_PLOT": "Seleccionar parcela para simular",
+      "NO_PLOT": "Sin parcela seleccionada — Gemelo inactivo",
+      "INACTIVE_TITLE": "Gemelo Digital Inactivo",
+      "INACTIVE_DESC": "Selecciona una granja y parcela arriba para activar el sandbox de simulación."
+    },
+    "CONTROLS": {
+      "TITLE": "Inyección de escenario",
+      "SUBTITLE": "Define las condiciones ambientales a simular",
+      "WHAT_IF": "¿Qué pasa si…?",
+      "SOIL_MOISTURE": "Humedad del suelo",
+      "TEMPERATURE": "Temperatura",
+      "WIND_SPEED": "Velocidad del viento",
+      "DROUGHT": "Pronóstico de sequía",
+      "DROUGHT_DESC": "Simular período seco próximo",
+      "PEST": "Temporada de plagas activa",
+      "PEST_DESC": "Simular riesgo de infestación de plagas"
+    },
+    "MOISTURE": {
+      "OPTIMAL": "Óptimo",
+      "NORMAL": "Normal",
+      "LOW": "Bajo",
+      "CRITICAL": "Crítico"
+    },
+    "TEMP": {
+      "COOL": "Fresco",
+      "WARM": "Templado",
+      "HOT": "Caluroso",
+      "EXTREME": "Extremo"
+    },
+    "WIND": {
+      "CALM": "Calma",
+      "BREEZY": "Ventoso",
+      "STRONG": "Fuerte",
+      "GALE": "Vendaval"
+    },
+    "DROUGHT_TAG": "Sequía",
+    "PEST_SEASON": "TEMPORADA DE PLAGAS ACTIVA",
+    "RUN": {
+      "BTN": "Ejecutar simulación en motor IA",
+      "RUNNING": "Motor IA procesando…",
+      "SELECT_PLOT_HINT": "Selecciona una parcela arriba para habilitar la simulación",
+      "RERUN": "Re-ejecutar con nuevos parámetros",
+      "RETRY": "Reintentar simulación"
+    },
+    "IDLE": {
+      "TITLE": "Motor de inferencia listo",
+      "DESC": "Configura los parámetros del escenario y haz clic en \"Ejecutar simulación\" para consultar el motor IA de riego.",
+      "HINT_1": "Menor humedad → mayor demanda hídrica",
+      "HINT_2": "Mayor temperatura → horario urgente",
+      "HINT_3": "Vientos fuertes → riego diferido",
+      "HINT_4": "Sequía + temp alta → prioridad máxima",
+      "ENGINE": "Cadena de inferencia FastAPI + Spring Boot"
+    },
+    "RUNNING": {
+      "TITLE": "Ejecutando modelo IA…",
+      "SUBTITLE": "Transmitiendo lecturas y evaluando el motor heurístico",
+      "STEP_1": "POST lectura SOIL_MOISTURE",
+      "STEP_2": "POST lectura TEMPERATURE",
+      "STEP_3": "Esperando evaluación de estrés",
+      "STEP_4": "Obteniendo evaluación de estrés hídrico",
+      "STEP_5": "Generando recomendación de riego"
+    },
+    "RESULT": {
+      "ASSESSMENT_TITLE": "Evaluación de estrés hídrico",
+      "SOIL_READING": "Lectura del suelo",
+      "TEMP_WEATHER": "Temp (climática)",
+      "HUMIDITY_WEATHER": "Humedad (climática)",
+      "WIND_WEATHER": "Viento (climático)",
+      "DROUGHT": "Pronóstico de sequía",
+      "PEST": "Temporada de plagas",
+      "YES": "Sí ⚠️",
+      "NO": "No",
+      "ACTIVE": "Activa ⚠️",
+      "INACTIVE": "Inactiva",
+      "NO_REC": "Lecturas transmitidas correctamente. El motor IA no generó una nueva recomendación para este escenario — el nivel de estrés puede estar dentro del rango aceptable.",
+      "REC_TITLE": "Recomendación IA",
+      "LITRES": "Litros",
+      "DURATION": "Duración",
+      "START_LABEL": "Acción sugerida / Horario",
+      "REASONING_TITLE": "Razonamiento técnico (IA)",
+      "ACCEPT": "Aceptar y crear horario de riego",
+      "ACCEPTED": "Horario creado ✓"
+    },
+    "ERROR": {
+      "TITLE": "Simulación fallida",
+      "SIM_FAILED": "La simulación falló. Verifica que la parcela tenga un nodo IoT activo e intenta de nuevo."
+    }
+  },
+  "SUPPORT": {
+    "BADGE": "Soporte",
+    "TITLE": "Tickets de soporte",
+    "SUBTITLE": "Abre un ticket y chatea con el equipo administrador",
+    "NEW_TICKET": "Nuevo ticket",
+    "MY_TICKETS": "Mis tickets",
+    "LOADING_TICKETS": "Cargando tickets…",
+    "TICKET_ERROR": "No se pudieron cargar los tickets. Inténtalo de nuevo.",
+    "RETRY": "Reintentar",
+    "NO_TICKETS": "Sin tickets aún.",
+    "FIRST_TICKET": "Abre tu primer ticket",
+    "SELECT_TICKET": "Selecciona un ticket",
+    "SELECT_HINT": "Elige un ticket de la lista o abre uno nuevo para comenzar.",
+    "FORM": {
+      "TITLE": "Nuevo ticket de soporte",
+      "SUBTITLE": "Describe tu problema y nuestro equipo te responderá.",
+      "TICKET_TITLE": "Título",
+      "TITLE_PLACEHOLDER": "Resumen breve de tu problema",
+      "CATEGORY": "Categoría",
+      "PRIORITY": "Prioridad",
+      "DESCRIPTION": "Descripción",
+      "DESCRIPTION_PLACEHOLDER": "Describe tu problema en detalle…",
+      "CANCEL": "Cancelar",
+      "SUBMIT": "Enviar ticket",
+      "CREATING": "Creando…"
+    },
+    "DETAIL": {
+      "OPENED": "Abierto el",
+      "DESCRIPTION_LABEL": "Descripción",
+      "CONVERSATION": "Conversación"
+    },
+    "CHAT": {
+      "LOADING": "Cargando mensajes…",
+      "NO_MESSAGES": "Sin mensajes aún. Envía el primero abajo.",
+      "PLACEHOLDER": "Escribe un mensaje… (Enter para enviar)",
+      "PLACEHOLDER_CLOSED": "Este ticket está cerrado.",
+      "YOU": "Tú"
+    },
+    "STATUS": {
+      "OPEN": "Abierto",
+      "IN_PROGRESS": "En proceso",
+      "RESOLVED": "Resuelto",
+      "CLOSED": "Cerrado"
+    },
+    "PRIORITY": {
+      "HIGH": "Alta",
+      "MEDIUM": "Media",
+      "LOW": "Baja"
+    },
+    "CATEGORY": {
+      "IRRIGATION": "Riego",
+      "SENSORS": "Sensores",
+      "WATER_ZONE": "Zona hídrica",
+      "ALERTS": "Alertas",
+      "PROFILE": "Perfil",
+      "SUBSCRIPTION": "Suscripción",
+      "OTHER": "Otro"
+    }
+  }
+}

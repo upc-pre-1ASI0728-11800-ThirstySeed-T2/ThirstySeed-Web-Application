@@ -1,0 +1,269 @@
+<div class="dashboard">
+
+  <!-- ── CRITICAL BANNER ── -->
+  <div class="critical-banner" *ngIf="criticalAlerts.length > 0 && !dismissedBanner">
+    <div class="banner-left">
+      <span class="banner-icon">🔴</span>
+      <span>
+        <strong>{{ criticalAlerts.length }} {{ 'DASHBOARD.ALERTS.CRITICAL_BANNER' | translate }}</strong>
+        — {{ 'DASHBOARD.ALERTS.CRITICAL_BANNER_DESC' | translate }}
+      </span>
+    </div>
+    <button class="banner-dismiss" (click)="dismissedBanner = true">✕</button>
+  </div>
+
+  <!-- ── METRIC CARDS ── -->
+  <section class="metrics-grid">
+
+    <!-- Farms -->
+    <div class="metric-card">
+      <div class="metric-icon-wrap green">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <div class="metric-body">
+        <div class="metric-number">{{ metrics.farms }}</div>
+        <div class="metric-label">{{ 'DASHBOARD.METRICS.FARMS' | translate }}</div>
+      </div>
+    </div>
+
+    <!-- Plots -->
+    <div class="metric-card">
+      <div class="metric-icon-wrap teal">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+          <polyline points="2 17 12 22 22 17"/>
+          <polyline points="2 12 12 17 22 12"/>
+        </svg>
+      </div>
+      <div class="metric-body">
+        <div class="metric-number">{{ metrics.plots }}</div>
+        <div class="metric-label">{{ 'DASHBOARD.METRICS.PLOTS' | translate }}</div>
+      </div>
+    </div>
+
+    <!-- IoT Nodes — capacity card -->
+    <div class="metric-card node-card" [ngClass]="nodeUsageClass">
+      <div class="node-card-top">
+        <div class="metric-icon-wrap blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12.55a11 11 0 0114.08 0"/>
+            <path d="M1.42 9a16 16 0 0121.16 0"/>
+            <path d="M8.53 16.11a6 6 0 016.95 0"/>
+            <circle cx="12" cy="20" r="1" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="plan-badge">{{ planName }}</span>
+      </div>
+      <div class="metric-body">
+        <div class="metric-number">
+          {{ metrics.connectedNodes }}<span class="node-total">/{{ metrics.totalNodes }}</span>
+        </div>
+        <div class="metric-label">{{ 'DASHBOARD.METRICS.IOT_NODES' | translate }}</div>
+        <div class="node-bar-wrap">
+          <div class="node-bar">
+            <div class="node-bar-fill" [style.width]="nodeUsagePct + '%'"></div>
+          </div>
+          <span class="node-pct">{{ nodeUsagePct }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alerts -->
+    <div class="metric-card alert-metric-card" [class.has-alerts]="metrics.criticalAlerts > 0">
+      <div class="metric-icon-wrap" [ngClass]="metrics.criticalAlerts > 0 ? 'red' : 'gray'">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 01-3.46 0"/>
+        </svg>
+        <span class="alert-dot" *ngIf="metrics.criticalAlerts > 0">{{ metrics.criticalAlerts }}</span>
+      </div>
+      <div class="metric-body">
+        <div class="metric-number" [class.metric-red]="metrics.criticalAlerts > 0">
+          {{ metrics.criticalAlerts }}
+        </div>
+        <div class="metric-label">{{ 'DASHBOARD.METRICS.CRITICAL_ALERTS' | translate }}</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── MAIN GRID ── -->
+  <section class="content-grid">
+
+    <!-- ── LEFT ── -->
+    <div class="left-column">
+
+      <!-- Plot monitoring -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2>{{ 'DASHBOARD.MONITORING.TITLE' | translate }}</h2>
+            <p>{{ 'DASHBOARD.MONITORING.SUBTITLE' | translate }}</p>
+          </div>
+          <a routerLink="/plots" class="view-all-btn">{{ 'DASHBOARD.MONITORING.VIEW_ALL' | translate }}</a>
+        </div>
+
+        <div class="empty-plots" *ngIf="!plotMonitoring.length && !loading">
+          <span>🌱</span>
+          <p>{{ 'DASHBOARD.MONITORING.NO_PLOTS' | translate }}</p>
+        </div>
+
+        <div class="plot-row" *ngFor="let plot of plotMonitoring">
+          <div class="plot-info">
+            <div class="plot-icon">
+              <img *ngIf="plot.imageUrl" [src]="plot.imageUrl" alt="plot"/>
+              <span *ngIf="!plot.imageUrl">🌱</span>
+            </div>
+            <div>
+              <h4>{{ plot.plotName }}</h4>
+              <small>{{ plot.farmName }}</small>
+            </div>
+          </div>
+
+          <div class="metric">
+            <span>{{ 'DASHBOARD.MONITORING.SOIL_MOISTURE' | translate }}</span>
+            <strong>{{ plot.moisture }}%</strong>
+          </div>
+
+          <div class="metric">
+            <span>{{ 'DASHBOARD.MONITORING.TEMPERATURE' | translate }}</span>
+            <strong>{{ plot.temperature }}°C</strong>
+          </div>
+
+          <span class="status-pill" [ngClass]="{ low: plot.status==='LOW', moderate: plot.status==='MODERATE', critical: plot.status==='CRITICAL' }">
+            {{ plot.status }}
+          </span>
+
+          <button class="open-btn" [routerLink]="['/plots']">
+            {{ 'DASHBOARD.MONITORING.OPEN' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="card chart-card">
+        <div class="card-header">
+          <div>
+            <h2>{{ 'DASHBOARD.CHART.TITLE' | translate }}</h2>
+            <p>{{ 'DASHBOARD.CHART.SUBTITLE' | translate }}</p>
+          </div>
+          <a routerLink="/telemetry" class="view-all-btn">{{ 'DASHBOARD.CHART.SENSOR_HISTORY' | translate }}</a>
+        </div>
+        <div class="chart-container">
+          <canvas baseChart [type]="lineChartType" [data]="lineChartData" [options]="lineChartOptions"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT ── -->
+    <div class="right-column">
+
+      <!-- Water stress -->
+      <div class="card stress-card" *ngIf="waterStress">
+        <div class="stress-badge">{{ 'DASHBOARD.STRESS.ACTION_NEEDED' | translate }}</div>
+        <h3>
+          {{ waterStress.stressLevel }}
+          {{ 'DASHBOARD.STRESS.DETECTED' | translate }}
+        </h3>
+        <p>
+          {{ waterStress.plotName }}
+          {{ 'DASHBOARD.STRESS.DESCRIPTION' | translate }}
+          ({{ waterStress.moisture }}%)
+          {{ 'DASHBOARD.STRESS.TEMPERATURE' | translate }}
+          {{ waterStress.temperature }}°C.
+        </p>
+        <button class="recommendation-btn" [routerLink]="['/iot-simulator']">
+          {{ 'DASHBOARD.STRESS.VIEW_RECOMMENDATION' | translate }}
+        </button>
+      </div>
+
+      <!-- ── NOTIFICATION CENTER ── -->
+      <div class="card notif-card">
+
+        <!-- Header -->
+        <div class="notif-header">
+          <div class="notif-title-row">
+            <div class="notif-bell-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 01-3.46 0"/>
+              </svg>
+              <span class="notif-badge" *ngIf="latestAlerts.length > 0">{{ latestAlerts.length }}</span>
+            </div>
+            <div>
+              <h3>{{ 'DASHBOARD.ALERTS.TITLE' | translate }}</h3>
+              <p>{{ 'DASHBOARD.ALERTS.SUBTITLE' | translate }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- No alerts state -->
+        <div class="no-alerts" *ngIf="latestAlerts.length === 0">
+          <span class="no-alerts-icon">✅</span>
+          <div>
+            <strong>{{ 'DASHBOARD.ALERTS.NO_ALERTS' | translate }}</strong>
+            <p>{{ 'DASHBOARD.ALERTS.ALL_CLEAR' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Critical alerts first -->
+        <div class="alert-group" *ngIf="criticalAlerts.length > 0">
+          <div class="alert-group-label critical-label">
+            <span class="pulse-dot-red"></span>
+            {{ 'DASHBOARD.ALERTS.CRITICAL' | translate }}
+          </div>
+          <div class="alert-item alert-critical" *ngFor="let alert of criticalAlerts">
+            <div class="alert-sev-icon critical">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <div class="alert-body">
+              <h4>{{ alert.title }}</h4>
+              <p>{{ alert.description }}</p>
+              <span class="alert-time">{{ alert.createdAt | date:'dd MMM · HH:mm' }}</span>
+            </div>
+            <button class="btn-acknowledge" (click)="acknowledgeAlert(alert.id)" [disabled]="acknowledgingId === alert.id" [title]="'DASHBOARD.ALERTS.ACKNOWLEDGE' | translate">
+              <span *ngIf="acknowledgingId === alert.id" class="ack-spinner"></span>
+              <svg *ngIf="acknowledgingId !== alert.id" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Other alerts -->
+        <div class="alert-group" *ngIf="otherAlerts.length > 0">
+          <div class="alert-group-label" *ngIf="criticalAlerts.length > 0">
+            {{ 'DASHBOARD.ALERTS.OTHER' | translate }}
+          </div>
+          <div class="alert-item" *ngFor="let alert of otherAlerts">
+            <div class="alert-sev-icon warn">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 01-3.46 0"/>
+              </svg>
+            </div>
+            <div class="alert-body">
+              <h4>{{ alert.title }}</h4>
+              <p>{{ alert.description }}</p>
+              <span class="alert-time">{{ alert.createdAt | date:'dd MMM · HH:mm' }}</span>
+            </div>
+            <button class="btn-acknowledge" (click)="acknowledgeAlert(alert.id)" [disabled]="acknowledgingId === alert.id" [title]="'DASHBOARD.ALERTS.ACKNOWLEDGE' | translate">
+              <span *ngIf="acknowledgingId === alert.id" class="ack-spinner"></span>
+              <svg *ngIf="acknowledgingId !== alert.id" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>

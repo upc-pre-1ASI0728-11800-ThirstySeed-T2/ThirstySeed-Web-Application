@@ -1,0 +1,193 @@
+<section class="create-page">
+
+  <!-- TOP NAV -->
+  <header class="top-nav">
+    <div class="top-nav-left">
+      <span class="page-badge">● Farm registration</span>
+      <h1>Create a new farm</h1>
+      <p class="subtitle">Register the basic information of your agricultural space so you can organize plots, nodes and monitoring data.</p>
+    </div>
+    <div class="top-nav-right">
+      <button class="icon-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+        </svg>
+      </button>
+      <button class="user-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>Producer</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="create-layout">
+
+    <!-- FORM CARD -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <h2>Farm information</h2>
+        <p>Complete the required fields to create a farm. You can edit the information later in the settings.</p>
+        <span class="step-badge">STEP 1 OF 1</span>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-msg">{{ errorMessage }}</div>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Farm name</label>
+          <input type="text" [(ngModel)]="farm.name" placeholder="Example: Farm Santa Rosa" />
+        </div>
+
+        <div class="form-group">
+          <label>Location</label>
+          <input type="text" [(ngModel)]="farm.location" placeholder="City, region or rural area" />
+        </div>
+
+        <div class="form-group">
+          <label>Production type</label>
+          <select [(ngModel)]="farm.productionType">
+            <option value="" disabled selected>Select a farm type</option>
+            <option value="Crop">Crop</option>
+            <option value="Livestock">Livestock</option>
+            <option value="Mixed">Mixed</option>
+            <option value="Greenhouse">Greenhouse</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Total area</label>
+          <div class="input-suffix">
+            <input type="number" [(ngModel)]="farm.totalArea" placeholder="Example: 25" min="0" />
+            <span>hectares</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Initial status</label>
+          <select [(ngModel)]="farm.initialStatus">
+            <option value="" disabled selected>Select a status</option>
+            <option value="Active">Active</option>
+            <option value="Setup">Setup</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Main crop or activity</label>
+          <input type="text" [(ngModel)]="farm.mainCrop" placeholder="Corn, tomatoes, avocado, vegetables..." />
+        </div>
+
+        <div class="form-group full-width">
+          <label>Description</label>
+          <textarea [(ngModel)]="farm.description" rows="3"
+            placeholder="Add notes about this farm: its irrigation system, main crops or monitoring needs."></textarea>
+        </div>
+
+        <!-- WATER MANAGEMENT ZONE -->
+        <div class="form-group full-width">
+          <label>Water management zone <span class="required-mark">*</span></label>
+          <select
+            [ngModel]="farm.waterManagementZoneId"
+            (ngModelChange)="farm.waterManagementZoneId = +$event; onZoneChange()"
+            [disabled]="loadingZones">
+            <option [ngValue]="undefined" disabled selected>
+              {{ loadingZones ? 'Loading zones...' : 'Select a water management zone' }}
+            </option>
+            <option *ngFor="let z of zones" [value]="z.id">{{ z.name }} — {{ z.location }}</option>
+          </select>
+        </div>
+
+        <!-- ZONE DETAILS (shown once a zone is selected) -->
+        <div *ngIf="selectedZone" class="zone-info full-width">
+          <div class="zone-info-header">
+            <span class="zone-badge">ZONE DETAILS</span>
+            <strong>{{ selectedZone.name }}</strong>
+          </div>
+          <div class="zone-detail-grid">
+            <div class="zone-detail-item">
+              <span>Location</span>
+              <strong>{{ selectedZone.location || '—' }}</strong>
+            </div>
+            <div class="zone-detail-item">
+              <span>Status</span>
+              <strong class="zone-status">{{ selectedZone.status || '—' }}</strong>
+            </div>
+            <div class="zone-detail-item full">
+              <span>Description</span>
+              <strong>{{ selectedZone.description || '—' }}</strong>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-cancel" (click)="cancel()">Cancel</button>
+        <button class="btn-create" (click)="createFarm()" [disabled]="loading">
+          {{ loading ? 'Creating...' : 'Create farm' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE INFO -->
+    <div class="right-side">
+
+      <!-- Info card -->
+      <div class="info-card">
+        <div class="info-thumb">🌾</div>
+        <h3>What happens after creating a farm?</h3>
+        <p>A farm works as the main container for your agricultural operation. After registering it, you will be able to:</p>
+        <ul>
+          <li>
+            <span class="info-icon">🌱</span>
+            <div><strong>Create plots</strong><p>Define areas and sub-zones for inventory.</p></div>
+          </li>
+          <li>
+            <span class="info-icon">📡</span>
+            <div><strong>Assign IoT nodes</strong><p>Connect sensor devices to collect data.</p></div>
+          </li>
+          <li>
+            <span class="info-icon">📊</span>
+            <div><strong>Start monitoring</strong><p>View moisture, temp and alerts in real time.</p></div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Preview card -->
+      <div class="preview-card">
+        <span class="preview-label">PREVIEW</span>
+        <h4>New farm summary</h4>
+        <p class="preview-sub">This is how your new farm will appear in your farms list.</p>
+        <div class="preview-row">
+          <span>NAME</span><strong>{{ farm.name || '—' }}</strong>
+        </div>
+        <div class="preview-row">
+          <span>LOCATION</span><strong>{{ farm.location || '—' }}</strong>
+        </div>
+        <div class="preview-row">
+          <span>ZONE</span>
+          <strong>{{ selectedZone ? selectedZone.name : '—' }}</strong>
+        </div>
+        <div class="preview-row">
+          <span>CROP</span><strong>{{ farm.mainCrop || '—' }}</strong>
+        </div>
+        <div class="preview-row">
+          <span>PLOTS</span><strong>0</strong>
+        </div>
+        <div class="preview-row">
+          <span>NODES</span><strong>0</strong>
+        </div>
+        <div class="preview-row">
+          <span>STATUS</span>
+          <strong [ngClass]="farm.initialStatus.toLowerCase() || 'setup'">
+            {{ farm.initialStatus || 'Setup' }}
+          </strong>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

@@ -1,0 +1,624 @@
+{
+  "COMMON": {
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "OPEN": "Open",
+    "RETRY": "Retry",
+    "LOADING": "Loading…",
+    "SHOW": "Show",
+    "HIDE": "Hide",
+    "YES": "Yes",
+    "NO": "No",
+    "SEARCH": "Search",
+    "SAVING": "Saving…",
+    "PRODUCER": "Producer"
+  },
+  "SIDEBAR": {
+    "PRODUCER_PANEL": "Producer Panel",
+    "WATER_MANAGER_PANEL": "Water Manager Panel",
+    "DASHBOARD": "Dashboard",
+    "FARMS": "Farms",
+    "PLOTS": "Plots",
+    "TELEMETRY": "Telemetry",
+    "IOT_SIMULATOR": "IoT Simulator",
+    "AI_CROP_PLANNER": "AI Crop Planner",
+    "SUPPORT": "Support",
+    "PROFILE": "Profile",
+    "SUBSCRIPTION": "Subscription",
+    "SETTINGS": "Settings",
+    "ZONES": "Zones",
+    "WATER_DEMAND": "Water Demand",
+    "CRITICAL_AREAS": "Critical Areas",
+    "REPORTS": "Reports",
+    "REGIONAL_ALERTS": "Regional Alerts",
+    "PLAN_ACTIVE": "{{plan}} plan active",
+    "PLAN_USAGE": "You are using {{used}} of {{total}} available IoT nodes in your subscription.",
+    "MANAGE_PLAN": "Manage plan",
+    "LOGOUT": "Log out"
+  },
+  "AUTH": {
+    "LOGIN": {
+      "HEADLINE": "Smart irrigation decisions for healthier crops.",
+      "DESCRIPTION": "Monitor your plots, understand water stress and receive predictive irrigation recommendations powered by IoT and climate data.",
+      "IOT_LABEL": "IoT",
+      "IOT_DESC": "Real-time field monitoring",
+      "AI_LABEL": "AI",
+      "AI_DESC": "Predictive water alerts",
+      "AVAILABILITY_LABEL": "24/7",
+      "AVAILABILITY_DESC": "Crop risk visibility",
+      "SECURE_ACCESS": "Secure access",
+      "WELCOME_BACK": "Welcome back",
+      "SIGN_IN": "Sign in to your account",
+      "INTRO": "Access your plots, sensor data and irrigation recommendations from one secure dashboard.",
+      "USERNAME": "Username",
+      "PASSWORD": "Password",
+      "PASSWORD_PLACEHOLDER": "Enter your password",
+      "REMEMBER_ME": "Remember me",
+      "FORGOT_PASSWORD": "Forgot password?",
+      "LOG_IN": "Log In",
+      "OR": "or",
+      "CREATE_ACCOUNT": "Create new account",
+      "FOOTNOTE": "Access depends on your assigned role and active subscription plan."
+    },
+    "REGISTER": {
+      "HEADLINE": "Start managing your water smarter from day one.",
+      "DESCRIPTION": "Create your account to register plots, connect sensors and receive irrigation recommendations powered by IoT and climate data.",
+      "PLOTS_LABEL": "Plots",
+      "PLOTS_DESC": "Organize your farms and parcels",
+      "ALERTS_LABEL": "Alerts",
+      "ALERTS_DESC": "Detect risk before it becomes critical",
+      "WATER_LABEL": "Water",
+      "WATER_DESC": "Use water more efficiently",
+      "CREATE_ACCOUNT": "Create Account",
+      "JOIN": "Join Thirsty Seed",
+      "FULL_NAME": "Full name",
+      "EMAIL": "Email address",
+      "USERNAME": "Username",
+      "ACCOUNT_TYPE": "Account type",
+      "SELECT_TYPE": "Select account type",
+      "AGRICULTURAL_PRODUCER": "Agricultural Producer",
+      "WATER_MANAGEMENT": "Water Management Entity",
+      "PASSWORD": "Password",
+      "PASSWORD_PLACEHOLDER": "Create a password",
+      "CONFIRM_PASSWORD": "Confirm password",
+      "CONFIRM_PLACEHOLDER": "Confirm your password",
+      "TERMS": "I agree to the terms and privacy policy.",
+      "SUBMIT": "Create account",
+      "ALREADY_ACCOUNT": "Already have an account?"
+    }
+  },
+  "DASHBOARD": {
+    "METRICS": {
+      "FARMS": "Registered farms",
+      "PLOTS": "Active plots",
+      "IOT_NODES": "Connected IoT nodes",
+      "CRITICAL_ALERTS": "Critical alerts"
+    },
+    "MONITORING": {
+      "TITLE": "Plot monitoring",
+      "SUBTITLE": "Latest readings from your monitored plots.",
+      "VIEW_ALL": "View all plots",
+      "SOIL_MOISTURE": "SOIL MOISTURE",
+      "TEMPERATURE": "TEMPERATURE",
+      "OPEN": "Open",
+      "NO_PLOTS": "No plots to monitor yet."
+    },
+    "CHART": {
+      "TITLE": "Soil moisture trend",
+      "SUBTITLE": "Average readings from the last 7 days.",
+      "SENSOR_HISTORY": "Sensor history"
+    },
+    "STRESS": {
+      "ACTION_NEEDED": "ACTION NEEDED",
+      "DETECTED": "water stress detected",
+      "DESCRIPTION": "shows reduced soil moisture",
+      "TEMPERATURE": "and a temperature of",
+      "VIEW_RECOMMENDATION": "View recommendation"
+    },
+    "ALERTS": {
+      "TITLE": "Latest alerts",
+      "SUBTITLE": "Recent events from your monitored plots.",
+      "NO_ALERTS": "No pending alerts",
+      "ACKNOWLEDGE": "Mark as acknowledged",
+      "CRITICAL_BANNER": "critical alert(s) active",
+      "CRITICAL_BANNER_DESC": "Please review the alerts below.",
+      "ALL_CLEAR": "All systems are running normally.",
+      "CRITICAL": "Critical",
+      "OTHER": "Other alerts"
+    }
+  },
+  "FARMS": {
+    "BADGE": "Farm management",
+    "TITLE": "Your registered farms",
+    "SUBTITLE": "Review your farms, monitor their active plots and manage the agricultural spaces connected to Thirsty Seed.",
+    "PLAN_INFO": "{{plan}} Plan · {{used}}/{{max}} farms used",
+    "SEARCH_PLACEHOLDER": "Search farms",
+    "ADD_FARM": "+ Add farm",
+    "LOADING": "Loading farms...",
+    "NO_FARMS": "No farms registered yet.",
+    "STATS": {
+      "REGISTERED": "Registered farms",
+      "ACTIVE_PLOTS": "Total active plots",
+      "IOT_FARMS": "Farms with IoT nodes",
+      "CRITICAL_RISK": "Farm with critical risk",
+      "USAGE": "Farm Usage"
+    },
+    "LIST": {
+      "TITLE": "Farms list",
+      "SUBTITLE": "Manage your farms and access to plot distribution.",
+      "SORT_RISK": "Sort by risk",
+      "PLOTS": "PLOTS",
+      "NODES": "NODES",
+      "RISK": "RISK",
+      "UPDATED": "Updated just now",
+      "EDIT": "Edit",
+      "OPEN": "Open",
+      "DELETE": "Delete"
+    },
+    "MAP": {
+      "TITLE": "Farm locations",
+      "SUBTITLE": "Geographic overview of all registered farms.",
+      "MODERATE": "Moderate / Critical"
+    },
+    "ACTIVITY": {
+      "TITLE": "Recent farm activity",
+      "SUBTITLE": "Last updates from your farms.",
+      "NO_ACTIVITY": "No recent activity.",
+      "REGISTERED_MSG": "Farm registered and added successfully."
+    },
+    "ADD_CARD": {
+      "TITLE": "Farm management",
+      "DESCRIPTION": "Register your farms, assign plots and manage the agricultural spaces connected to it.",
+      "BUTTON": "Add farm"
+    }
+  },
+  "PLOTS": {
+    "BADGE": "Plot management",
+    "TITLE": "Plots by farm",
+    "SUBTITLE": "Select a farm to review and manage only the productive plots registered inside it.",
+    "PLAN_INFO": "{{plan}} Plan · {{used}}/{{max}} nodes used",
+    "SEARCH_PLACEHOLDER": "Search plots",
+    "ADD_PLOT": "+ Add plot",
+    "LOADING": "Loading plots...",
+    "NO_PLOTS": "No plots registered yet.",
+    "SHOWING_PLOTS": "Showing plots registered only inside {{farm}}.",
+    "FARM_SELECTOR": {
+      "LABEL": "SELECTED FARM",
+      "SORT_RISK": "Sort by risk",
+      "CONNECTED_NODES": "Connected nodes"
+    },
+    "STATS": {
+      "REGISTERED": "Registered plots in this farm",
+      "IOT_NODES": "Plots with IoT nodes",
+      "AVG_MOISTURE": "Average soil moisture",
+      "AT_RISK": "Plots at risk in this farm",
+      "NODE_USAGE": "Node Usage"
+    },
+    "CARD": {
+      "LOCATION": "LOCATION",
+      "EXTENSION": "EXTENSION",
+      "STATUS": "STATUS",
+      "NAME": "Name",
+      "FARM": "Farm",
+      "SELECT_FARM": "Select farm",
+      "IMAGE_URL": "Image URL",
+      "NO_DATA": "No data",
+      "AT_RISK": "at risk",
+      "NONE": "None"
+    },
+    "ACTIONS": {
+      "EDIT": "Edit",
+      "SAVE": "Save",
+      "CANCEL": "Cancel",
+      "OPEN": "Open",
+      "DELETE": "Delete"
+    },
+    "SUMMARY": {
+      "TITLE": "Selected farm summary",
+      "SUBTITLE": "Farm data connected to the selected plots.",
+      "FARM": "Farm",
+      "TOTAL_PLOTS": "Total plots",
+      "PLOTS_AT_RISK": "Plots at risk"
+    },
+    "OVERVIEW": {
+      "TITLE": "Plots overview",
+      "SUBTITLE": "Quick status of all registered plots."
+    }
+  },
+  "PROFILE": {
+    "BADGE": "User Profile",
+    "TITLE": "My profile",
+    "SUBTITLE": "Manage your personal information. This data is used to personalise your ThirstySeed experience.",
+    "EDIT_TITLE": "Edit profile",
+    "CREATE_TITLE": "Create your profile",
+    "EDIT_SUBTITLE": "Update your personal details.",
+    "CREATE_SUBTITLE": "Complete the form below to set up your profile.",
+    "BADGE_ACTIVE": "Profile active",
+    "BADGE_PENDING": "Not configured",
+    "FIRST_NAME": "First name",
+    "LAST_NAME": "Last name",
+    "EMAIL": "Email",
+    "PHONE": "Phone number",
+    "LOCATION": "Location",
+    "PLACEHOLDER_FIRST": "John",
+    "PLACEHOLDER_LAST": "Doe",
+    "PLACEHOLDER_EMAIL": "john.doe@example.com",
+    "PLACEHOLDER_PHONE": "+51 999 000 111",
+    "PLACEHOLDER_LOCATION": "City, region or country",
+    "SAVE_CHANGES": "Save changes",
+    "CREATE": "Create profile",
+    "SAVING": "Saving…",
+    "PHONE_LABEL": "Phone",
+    "LOCATION_LABEL": "Location",
+    "PROFILE_ID": "Profile ID",
+    "INFO_HINT": "Fill in your details to complete your profile. This helps identify your account and contact information.",
+    "LOADING": "Loading profile…"
+  },
+  "SETTINGS": {
+    "BADGE": "Account settings",
+    "PLAN_LABEL": "Plan",
+    "LOADING": "Loading profile...",
+    "PANEL": {
+      "TITLE": "Profile overview",
+      "USER_ID": "User ID",
+      "PROFILE_ID": "Profile ID",
+      "LOCAL_DRAFT": "Local draft",
+      "ROLE": "Role",
+      "SUBSCRIPTION": "Subscription",
+      "DRAFT_NOTICE": "Your profile details are ready to save. Changes will create your profile record."
+    },
+    "EDIT": {
+      "BADGE": "Editable information",
+      "TITLE": "Personal data",
+      "SAVE": "Save changes",
+      "SAVING": "Saving...",
+      "FULL_NAME": "Full name",
+      "FULL_NAME_PLACEHOLDER": "Your full name",
+      "EMAIL": "Email",
+      "EMAIL_PLACEHOLDER": "you@example.com",
+      "NAME_REQUIRED": "Name is required.",
+      "EMAIL_REQUIRED": "Enter a valid email."
+    },
+    "SECURITY": {
+      "BADGE": "Security",
+      "TITLE": "Password changes",
+      "DESCRIPTION": "Password editing is not enabled because the backend contract does not expose a password update endpoint."
+    },
+    "DANGER": {
+      "BADGE": "Danger zone",
+      "TITLE": "Delete account",
+      "DESCRIPTION": "This permanently removes your account data and signs you out.",
+      "BUTTON": "Delete account"
+    }
+  },
+  "TELEMETRY": {
+    "FILTER": {
+      "FARM": "Selected Farm",
+      "PLOT": "Selected Plot",
+      "TIME_RANGE": "Time Range",
+      "SELECT_FARM": "Select farm",
+      "SELECT_PLOT": "Select plot",
+      "LAST_24H": "Last 24 Hours",
+      "LAST_7D": "Last 7 Days",
+      "LAST_30D": "Last 30 Days",
+      "VIEW_HISTORY": "View telemetry history →"
+    },
+    "KPI": {
+      "SOIL_MOISTURE": "Latest soil moisture",
+      "MOISTURE_UNIT": "Volumetric water content",
+      "TEMPERATURE": "Latest temperature",
+      "AIR_TEMP": "Air temperature",
+      "NODE_STATUS": "Node status",
+      "OPERATIONAL": "All systems operational",
+      "LAST_READING": "Last reading",
+      "UPDATED_NOW": "Updated just now",
+      "OFFLINE": "Offline",
+      "MIN_AGO": "2 min ago"
+    },
+    "MOISTURE_CHART": {
+      "TITLE": "Soil moisture trend",
+      "SUBTITLE": "Volumetric water content (%)",
+      "CURRENT": "Current"
+    },
+    "TEMP_CHART": {
+      "TITLE": "Temperature trend",
+      "SUBTITLE": "Air temperature (°C)"
+    },
+    "STATUS": {
+      "TITLE": "Current telemetry status",
+      "NODE": "Node",
+      "STATUS": "Status",
+      "SIGNAL": "Signal",
+      "LAST_SYNC": "Last Sync",
+      "SIGNAL_GOOD": "Good",
+      "DEFAULT_NODE": "Node TS-01",
+      "SYNC_AGO": "2 min ago"
+    },
+    "ANOMALY": {
+      "TITLE": "Anomaly Detection",
+      "RISK": "Water stress risk",
+      "MOISTURE_BELOW": "Moisture is below the optimal threshold for this crop."
+    },
+    "WEATHER": {
+      "TITLE": "Weather Context",
+      "TEMPERATURE": "Temperature",
+      "HUMIDITY": "Humidity",
+      "WIND": "Wind",
+      "RAIN_CHANCE": "Rain chance",
+      "DROUGHT": "Drought forecast",
+      "PEST": "Pest season",
+      "YES": "Yes ⚠️",
+      "NO": "No",
+      "ACTIVE": "Active ⚠️",
+      "INACTIVE": "Inactive"
+    },
+    "HISTORY": {
+      "TITLE": "Recent Readings",
+      "TIME": "Time",
+      "MOISTURE": "Moisture",
+      "TEMPERATURE": "Temperature",
+      "STATUS": "Status"
+    }
+  },
+  "IOT_SIMULATOR": {
+    "BADGE": "IoT Simulator & Telemetry",
+    "TITLE": "Sensor data simulator",
+    "SUBTITLE": "Inject simulated sensor readings into your plots to trigger the AI irrigation engine and receive optimised recommendations.",
+    "ROLE": "IoT Producer",
+    "STATS": {
+      "TRANSMISSIONS": "Transmissions sent",
+      "SOIL_MOISTURE_LABEL": "Current soil moisture",
+      "TEMPERATURE_LABEL": "Current temperature",
+      "AI_STATUS": "AI engine status"
+    },
+    "MOISTURE_LEVEL": {
+      "CRITICAL": "Critical",
+      "LOW": "Low",
+      "OPTIMAL": "Optimal",
+      "HIGH": "High"
+    },
+    "FORM": {
+      "TITLE": "IoT sensor simulator",
+      "SUBTITLE": "Select a plot and inject sensor readings to trigger the AI engine.",
+      "FARM": "Farm",
+      "PLOT_NODE": "Plot (node)",
+      "SELECT_FARM": "Select farm",
+      "SELECT_PLOT": "Select plot",
+      "TRANSMITTING": "Transmitting…"
+    },
+    "NODE": {
+      "REGISTERED": "IoT Node registered",
+      "NONE": "No IoT node registered",
+      "REGISTER_REQUIRED": "Register required",
+      "REGISTER_HINT": "Register a physical node (e.g. ESP32 + DHT22) to enable telemetry transmission for this plot. The node location helps identify where it is placed in the field.",
+      "LOCATION": "Node location",
+      "LOCATION_PLACEHOLDER": "e.g. North sector, Row A, Greenhouse 2",
+      "REGISTERING": "Registering…",
+      "REGISTER_BTN": "Register IoT node",
+      "ERROR": "Failed to register node. Check plot ID and try again."
+    },
+    "SENSOR": {
+      "SOIL_MOISTURE": "Soil Moisture",
+      "TEMPERATURE": "Temperature",
+      "OR_TYPE": "Or type a value",
+      "SENSOR_BADGE": "Sensor"
+    },
+    "TRANSMIT": {
+      "SELECT_HINT": "Select a farm and a plot to enable transmission",
+      "NODE_HINT": "Register an IoT node above to enable transmission",
+      "BTN": "Transmit readings",
+      "SENDING": "Transmitting & waiting for AI…",
+      "SUCCESS_WITH_REC": "AI processed the data and generated a recommendation.",
+      "SUCCESS_NO_REC": "Readings transmitted. No recommendation generated yet.",
+      "ERROR": "Transmission failed. Check your connection or plot assignment."
+    },
+    "STEPS": {
+      "POST_MOISTURE": "POST SOIL_MOISTURE",
+      "POST_TEMP": "POST TEMPERATURE",
+      "AI_PROCESSING": "AI processing…",
+      "GET_REC": "GET recommendation"
+    },
+    "LOG": {
+      "TITLE": "Transmission log",
+      "SUBTITLE": "Last {{count}} data injections sent to the backend.",
+      "TIME": "TIME",
+      "PLOT_ID": "PLOT ID",
+      "MOISTURE": "MOISTURE",
+      "TEMPERATURE": "TEMPERATURE"
+    },
+    "AI": {
+      "IDLE_TITLE": "AI engine ready",
+      "IDLE_DESC": "Transmit sensor readings to trigger the heuristic engine. Your water stress assessment and irrigation recommendation will appear here.",
+      "IDLE_HINT": "Low soil moisture + high temperature → higher water demand recommendation",
+      "PROCESSING_TITLE": "Processing data…",
+      "PROCESSING_DESC": "The AI engine is evaluating your sensor readings and weather context to generate an optimised recommendation.",
+      "ASSESSMENT_TITLE": "Water Stress Assessment",
+      "EVALUATED_AT": "Evaluated",
+      "READING_UNIT": "soil moisture reading (%)",
+      "WEATHER_TITLE": "Weather context",
+      "TEMPERATURE": "Temperature",
+      "HUMIDITY": "Humidity",
+      "WIND": "Wind",
+      "RAIN_CHANCE": "Rain chance",
+      "DROUGHT": "Drought forecast",
+      "PEST": "Pest season",
+      "YES": "Yes ⚠️",
+      "NO": "No",
+      "ACTIVE": "Active ⚠️",
+      "INACTIVE": "Inactive",
+      "REC_TITLE": "AI Recommendation",
+      "GENERATED_AT": "Generated",
+      "LITRES": "litres recommended",
+      "DURATION": "Duration",
+      "START_TIME": "Start time",
+      "PLOT_ID": "Plot ID",
+      "REASONING_TITLE": "AI reasoning",
+      "ACCEPT": "Accept & create schedule",
+      "ACCEPTING": "Accepting…",
+      "ACCEPTED": "Schedule created ✓",
+      "SCHEDULE_TITLE": "Irrigation Schedule",
+      "AI_GENERATED": "AI-generated",
+      "MANUAL": "Manual",
+      "SCHEDULE_CREATED": "CREATED",
+      "WATER_AMOUNT": "Water amount",
+      "PRESSURE": "Pressure"
+    }
+  },
+  "DIGITAL_TWIN": {
+    "BADGE": "Digital Twin",
+    "TITLE": "Agricultural Digital Twin",
+    "SUBTITLE": "Simulate \"What-If\" scenarios to predict AI recommendations before real irrigation decisions.",
+    "SELECTOR": {
+      "FARM": "Farm",
+      "PLOT": "Plot",
+      "ALL_FARMS": "All farms",
+      "SELECT_PLOT": "Select plot to simulate",
+      "NO_PLOT": "No plot selected — Twin inactive",
+      "INACTIVE_TITLE": "Digital Twin Inactive",
+      "INACTIVE_DESC": "Select a farm and plot above to activate the simulation sandbox."
+    },
+    "CONTROLS": {
+      "TITLE": "Scenario Injection",
+      "SUBTITLE": "Define the environmental conditions to simulate",
+      "WHAT_IF": "What-If",
+      "SOIL_MOISTURE": "Soil Moisture",
+      "TEMPERATURE": "Temperature",
+      "WIND_SPEED": "Wind Speed",
+      "DROUGHT": "Drought Forecast",
+      "DROUGHT_DESC": "Simulate dry period ahead",
+      "PEST": "Pest Season Active",
+      "PEST_DESC": "Simulate pest infestation risk"
+    },
+    "MOISTURE": {
+      "OPTIMAL": "Optimal",
+      "NORMAL": "Normal",
+      "LOW": "Low",
+      "CRITICAL": "Critical"
+    },
+    "TEMP": {
+      "COOL": "Cool",
+      "WARM": "Warm",
+      "HOT": "Hot",
+      "EXTREME": "Extreme"
+    },
+    "WIND": {
+      "CALM": "Calm",
+      "BREEZY": "Breezy",
+      "STRONG": "Strong",
+      "GALE": "Gale Force"
+    },
+    "DROUGHT_TAG": "Drought",
+    "PEST_SEASON": "PEST SEASON ACTIVE",
+    "RUN": {
+      "BTN": "Run Simulation on AI Engine",
+      "RUNNING": "AI Engine processing…",
+      "SELECT_PLOT_HINT": "Select a plot above to enable simulation",
+      "RERUN": "Re-run with new parameters",
+      "RETRY": "Retry simulation"
+    },
+    "IDLE": {
+      "TITLE": "Inference Engine Ready",
+      "DESC": "Configure your scenario parameters and click \"Run Simulation\" to query the AI irrigation engine.",
+      "HINT_1": "Lower moisture → higher water demand",
+      "HINT_2": "Higher temperature → urgent schedule",
+      "HINT_3": "Strong winds → delayed irrigation",
+      "HINT_4": "Drought + high temp → maximum priority",
+      "ENGINE": "FastAPI + Spring Boot Inference Chain"
+    },
+    "RUNNING": {
+      "TITLE": "Running AI model…",
+      "SUBTITLE": "Transmitting readings and evaluating heuristic engine",
+      "STEP_1": "POST SOIL_MOISTURE reading",
+      "STEP_2": "POST TEMPERATURE reading",
+      "STEP_3": "Awaiting stress evaluation",
+      "STEP_4": "Fetching water stress assessment",
+      "STEP_5": "Generating irrigation recommendation"
+    },
+    "RESULT": {
+      "ASSESSMENT_TITLE": "Water Stress Assessment",
+      "SOIL_READING": "Soil reading",
+      "TEMP_WEATHER": "Temp (weather)",
+      "HUMIDITY_WEATHER": "Humidity (weather)",
+      "WIND_WEATHER": "Wind (weather)",
+      "DROUGHT": "Drought forecast",
+      "PEST": "Pest season",
+      "YES": "Yes ⚠️",
+      "NO": "No",
+      "ACTIVE": "Active ⚠️",
+      "INACTIVE": "Inactive",
+      "NO_REC": "Readings transmitted successfully. The AI engine did not generate a new recommendation for this scenario — stress level may be within acceptable range.",
+      "REC_TITLE": "AI Recommendation",
+      "LITRES": "Litres",
+      "DURATION": "Duration",
+      "START_LABEL": "Suggested Action / Schedule",
+      "REASONING_TITLE": "Technical Reasoning (AI)",
+      "ACCEPT": "Accept & create irrigation schedule",
+      "ACCEPTED": "Schedule created ✓"
+    },
+    "ERROR": {
+      "TITLE": "Simulation Failed",
+      "SIM_FAILED": "Simulation failed. Verify that the plot has an active IoT node and try again."
+    }
+  },
+  "SUPPORT": {
+    "BADGE": "Support",
+    "TITLE": "Support Tickets",
+    "SUBTITLE": "Open a ticket and chat with the admin team",
+    "NEW_TICKET": "New Ticket",
+    "MY_TICKETS": "My Tickets",
+    "LOADING_TICKETS": "Loading tickets…",
+    "TICKET_ERROR": "Could not load tickets. Please try again.",
+    "RETRY": "Retry",
+    "NO_TICKETS": "No tickets yet.",
+    "FIRST_TICKET": "Open your first ticket",
+    "SELECT_TICKET": "Select a ticket",
+    "SELECT_HINT": "Choose a ticket from the list or open a new one to get started.",
+    "FORM": {
+      "TITLE": "New Support Ticket",
+      "SUBTITLE": "Describe your issue and our team will get back to you.",
+      "TICKET_TITLE": "Title",
+      "TITLE_PLACEHOLDER": "Brief summary of your issue",
+      "CATEGORY": "Category",
+      "PRIORITY": "Priority",
+      "DESCRIPTION": "Description",
+      "DESCRIPTION_PLACEHOLDER": "Describe your issue in detail…",
+      "CANCEL": "Cancel",
+      "SUBMIT": "Submit Ticket",
+      "CREATING": "Creating…"
+    },
+    "DETAIL": {
+      "OPENED": "Opened",
+      "DESCRIPTION_LABEL": "Description",
+      "CONVERSATION": "Conversation"
+    },
+    "CHAT": {
+      "LOADING": "Loading messages…",
+      "NO_MESSAGES": "No messages yet. Send the first message below.",
+      "PLACEHOLDER": "Type a message… (Enter to send)",
+      "PLACEHOLDER_CLOSED": "This ticket is closed.",
+      "YOU": "You"
+    },
+    "STATUS": {
+      "OPEN": "Open",
+      "IN_PROGRESS": "In Progress",
+      "RESOLVED": "Resolved",
+      "CLOSED": "Closed"
+    },
+    "PRIORITY": {
+      "HIGH": "High",
+      "MEDIUM": "Medium",
+      "LOW": "Low"
+    },
+    "CATEGORY": {
+      "IRRIGATION": "Irrigation",
+      "SENSORS": "Sensors",
+      "WATER_ZONE": "Water Zone",
+      "ALERTS": "Alerts",
+      "PROFILE": "Profile",
+      "SUBSCRIPTION": "Subscription",
+      "OTHER": "Other"
+    }
+  }
+}

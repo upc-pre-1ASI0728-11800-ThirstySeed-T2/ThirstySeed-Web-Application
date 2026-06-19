@@ -1,0 +1,217 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.signup-plan-page {
+  background: linear-gradient(115deg, #fbfbed 0%, #f7fbf4 48%, #eff8ef 100%);
+  color: #202b25;
+  display: grid;
+  font-family: "Poppins", system-ui, sans-serif;
+  grid-template-columns: minmax(320px, 0.42fr) 1fr;
+  min-height: 100vh;
+}
+
+.brand-panel {
+  background: linear-gradient(160deg, #1d9148, #14763d);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 44px;
+}
+
+.brand-badge {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 800;
+  gap: 10px;
+  padding: 8px 16px 8px 8px;
+  width: fit-content;
+}
+
+.seed-mark {
+  background: #ffffff;
+  border-radius: 50%;
+  height: 28px;
+  width: 28px;
+}
+
+.brand-panel h1 {
+  font-size: 52px;
+  line-height: 0.98;
+  margin: 0 0 22px;
+}
+
+.brand-panel p,
+.insight-card span,
+.intro {
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.insight-card {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.insight-card strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.plan-stage {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding: 34px;
+}
+
+.setup-card {
+  background: #ffffff;
+  border: 1px solid #dfeadd;
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(21, 92, 44, 0.12);
+  max-width: 820px;
+  padding: 34px;
+  width: 100%;
+}
+
+.page-badge {
+  color: #128341;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.setup-card h2 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.setup-card .intro {
+  color: #617268;
+  margin-top: 8px;
+}
+
+.plans-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 26px;
+}
+
+.plan-box {
+  border: 1px solid #dfeadd;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  min-height: 390px;
+  padding: 22px;
+}
+
+.plan-box.premium {
+  background: #fffaf4;
+  border-color: #efcfab;
+}
+
+.recommended {
+  align-self: flex-start;
+  background: #ffe7d5;
+  border-radius: 999px;
+  color: #b76213;
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+}
+
+.plan-box h3 {
+  font-size: 28px;
+  margin: 0;
+}
+
+.price {
+  font-size: 36px;
+  font-weight: 900;
+  margin: 14px 0 18px;
+}
+
+.price small {
+  color: #6d7c72;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+ul {
+  display: grid;
+  gap: 11px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  color: #405047;
+  font-size: 14px;
+}
+
+li::before {
+  color: #128341;
+  content: "+ ";
+  font-weight: 900;
+}
+
+button {
+  background: #117d3e;
+  border: 0;
+  border-radius: 12px;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  height: 44px;
+  margin-top: auto;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.back-link {
+  background: transparent;
+  color: #117d3e;
+  display: block;
+  height: auto;
+  margin-top: 18px;
+  padding: 0;
+}
+
+.error-message {
+  background: #fff1f1;
+  border: 1px solid #facaca;
+  border-radius: 12px;
+  color: #b42318;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 12px;
+}
+
+@media (max-width: 900px) {
+  .signup-plan-page,
+  .plans-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-panel h1 {
+    font-size: 34px;
+  }
+}

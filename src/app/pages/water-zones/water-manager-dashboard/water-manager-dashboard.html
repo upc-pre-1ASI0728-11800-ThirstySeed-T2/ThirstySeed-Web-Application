@@ -1,0 +1,221 @@
+<section class="wm-page">
+
+  <!-- TOP NAV -->
+  <header class="top-nav">
+    <div class="top-nav-left">
+      <span class="page-badge">● Water zone management</span>
+      <h1>{{ consumption?.zoneName ?? 'Water Manager Dashboard' }}</h1>
+      <p class="subscription-info">
+        {{ wmDashboard ? wmDashboard.monitoredFarms + ' farms · ' + wmDashboard.monitoredPlots + ' plots' : (zone ? '1 zone registered' : 'No zone yet') }}
+      </p>
+      <p class="subtitle">Monitor total water consumption, registered farms and plots across all your managed zones.</p>
+    </div>
+
+    <div class="top-nav-right">
+      <!-- Chip de zona activa -->
+      <div class="zone-chip" *ngIf="zone">
+        <span class="chip-dot"></span> Zone #{{ zone.id }} · {{ zone.status }}
+      </div>
+
+      <button class="icon-btn notif">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 01-3.46 0"/>
+        </svg>
+        <span class="badge-dot"></span>
+      </button>
+
+      <button class="user-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>{{ currentUser?.username ?? 'Manager' }}</span>
+      </button>
+
+      <button class="add-button" (click)="goToCreateZone()">
+        + New zone
+      </button>
+    </div>
+  </header>
+
+  <!-- LOADING -->
+  <div *ngIf="isLoading" class="state-msg">Loading zone data...</div>
+
+  <!-- ERROR -->
+  <div *ngIf="errorMessage && !isLoading" class="state-msg error">{{ errorMessage }}</div>
+
+  <!-- EMPTY STATE: no zone registered yet -->
+  <div *ngIf="!hasZone && !isLoading" class="empty-state">
+    <div class="empty-icon">💧</div>
+    <h2>No zones registered yet</h2>
+    <p>Create your first management zone to start monitoring water consumption.</p>
+    <button class="add-button" (click)="goToCreateZone()">+ Create zone</button>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content" *ngIf="hasZone && !isLoading && !errorMessage">
+
+    <!-- STAT CARDS -->
+    <div class="summary-cards">
+      <div class="stat-card highlight">
+        <div class="stat-icon">💧</div>
+        <div class="stat-body">
+          <strong>{{ consumption?.totalWaterConsumedLitres ?? '—' }}</strong>
+          <p>Litres consumed (total)</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🌾</div>
+        <div class="stat-body">
+          <strong>{{ consumption?.totalFarms ?? '—' }}</strong>
+          <p>Registered farms</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🌱</div>
+        <div class="stat-body">
+          <strong>{{ consumption?.totalPlots ?? '—' }}</strong>
+          <p>Total plots</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📍</div>
+        <div class="stat-body">
+          <strong>#{{ consumption?.zoneId ?? '—' }}</strong>
+          <p>Active zone ID</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TWO COLUMN LAYOUT -->
+    <div class="two-col">
+
+      <!-- LEFT: ZONE DETAIL -->
+      <div class="left-col">
+        <div class="section-header">
+          <div>
+            <h2>Zone overview</h2>
+            <p class="section-sub">Summary of water usage across all farms and plots in this zone.</p>
+          </div>
+          <button class="outline-btn" (click)="loadConsumption(selectedZoneId!)">Refresh</button>
+        </div>
+
+        <!-- ZONE CARD -->
+        <div class="zone-card" *ngIf="consumption">
+          <div class="zone-card-header">
+            <div class="zone-thumb">💧</div>
+            <div class="zone-title">
+              <h3>{{ consumption.zoneName }}</h3>
+              <p>Zone ID · {{ consumption.zoneId }}</p>
+            </div>
+            <span class="status-badge active">Active</span>
+          </div>
+
+          <div class="zone-metrics">
+            <div class="metric">
+              <label>FARMS</label>
+              <span>{{ consumption.totalFarms }}</span>
+            </div>
+            <div class="metric">
+              <label>PLOTS</label>
+              <span>{{ consumption.totalPlots }}</span>
+            </div>
+            <div class="metric">
+              <label>LITRES</label>
+              <span>{{ consumption.totalWaterConsumedLitres | number:'1.0-1' }}</span>
+            </div>
+          </div>
+
+          <p class="zone-meta">Updated just now</p>
+
+          <div class="zone-actions">
+            <button class="btn-edit">Edit zone</button>
+            <button class="btn-open">View details</button>
+          </div>
+        </div>
+
+        <!-- ADD ZONE CARD -->
+        <div class="add-zone-card">
+          <div class="add-zone-icon">🌊</div>
+          <h3>Zone management</h3>
+          <p>Register additional management zones and assign farms to monitor their water consumption in real time.</p>
+          <button class="add-button-sm" (click)="goToCreateZone()">Add zone</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: CONSUMPTION BREAKDOWN + ACTIVITY -->
+      <div class="right-col">
+
+        <!-- CONSUMPTION CARD -->
+        <div class="consumption-card">
+          <h3>Consumption breakdown</h3>
+          <p class="section-sub">Water usage distributed across zone resources.</p>
+
+          <div class="breakdown-list" *ngIf="consumption">
+            <div class="breakdown-row">
+              <div class="breakdown-label">
+                <span class="breakdown-dot green"></span>
+                Farms tracked
+              </div>
+              <strong>{{ consumption.totalFarms }}</strong>
+            </div>
+            <div class="breakdown-row">
+              <div class="breakdown-label">
+                <span class="breakdown-dot blue"></span>
+                Plots monitored
+              </div>
+              <strong>{{ consumption.totalPlots }}</strong>
+            </div>
+            <div class="breakdown-row">
+              <div class="breakdown-label">
+                <span class="breakdown-dot teal"></span>
+                Total consumption (L)
+              </div>
+              <strong>{{ consumption.totalWaterConsumedLitres | number:'1.0-1' }}</strong>
+            </div>
+          </div>
+
+          <div class="water-bar-wrap" *ngIf="consumption">
+            <div class="water-bar-track">
+              <div class="water-bar-fill"></div>
+            </div>
+            <p class="water-bar-label">{{ consumption.totalWaterConsumedLitres | number:'1.0-1' }} L consumed this period</p>
+          </div>
+        </div>
+
+        <!-- ACTIVITY CARD -->
+        <div class="activity-card">
+          <h3>Recent zone activity</h3>
+          <p class="section-sub">Last updates from the managed zone.</p>
+
+          <div class="activity-list" *ngIf="consumption">
+            <div class="activity-row">
+              <div class="activity-icon">💧</div>
+              <div class="activity-body">
+                <strong>Water consumption recorded</strong>
+                <p>Zone {{ consumption.zoneName }} — {{ consumption.totalWaterConsumedLitres | number:'1.0-1' }} L total</p>
+              </div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-icon">🌾</div>
+              <div class="activity-body">
+                <strong>Farms linked</strong>
+                <p>{{ consumption.totalFarms }} farm(s) contributing to this zone</p>
+              </div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-icon">🌱</div>
+              <div class="activity-body">
+                <strong>Plots reporting</strong>
+                <p>{{ consumption.totalPlots }} active plot(s) in zone</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</section>

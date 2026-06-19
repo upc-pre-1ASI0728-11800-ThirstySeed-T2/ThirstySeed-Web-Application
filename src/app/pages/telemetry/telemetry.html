@@ -1,0 +1,203 @@
+<section class="telemetry-dashboard">
+
+  <!-- FILTERS -->
+  <div class="filter-card">
+    <div class="filter-group">
+      <label>{{ 'TELEMETRY.FILTER.FARM' | translate }}</label>
+      <select [value]="selectedFarmId ?? ''" (change)="onFarmChange($event)">
+        <option value="">{{ 'TELEMETRY.FILTER.SELECT_FARM' | translate }}</option>
+        <option *ngFor="let farm of farms" [value]="farm.id">{{ farm.name }}</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>{{ 'TELEMETRY.FILTER.PLOT' | translate }}</label>
+      <select
+        [disabled]="!selectedFarmId"
+        [value]="selectedPlotId ?? ''"
+        (change)="onPlotChange($event)">
+        <option value="">{{ 'TELEMETRY.FILTER.SELECT_PLOT' | translate }}</option>
+        <option *ngFor="let plot of filteredPlots" [value]="plot.id">{{ plot.name }}</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>{{ 'TELEMETRY.FILTER.TIME_RANGE' | translate }}</label>
+      <select>
+        <option>{{ 'TELEMETRY.FILTER.LAST_24H' | translate }}</option>
+        <option>{{ 'TELEMETRY.FILTER.LAST_7D' | translate }}</option>
+        <option>{{ 'TELEMETRY.FILTER.LAST_30D' | translate }}</option>
+      </select>
+    </div>
+    <button class="history-btn">{{ 'TELEMETRY.FILTER.VIEW_HISTORY' | translate }}</button>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="icon moisture">💧</div>
+      <div>
+        <span>{{ 'TELEMETRY.KPI.SOIL_MOISTURE' | translate }}</span>
+        <h2>{{ latestReading?.soilMoisture ?? '--' }}%</h2>
+        <small>{{ 'TELEMETRY.KPI.MOISTURE_UNIT' | translate }}</small>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="icon temperature">🌡️</div>
+      <div>
+        <span>{{ 'TELEMETRY.KPI.TEMPERATURE' | translate }}</span>
+        <h2>{{ latestReading?.temperature ?? '--' }}°C</h2>
+        <small>{{ 'TELEMETRY.KPI.AIR_TEMP' | translate }}</small>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="icon node">📡</div>
+      <div>
+        <span>{{ 'TELEMETRY.KPI.NODE_STATUS' | translate }}</span>
+        <h2 class="online">{{ latestReading?.nodeStatus ?? ('TELEMETRY.KPI.OFFLINE' | translate) }}</h2>
+        <small>{{ 'TELEMETRY.KPI.OPERATIONAL' | translate }}</small>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="icon clock">🕒</div>
+      <div>
+        <span>{{ 'TELEMETRY.KPI.LAST_READING' | translate }}</span>
+        <h2>{{ 'TELEMETRY.KPI.MIN_AGO' | translate }}</h2>
+        <small>{{ 'TELEMETRY.KPI.UPDATED_NOW' | translate }}</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="dashboard-grid">
+
+    <!-- LEFT -->
+    <div class="left-column">
+
+      <!-- MOISTURE -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>💧 {{ 'TELEMETRY.MOISTURE_CHART.TITLE' | translate }}</h3>
+            <p>{{ 'TELEMETRY.MOISTURE_CHART.SUBTITLE' | translate }}</p>
+          </div>
+          <div class="badge">
+            {{ latestReading?.soilMoisture ?? '--' }}% {{ 'TELEMETRY.MOISTURE_CHART.CURRENT' | translate }}
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas baseChart [data]="moistureChartData" [options]="lineChartOptions" [type]="lineChartType"></canvas>
+        </div>
+      </div>
+
+      <!-- TEMPERATURE -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>🌡️ {{ 'TELEMETRY.TEMP_CHART.TITLE' | translate }}</h3>
+            <p>{{ 'TELEMETRY.TEMP_CHART.SUBTITLE' | translate }}</p>
+          </div>
+          <div class="badge orange">
+            {{ latestReading?.temperature ?? '--' }}°C {{ 'TELEMETRY.MOISTURE_CHART.CURRENT' | translate }}
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas baseChart [data]="temperatureChartData" [options]="lineChartOptions" [type]="lineChartType"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-column">
+
+      <!-- STATUS -->
+      <div class="card">
+        <h3>📡 {{ 'TELEMETRY.STATUS.TITLE' | translate }}</h3>
+        <div class="status-grid">
+          <div>
+            <span>{{ 'TELEMETRY.STATUS.NODE' | translate }}</span>
+            <strong>{{ nodes[0]?.location ?? ('TELEMETRY.STATUS.DEFAULT_NODE' | translate) }}</strong>
+          </div>
+          <div>
+            <span>{{ 'TELEMETRY.STATUS.STATUS' | translate }}</span>
+            <strong class="online">{{ nodes[0]?.status ?? ('TELEMETRY.KPI.OFFLINE' | translate) }}</strong>
+          </div>
+          <div>
+            <span>{{ 'TELEMETRY.STATUS.SIGNAL' | translate }}</span>
+            <strong>{{ 'TELEMETRY.STATUS.SIGNAL_GOOD' | translate }}</strong>
+          </div>
+          <div>
+            <span>{{ 'TELEMETRY.STATUS.LAST_SYNC' | translate }}</span>
+            <strong>{{ 'TELEMETRY.STATUS.SYNC_AGO' | translate }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANOMALY -->
+      <div class="card" *ngIf="latestAssessment">
+        <h3>⚠️ {{ 'TELEMETRY.ANOMALY.TITLE' | translate }}</h3>
+        <div class="anomaly">
+          <div>
+            <strong>{{ 'TELEMETRY.ANOMALY.RISK' | translate }}</strong>
+            <div class="risk">{{ latestAssessment.stressLevel }}</div>
+          </div>
+          <p>{{ 'TELEMETRY.ANOMALY.MOISTURE_BELOW' | translate }}</p>
+        </div>
+      </div>
+
+      <!-- WEATHER -->
+      <div class="card" *ngIf="latestAssessment">
+        <h3>🌤️ {{ 'TELEMETRY.WEATHER.TITLE' | translate }}</h3>
+        <div class="weather-grid">
+          <div class="weather-item">
+            <span>{{ 'TELEMETRY.WEATHER.TEMPERATURE' | translate }}</span>
+            <strong>{{ latestAssessment.weatherContext.temperature }}°C</strong>
+          </div>
+          <div class="weather-item">
+            <span>{{ 'TELEMETRY.WEATHER.HUMIDITY' | translate }}</span>
+            <strong>{{ latestAssessment.weatherContext.humidity }}%</strong>
+          </div>
+          <div class="weather-item">
+            <span>{{ 'TELEMETRY.WEATHER.WIND' | translate }}</span>
+            <strong>{{ latestAssessment.weatherContext.windSpeed }} km/h</strong>
+          </div>
+          <div class="weather-item">
+            <span>{{ 'TELEMETRY.WEATHER.RAIN_CHANCE' | translate }}</span>
+            <strong>{{ latestAssessment.weatherContext.precipitationProbability }}%</strong>
+          </div>
+          <div class="weather-item" [class.weather-flag-active]="latestAssessment.weatherContext.droughtForecast">
+            <span>{{ 'TELEMETRY.WEATHER.DROUGHT' | translate }}</span>
+            <strong>{{ latestAssessment.weatherContext.droughtForecast ? ('TELEMETRY.WEATHER.YES' | translate) : ('TELEMETRY.WEATHER.NO' | translate) }}</strong>
+          </div>
+          <div class="weather-item" [class.weather-flag-active]="latestAssessment.weatherContext.pestSeasonActive">
+            <span>{{ 'TELEMETRY.WEATHER.PEST' | translate }}</span>
+            <strong>{{ latestAssessment.weatherContext.pestSeasonActive ? ('TELEMETRY.WEATHER.ACTIVE' | translate) : ('TELEMETRY.WEATHER.INACTIVE' | translate) }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORY -->
+      <div class="card">
+        <div class="table-header">
+          <h3>{{ 'TELEMETRY.HISTORY.TITLE' | translate }}</h3>
+        </div>
+        <table>
+          <thead>
+          <tr>
+            <th>{{ 'TELEMETRY.HISTORY.TIME' | translate }}</th>
+            <th>{{ 'TELEMETRY.HISTORY.MOISTURE' | translate }}</th>
+            <th>{{ 'TELEMETRY.HISTORY.TEMPERATURE' | translate }}</th>
+            <th>{{ 'TELEMETRY.HISTORY.STATUS' | translate }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let reading of readings">
+            <td>{{ reading.timestamp }}</td>
+            <td>{{ reading.soilMoisture }}%</td>
+            <td>{{ reading.temperature }}°C</td>
+            <td><span class="online">{{ reading.nodeStatus }}</span></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

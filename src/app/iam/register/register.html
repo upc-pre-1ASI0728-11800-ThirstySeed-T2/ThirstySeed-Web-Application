@@ -1,0 +1,192 @@
+<main class="signin-page">
+  <section class="signin-shell">
+    <aside class="brand-panel">
+      <div class="brand-badge">
+        <span class="seed-mark">
+          <span class="seed-stem"></span>
+        </span>
+        <span>Thirsty Seed</span>
+      </div>
+
+      <div class="brand-copy">
+        <h1>{{ 'AUTH.REGISTER.HEADLINE' | translate }}</h1>
+        <p>{{ 'AUTH.REGISTER.DESCRIPTION' | translate }}</p>
+      </div>
+
+      <div class="insight-grid">
+        <div class="insight-card">
+          <strong>{{ 'AUTH.REGISTER.PLOTS_LABEL' | translate }}</strong>
+          <span>{{ 'AUTH.REGISTER.PLOTS_DESC' | translate }}</span>
+        </div>
+
+        <div class="insight-card">
+          <strong>{{ 'AUTH.REGISTER.ALERTS_LABEL' | translate }}</strong>
+          <span>{{ 'AUTH.REGISTER.ALERTS_DESC' | translate }}</span>
+        </div>
+
+        <div class="insight-card">
+          <strong>{{ 'AUTH.REGISTER.WATER_LABEL' | translate }}</strong>
+          <span>{{ 'AUTH.REGISTER.WATER_DESC' | translate }}</span>
+        </div>
+      </div>
+    </aside>
+
+    <section class="form-stage">
+      <article class="signin-card register-card">
+        <p class="eyebrow">{{ 'AUTH.REGISTER.CREATE_ACCOUNT' | translate }}</p>
+        <h2>{{ 'AUTH.REGISTER.JOIN' | translate }}</h2>
+
+        <form class="login-form" (ngSubmit)="handleRegister()">
+          <div class="form-field">
+            <label for="fullName">{{ 'AUTH.REGISTER.FULL_NAME' | translate }}</label>
+            <div class="input-frame">
+              <i class="pi pi-user"></i>
+              <input
+                id="fullName"
+                type="text"
+                [(ngModel)]="fullName"
+                name="fullName"
+                [placeholder]="'AUTH.REGISTER.FULL_NAME' | translate"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="email">{{ 'AUTH.REGISTER.EMAIL' | translate }}</label>
+            <div class="input-frame">
+              <i class="pi pi-envelope"></i>
+              <input
+                id="email"
+                type="email"
+                [(ngModel)]="email"
+                name="email"
+                placeholder="name@example.com"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="username">{{ 'AUTH.REGISTER.USERNAME' | translate }}</label>
+            <div class="input-frame">
+              <i class="pi pi-at"></i>
+              <input
+                id="username"
+                type="text"
+                [(ngModel)]="username"
+                name="username"
+                placeholder="yourusername"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="accountType">{{ 'AUTH.REGISTER.ACCOUNT_TYPE' | translate }}</label>
+            <div class="input-frame select-frame">
+              <i class="pi pi-building"></i>
+
+              <select
+                id="accountType"
+                [(ngModel)]="accountType"
+                name="accountType"
+                required
+              >
+                <option value="" disabled hidden>{{ 'AUTH.REGISTER.SELECT_TYPE' | translate }}</option>
+                <option value="Agricultural Producer">{{ 'AUTH.REGISTER.AGRICULTURAL_PRODUCER' | translate }}</option>
+                <option value="Water Management Entity">{{ 'AUTH.REGISTER.WATER_MANAGEMENT' | translate }}</option>
+              </select>
+
+              <i class="pi pi-chevron-down select-arrow"></i>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="password">{{ 'AUTH.REGISTER.PASSWORD' | translate }}</label>
+            <div class="input-frame">
+              <i class="pi pi-lock"></i>
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                [(ngModel)]="password"
+                name="password"
+                [placeholder]="'AUTH.REGISTER.PASSWORD_PLACEHOLDER' | translate"
+                required
+              />
+
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="showPassword = !showPassword"
+              >
+                {{ showPassword ? ('COMMON.HIDE' | translate) : ('COMMON.SHOW' | translate) }}
+              </button>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="confirmPassword">{{ 'AUTH.REGISTER.CONFIRM_PASSWORD' | translate }}</label>
+
+            <div class="input-frame">
+              <i class="pi pi-lock"></i>
+
+              <input
+                id="confirmPassword"
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                [(ngModel)]="confirmPassword"
+                name="confirmPassword"
+                [placeholder]="'AUTH.REGISTER.CONFIRM_PLACEHOLDER' | translate"
+                required
+              />
+
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="showConfirmPassword = !showConfirmPassword"
+              >
+                {{ showConfirmPassword ? ('COMMON.HIDE' | translate) : ('COMMON.SHOW' | translate) }}
+              </button>
+
+            </div>
+          </div>
+
+          <label class="remember-control terms-control">
+            <input
+              type="checkbox"
+              [(ngModel)]="acceptedTerms"
+              name="acceptedTerms"
+            />
+            <span>{{ 'AUTH.REGISTER.TERMS' | translate }}</span>
+          </label>
+
+          @if (errorMessage) {
+            <div class="error-message">
+              {{ errorMessage }}
+            </div>
+          }
+
+          @if (successMessage) {
+            <div class="success-message">
+              {{ successMessage }}
+            </div>
+          }
+
+          <div class="register-actions">
+            <button class="login-button" type="submit">
+              {{ 'AUTH.REGISTER.SUBMIT' | translate }}
+            </button>
+
+            <button
+              class="create-account-button"
+              type="button"
+              (click)="goToLogin()"
+            >
+              {{ 'AUTH.REGISTER.ALREADY_ACCOUNT' | translate }}
+            </button>
+          </div>
+        </form>
+      </article>
+    </section>
+  </section>
+</main>

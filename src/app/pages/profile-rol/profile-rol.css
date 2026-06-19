@@ -1,0 +1,290 @@
+:host {
+  display: block;
+  min-height: 100%;
+  background: #f4f8f1;
+  color: #17251d;
+  font-family: "Poppins", system-ui, sans-serif;
+}
+
+.subscription-page {
+  padding: 24px 32px 40px;
+}
+
+.subscription-header {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #dfeadd;
+  border-radius: 18px;
+  box-shadow: 0 18px 44px rgba(21, 92, 44, 0.08);
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  padding: 24px;
+}
+
+.page-badge {
+  color: #128341;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+p {
+  color: #637367;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.current-plan-card {
+  background: #edf8ef;
+  border: 1px solid #bfe6c8;
+  border-radius: 16px;
+  min-width: 210px;
+  padding: 16px;
+}
+
+.current-plan-card span,
+.current-plan-card small {
+  color: #5e7165;
+  display: block;
+  font-size: 12px;
+}
+
+.current-plan-card strong {
+  display: block;
+  font-size: 22px;
+  margin: 4px 0;
+}
+
+.loading {
+  color: #637367;
+  padding: 14px 2px;
+}
+
+.plans-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.plan-card {
+  background: #ffffff;
+  border: 1px solid #dfeadd;
+  border-radius: 18px;
+  box-shadow: 0 18px 44px rgba(21, 92, 44, 0.08);
+  display: flex;
+  flex-direction: column;
+  min-height: 440px;
+  padding: 24px;
+}
+
+.plan-card.active {
+  border-color: #11924a;
+  box-shadow: 0 20px 54px rgba(17, 146, 74, 0.16);
+}
+
+.plan-card.premium {
+  background: #fffaf4;
+}
+
+.plan-top {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.status-pill {
+  background: #e5f8ea;
+  border-radius: 999px;
+  color: #117d3e;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+}
+
+.plan-card h2 {
+  font-size: 28px;
+}
+
+.price {
+  color: #17251d;
+  font-size: 30px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.price small {
+  color: #637367;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.highlight {
+  margin: 18px 0;
+}
+
+.limits {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 18px;
+}
+
+.limits div {
+  background: #f5f9f3;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.limits strong,
+.limits span {
+  display: block;
+}
+
+.limits strong {
+  font-size: 24px;
+}
+
+.limits span {
+  color: #637367;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+ul {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  color: #38483e;
+  font-size: 14px;
+  padding-left: 24px;
+  position: relative;
+}
+
+li::before {
+  color: #11924a;
+  content: "+";
+  font-weight: 900;
+  left: 0;
+  position: absolute;
+}
+
+button {
+  background: #117d3e;
+  border: 0;
+  border-radius: 12px;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  height: 46px;
+  margin-top: auto;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.plan-card.active button {
+  background: #e7f4ea;
+  color: #117d3e;
+}
+
+.message {
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 18px;
+  padding: 12px;
+}
+
+.message.success {
+  background: #edfdf1;
+  border: 1px solid #b9eec5;
+  color: #176d35;
+}
+
+.message.error {
+  background: #fff1f1;
+  border: 1px solid #facaca;
+  color: #b42318;
+}
+
+/* ── Water Manager theme ── */
+.wm-mode .page-badge {
+  color: #0e5c8a;
+}
+
+.wm-mode .current-plan-card {
+  background: #e8f4fb;
+  border-color: #b6d9ef;
+}
+
+.wm-mode .plan-card.active {
+  border-color: #0e5c8a;
+  box-shadow: 0 20px 54px rgba(14, 92, 138, 0.16);
+}
+
+.wm-mode .plan-card.premium {
+  background: #f4f8fd;
+}
+
+.wm-mode .status-pill {
+  background: #daeef8;
+  color: #0e5c8a;
+}
+
+.wm-mode .limits div {
+  background: #edf5fb;
+}
+
+.wm-mode li::before {
+  color: #0e5c8a;
+}
+
+.wm-mode button {
+  background: #0e5c8a;
+}
+
+.wm-mode .plan-card.active button {
+  background: #daeef8;
+  color: #0e5c8a;
+}
+
+@media (max-width: 900px) {
+  .subscription-page {
+    padding: 18px;
+  }
+
+  .subscription-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .plans-grid {
+    grid-template-columns: 1fr;
+  }
+}

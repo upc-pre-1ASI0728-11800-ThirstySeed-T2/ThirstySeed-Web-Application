@@ -1,0 +1,84 @@
+<section class="subscription-page" [class.wm-mode]="!isProducer">
+  <header class="subscription-header">
+    <div>
+      <span class="page-badge">Subscription</span>
+      <h1>Manage your plan</h1>
+      <p>Review your current plan and switch when your needs change.</p>
+    </div>
+
+    <div class="current-plan-card">
+      <span>Current plan</span>
+      <strong>{{ currentPlanType }}</strong>
+      <small *ngIf="currentPlan && isProducer">{{ currentPlan.maxNodes }} nodes · {{ currentPlan.maxFarms }} farms</small>
+      <small *ngIf="currentPlan && !isProducer">{{ currentPlan.maxProducers }} producer(s) · {{ currentPlan.maxFarms }} zones</small>
+    </div>
+  </header>
+
+  <div class="loading" *ngIf="loading">Loading subscription...</div>
+
+  <div class="plans-grid" *ngIf="!loading">
+    <article
+      class="plan-card"
+      *ngFor="let plan of planOptions"
+      [ngClass]="{
+        active: isCurrentPlan(plan),
+        premium: plan.name === 'Premium'
+      }">
+
+      <div class="plan-top">
+        <div>
+          <span class="status-pill" *ngIf="isCurrentPlan(plan)">Active</span>
+          <h2>{{ plan.name }}</h2>
+        </div>
+        <div class="price">
+          ${{ plan.price }} <small>/mo</small>
+        </div>
+      </div>
+
+      <p class="highlight">{{ plan.highlight }}</p>
+
+      <!-- Producer limits -->
+      <div class="limits" *ngIf="isProducer">
+        <div>
+          <strong>{{ plan.maxFarms }}</strong>
+          <span>farms</span>
+        </div>
+        <div>
+          <strong>{{ plan.maxNodes }}</strong>
+          <span>IoT nodes</span>
+        </div>
+      </div>
+
+      <!-- Water Manager limits -->
+      <div class="limits" *ngIf="!isProducer">
+        <div>
+          <strong>{{ plan.maxProducers }}</strong>
+          <span>producers</span>
+        </div>
+        <div>
+          <strong>{{ plan.maxFarms }}</strong>
+          <span>zones</span>
+        </div>
+      </div>
+
+      <ul>
+        <li *ngFor="let feature of plan.features">{{ feature }}</li>
+      </ul>
+
+      <button
+        type="button"
+        (click)="selectPlan(plan)"
+        [disabled]="savingPlan === plan.type">
+        <ng-container *ngIf="isCurrentPlan(plan); else changePlan">
+          Current plan
+        </ng-container>
+        <ng-template #changePlan>
+          {{ savingPlan === plan.type ? 'Changing...' : 'Switch to ' + plan.name }}
+        </ng-template>
+      </button>
+    </article>
+  </div>
+
+  <div class="message success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="message error" *ngIf="errorMessage">{{ errorMessage }}</div>
+</section>
