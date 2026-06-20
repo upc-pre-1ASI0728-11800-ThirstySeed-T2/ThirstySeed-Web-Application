@@ -193,9 +193,6 @@ export class ProfileRol implements OnInit {
       active: true,
     };
 
-    // Cache subscription locally so main-layout can verify it when the GET endpoint returns 405
-    localStorage.setItem(`subscription_${this.userId}`, JSON.stringify(this.currentSubscription));
-
     const user = this.authService.getCurrentUser();
     if (!user) return;
 

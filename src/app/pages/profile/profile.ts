@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { AuthService } from '../../iam/services/auth.service';
 import { ProfileService, UserProfile } from '../../iam/services/profile.service';
@@ -31,6 +32,7 @@ export class ProfileComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private profileService: ProfileService,
+    private router: Router,
     private cd: ChangeDetectorRef,
   ) {}
 
@@ -64,6 +66,10 @@ export class ProfileComponent implements OnInit {
     return [this.firstName, this.lastName].filter(Boolean).join(' ') || '—';
   }
 
+  skipToDashboard(): void {
+    this.router.navigate([this.authService.getRouteForCurrentUser()]);
+  }
+
   save(): void {
     if (!this.firstName.trim() || !this.lastName.trim()) {
       this.errorMessage = 'First name and last name are required.';
@@ -87,18 +93,22 @@ export class ProfileComponent implements OnInit {
       location: this.location.trim(),
     };
 
-    const request$ = this.isEditing
-      ? this.profileService.updateProfile(this.existingProfile!.id, payload)
-      : this.profileService.createProfile(payload);
+    const wasCreating = !this.isEditing;
+
+    const request$ = wasCreating
+      ? this.profileService.createProfile(payload)
+      : this.profileService.updateProfile(this.existingProfile!.id, payload);
 
     request$.subscribe({
       next: (profile) => {
         this.existingProfile = profile;
-        this.successMessage = this.isEditing
-          ? 'Profile updated successfully.'
-          : 'Profile created successfully.';
         this.saving = false;
-        this.cd.detectChanges();
+        if (wasCreating) {
+          this.router.navigate([this.authService.getRouteForCurrentUser()]);
+        } else {
+          this.successMessage = 'Profile updated successfully.';
+          this.cd.detectChanges();
+        }
       },
       error: (err) => {
         this.errorMessage = err?.error?.message || 'Failed to save profile. Please try again.';

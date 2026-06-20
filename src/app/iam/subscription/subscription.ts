@@ -47,7 +47,6 @@ export class SubscriptionComponent {
 
     this.subscriptionService.createSubscription({ userId: user.id, planType }).subscribe({
       next: (subscription) => {
-        localStorage.setItem(`subscription_${user.id}`, JSON.stringify(subscription));
         user.subscription = {
           name: plan,
           price: plan === 'Plus' ? 19 : 39,
@@ -57,9 +56,7 @@ export class SubscriptionComponent {
             : ['Up to 10 farms', 'Up to 10 IoT nodes', 'Predictive irrigation', 'Priority alerts and reports'],
         };
         this.authService.setCurrentUser(user);
-
-        const target = isWaterManager ? '/water-manager/dashboard' : '/dashboard';
-        this.router.navigate([target]);
+        this.router.navigate(['/profile']);
       },
       error: (err) => {
         console.error('INITIAL SUBSCRIPTION ERROR:', err);

@@ -139,7 +139,23 @@
   margin-top: 24px;
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
 }
+
+.btn-skip {
+  padding: 10px 20px;
+  background: transparent;
+  color: #6b7c6b;
+  border: 1px solid #c8ddc0;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-skip:hover { background: #f0f5ec; color: #333; }
 
 .btn-save {
   display: inline-flex;

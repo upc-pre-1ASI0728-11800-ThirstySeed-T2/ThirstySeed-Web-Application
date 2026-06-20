@@ -108,7 +108,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   get showChecking(): boolean {
     return (
       !this.subscriptionChecked &&
-      this.currentUrl !== '/profile-rol'
+      this.currentUrl !== '/profile-rol' &&
+      this.currentUrl !== '/profile'
     );
   }
 
@@ -130,14 +131,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       next: (sub) => {
         clearTimeout(this.fallbackTimer);
         if (this.destroyed) return;
-        const active = sub?.active === true;
-        this.hasSubscription = active;
-        // Keep local cache in sync with server response
-        if (active) {
-          localStorage.setItem(`subscription_${this.userId}`, JSON.stringify(sub));
-        } else {
-          localStorage.removeItem(`subscription_${this.userId}`);
-        }
+        this.hasSubscription = sub?.active === true;
         this.subscriptionChecked = true;
         this.redirectToInitialSubscriptionIfNeeded();
         this.cd.detectChanges();
@@ -157,6 +151,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     if (
       !this.hasSubscription &&
       this.currentUrl !== '/profile-rol' &&
+      this.currentUrl !== '/profile' &&
       this.currentUrl !== '/subscription'
     ) {
       this.router.navigate(['/subscription']);

@@ -33,11 +33,40 @@ export class FarmCreateComponent implements OnInit {
   loadingZones = false;
   errorMessage = '';
 
-  // ── Geolocation ────────────────────────
+  // ── Location mode ──────────────────────
+  locationMode: 'gps' | 'manual' = 'gps';
+
+  // ── GPS geolocation ────────────────────
   geoState: 'idle' | 'detecting' | 'done' | 'error' = 'idle';
   geoError = '';
   latitude: number | null = null;
   longitude: number | null = null;
+
+  // ── Manual location ────────────────────
+  manualCountry = '';
+  manualCity = '';
+  manualDetails = '';
+
+  readonly countries: string[] = [
+    'Afghanistan','Albania','Algeria','Angola','Argentina','Armenia','Australia',
+    'Austria','Azerbaijan','Bangladesh','Belgium','Bolivia','Bosnia and Herzegovina',
+    'Brazil','Bulgaria','Burkina Faso','Cambodia','Cameroon','Canada','Chile',
+    'China','Colombia','Congo','Costa Rica','Croatia','Cuba','Czech Republic',
+    'Denmark','Dominican Republic','Ecuador','Egypt','El Salvador','Ethiopia',
+    'Finland','France','Georgia','Germany','Ghana','Greece','Guatemala','Haiti',
+    'Honduras','Hungary','India','Indonesia','Iran','Iraq','Ireland','Israel',
+    'Italy','Ivory Coast','Jamaica','Japan','Jordan','Kazakhstan','Kenya',
+    'Kosovo','Kyrgyzstan','Laos','Lebanon','Libya','Lithuania','Madagascar',
+    'Malawi','Malaysia','Mali','Mexico','Moldova','Mongolia','Morocco','Mozambique',
+    'Myanmar','Nepal','Netherlands','New Zealand','Nicaragua','Niger','Nigeria',
+    'North Korea','Norway','Pakistan','Panama','Paraguay','Peru','Philippines',
+    'Poland','Portugal','Romania','Russia','Rwanda','Saudi Arabia','Senegal',
+    'Serbia','Sierra Leone','Slovakia','Somalia','South Africa','South Korea',
+    'South Sudan','Spain','Sri Lanka','Sudan','Sweden','Switzerland','Syria',
+    'Taiwan','Tajikistan','Tanzania','Thailand','Tunisia','Turkey','Turkmenistan',
+    'Uganda','Ukraine','United Kingdom','United States','Uruguay','Uzbekistan',
+    'Venezuela','Vietnam','Yemen','Zambia','Zimbabwe',
+  ];
 
   constructor(
     private farmService: FarmService,
@@ -68,6 +97,32 @@ export class FarmCreateComponent implements OnInit {
   onZoneChange(): void {
     this.selectedZone =
       this.zones.find((z) => z.id === this.farm.waterManagementZoneId) ?? null;
+  }
+
+  switchLocationMode(mode: 'gps' | 'manual'): void {
+    this.locationMode = mode;
+    if (mode === 'manual') {
+      this.geoState = 'idle';
+      this.geoError = '';
+      this.latitude = null;
+      this.longitude = null;
+      this.farm.location = '';
+      this.onManualLocationChange();
+    } else {
+      this.manualCountry = '';
+      this.manualCity = '';
+      this.manualDetails = '';
+      this.farm.location = '';
+    }
+  }
+
+  onManualLocationChange(): void {
+    const parts = [
+      this.manualDetails.trim(),
+      this.manualCity.trim(),
+      this.manualCountry.trim(),
+    ].filter(Boolean);
+    this.farm.location = parts.join(', ');
   }
 
   detectLocation(): void {
@@ -194,18 +249,7 @@ export class FarmCreateComponent implements OnInit {
         verifyFarmUsageAndCreate(subscription.maxFarms, subscription.planType);
       },
       error: () => {
-        // Fallback: use locally cached subscription when GET endpoint returns 405
-        const cached = localStorage.getItem(`subscription_${user.id}`);
-        if (cached) {
-          try {
-            const sub = JSON.parse(cached);
-            verifyFarmUsageAndCreate(sub.maxFarms ?? 0, sub.planType ?? '');
-          } catch {
-            verifyFarmUsageAndCreate(0, '');
-          }
-        } else {
-          this.errorMessage = 'Could not verify your subscription. Please try again.';
-        }
+        verifyFarmUsageAndCreate(0, '');
       },
     });
   }

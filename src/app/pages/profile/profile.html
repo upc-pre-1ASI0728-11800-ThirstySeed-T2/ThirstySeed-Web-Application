@@ -53,6 +53,9 @@
       </div>
 
       <div class="form-actions">
+        <button *ngIf="!isEditing" class="btn-skip" type="button" (click)="skipToDashboard()">
+          Skip for now
+        </button>
         <button class="btn-save" (click)="save()" [disabled]="saving">
           <span class="spinner" *ngIf="saving"></span>
           {{ saving ? ('PROFILE.SAVING' | translate) : ((isEditing ? 'PROFILE.SAVE_CHANGES' : 'PROFILE.CREATE') | translate) }}
