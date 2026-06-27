@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
@@ -23,6 +23,7 @@ export type WindLevel = 'calm' | 'breezy' | 'strong' | 'gale';
   imports: [CommonModule, FormsModule],
   templateUrl: './digital-twin.html',
   styleUrl: './digital-twin.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DigitalTwinComponent implements OnInit {
 

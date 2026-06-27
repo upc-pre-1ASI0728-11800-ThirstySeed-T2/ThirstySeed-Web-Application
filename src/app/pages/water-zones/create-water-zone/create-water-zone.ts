@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { CreateWaterZoneRequest, WaterZone } from '../model/water-zone.model';
   imports: [CommonModule, FormsModule],
   templateUrl: './create-water-zone.html',
   styleUrl: './create-water-zone.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateWaterZoneComponent {
   isLoading = false;

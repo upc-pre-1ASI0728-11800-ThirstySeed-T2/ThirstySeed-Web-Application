@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { DashboardService } from './services/dashboard.service';
@@ -16,6 +16,7 @@ import { RouterLink } from '@angular/router';
   imports: [CommonModule, BaseChartDirective, RouterLink, TranslatePipe, TranslateDirective],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
   metrics: DashboardMetrics = {
