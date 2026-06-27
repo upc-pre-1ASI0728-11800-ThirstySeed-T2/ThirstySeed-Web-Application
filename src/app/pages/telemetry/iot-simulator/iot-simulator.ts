@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -24,6 +24,7 @@ import { User } from '../../../iam/services/auth.service';
   imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './iot-simulator.html',
   styleUrl: './iot-simulator.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IotSimulatorComponent implements OnInit {
   // ── Selectors ──────────────────────────────────────────────
