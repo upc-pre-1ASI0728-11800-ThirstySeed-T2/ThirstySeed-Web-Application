@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../iam/services/auth.service';
 import { Subscription, SubscriptionService } from '../../iam/services/subscription.service';
@@ -23,6 +23,7 @@ interface PlanOption {
   imports: [CommonModule],
   templateUrl: './profile-rol.html',
   styleUrl: './profile-rol.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileRol implements OnInit {
   userId!: number;
