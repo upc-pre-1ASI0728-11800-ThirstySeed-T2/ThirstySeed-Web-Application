@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -14,6 +14,7 @@ import { WaterZone } from '../../water-zones/model/water-zone.model';
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './farm-create.html',
   styleUrl: './farm-create.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FarmCreateComponent implements OnInit {
   farm = {
@@ -74,6 +75,7 @@ export class FarmCreateComponent implements OnInit {
     private router: Router,
     private subscriptionService: SubscriptionService,
     private waterZoneService: WaterZoneService,
+    private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -86,10 +88,12 @@ export class FarmCreateComponent implements OnInit {
       next: (zones) => {
         this.zones = zones;
         this.loadingZones = false;
+        this.cd.markForCheck();
       },
       error: () => {
         this.zones = [];
         this.loadingZones = false;
+        this.cd.markForCheck();
       },
     });
   }
@@ -148,6 +152,7 @@ export class FarmCreateComponent implements OnInit {
           err.code === 1
             ? 'Location access denied. Please allow location in your browser.'
             : 'Could not determine location. Try again.';
+        this.cd.markForCheck();
       });
   }
 
@@ -169,6 +174,7 @@ export class FarmCreateComponent implements OnInit {
       this.farm.location = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
     }
     this.geoState = 'done';
+    this.cd.markForCheck();
   }
 
   createFarm(): void {
@@ -198,6 +204,7 @@ export class FarmCreateComponent implements OnInit {
     const doCreate = (maxFarms: number, planType: string, currentFarmCount: number) => {
       if (maxFarms > 0 && currentFarmCount >= maxFarms) {
         this.errorMessage = `Your ${planType} plan only allows ${maxFarms} farm(s).`;
+        this.cd.markForCheck();
         return;
       }
 
@@ -221,6 +228,7 @@ export class FarmCreateComponent implements OnInit {
         next: (farmId: number) => {
           this.farmService.saveFarmId(user.id, farmId);
           this.loading = false;
+          this.cd.markForCheck();
           this.router.navigate(['/farms']);
         },
         error: (err) => {
@@ -228,6 +236,7 @@ export class FarmCreateComponent implements OnInit {
           this.loading = false;
           console.error('CREATE FARM ERROR:', err);
           console.error('CREATE FARM PAYLOAD:', payload);
+          this.cd.markForCheck();
         },
       });
     };

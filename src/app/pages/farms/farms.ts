@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
@@ -14,6 +14,7 @@ import { PlotService } from '../plots/services/plot.service';
   imports: [CommonModule, RouterModule, TranslatePipe, TranslateDirective],
   templateUrl: './farms.html',
   styleUrl: './farms.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FarmsComponent implements OnInit {
   farms: Farm[] = [];
