@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { SettingsService, ProfilePayload } from './services/settings.service';
   imports: [CommonModule, ReactiveFormsModule, TranslatePipe, TranslateDirective],
   templateUrl: './settings.html',
   styleUrls: ['./settings.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsComponent implements OnInit {
   private readonly LOCAL_PROFILE_KEY = 'settingsProfile';
