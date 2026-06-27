@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
@@ -14,6 +14,7 @@ type Panel = 'empty' | 'new' | 'detail';
   imports: [CommonModule, FormsModule, TranslatePipe, TranslateDirective],
   templateUrl: './support.html',
   styleUrl: './support.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SupportComponent implements OnInit, AfterViewChecked {
   @ViewChild('chatEnd') chatEnd!: ElementRef;

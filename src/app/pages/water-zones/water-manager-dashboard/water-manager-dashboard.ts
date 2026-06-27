@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../iam/services/auth.service';
@@ -11,6 +11,7 @@ import { WaterConsumptionSummary, WaterManagerDashboard, WaterZone } from '../mo
   imports: [CommonModule, RouterModule],
   templateUrl: './water-manager-dashboard.html',
   styleUrl: './water-manager-dashboard.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WaterManagerDashboardComponent implements OnInit {
   zone: WaterZone | null = null;

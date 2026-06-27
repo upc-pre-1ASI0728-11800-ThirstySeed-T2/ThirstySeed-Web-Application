@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
@@ -10,7 +10,6 @@ import { Plot } from '../plots/model/plot.model';
 import { TelemetryService } from './services/telemetry.service';
 import { TelemetryReading } from './model/telemetry.model';
 import { WaterStressAssessment } from './model/water-stress.model';
-import { ChangeDetectorRef } from '@angular/core';
 import { TelemetryNode } from './model/node.model';
 import { BaseChartDirective } from 'ng2-charts';
 import {
@@ -43,6 +42,7 @@ Chart.register(
   imports: [CommonModule, BaseChartDirective, TranslatePipe],
   templateUrl: './telemetry.html',
   styleUrl: './telemetry.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TelemetryComponent implements OnInit {
   farms: Farm[] = [];
