@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { environment } from '../../../environments/environment';
   imports: [FormsModule, NgIf],
   templateUrl: './forget-password.html',
   styleUrl: './forget-password.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForgetPasswordComponent {
   email = '';
@@ -26,7 +27,8 @@ export class ForgetPasswordComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private cd: ChangeDetectorRef,
   ) {}
 
   resetPassword(): void {
@@ -51,34 +53,35 @@ export class ForgetPasswordComponent {
       return;
     }
 
-    // Traer profile por email
     const token = this.authService.getToken();
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    // Buscar el profile del usuario por email
     this.http.get<any[]>(`${this.backendUrl}`).subscribe({
       next: (profiles) => {
         const profile = profiles.find(p => p.email.toLowerCase() === this.email.toLowerCase());
         if (!profile) {
           this.errorMessage = 'No account was found with that email.';
+          this.cd.markForCheck();
           return;
         }
 
-        // Actualizar la contraseña en backend
         this.http.put(`${this.backendUrl}/${profile.id}/password`, { newPassword: this.newPassword }, { headers }).subscribe({
           next: () => {
             this.successMessage = 'Password updated successfully.';
+            this.cd.markForCheck();
             setTimeout(() => {
               this.router.navigate(['/login']);
             }, 1500);
           },
           error: () => {
             this.errorMessage = 'Unable to update password.';
+            this.cd.markForCheck();
           }
         });
       },
       error: () => {
         this.errorMessage = 'Unable to fetch profiles.';
+        this.cd.markForCheck();
       }
     });
   }
