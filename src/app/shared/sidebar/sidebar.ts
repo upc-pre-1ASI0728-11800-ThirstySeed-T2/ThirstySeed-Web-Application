@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
@@ -30,6 +30,7 @@ export interface MenuItem {
   ],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent implements OnInit {
 
@@ -47,6 +48,7 @@ export class SidebarComponent implements OnInit {
     private plotService: PlotService,
     private alertService: AlertService,
     private subscriptionService: SubscriptionService,
+    private cd: ChangeDetectorRef,
   ) {}
 
   logout(): void {
@@ -97,6 +99,7 @@ export class SidebarComponent implements OnInit {
       next: (sub) => {
         this.planName = sub.planType?.includes('PREMIUM') ? 'Premium' : 'Plus';
         this.totalNodes = sub.maxNodes ?? 3;
+        this.cd.markForCheck();
       },
       error: () => {
         const cached = localStorage.getItem(`subscription_${userId}`);
@@ -107,15 +110,18 @@ export class SidebarComponent implements OnInit {
             this.totalNodes = sub.maxNodes ?? 3;
           } catch { /* defaults */ }
         }
+        this.cd.markForCheck();
       },
     });
 
     this.plotService.getPlotsByUser(userId).subscribe({
       next: (plots) => {
         this.usedNodes = this.plotService.mergeWithStoredPlots(userId, plots).length;
+        this.cd.markForCheck();
       },
       error: () => {
         this.usedNodes = this.plotService.getStoredPlots(userId).length;
+        this.cd.markForCheck();
       },
     });
   }
@@ -136,6 +142,7 @@ export class SidebarComponent implements OnInit {
         this.pendingAlertCount = flat.filter(
           (a: any) => a.status !== 'ACKNOWLEDGED',
         ).length;
+        this.cd.markForCheck();
       },
     });
   }

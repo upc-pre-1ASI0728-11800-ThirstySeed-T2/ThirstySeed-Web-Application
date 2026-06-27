@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { CreateSubscriptionRequest, SubscriptionService } from '../services/subscription.service';
@@ -10,6 +10,7 @@ import { CreateSubscriptionRequest, SubscriptionService } from '../services/subs
   imports: [CommonModule],
   templateUrl: './subscription.html',
   styleUrl: './subscription.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SubscriptionComponent {
   isWaterManager = false;
@@ -20,6 +21,7 @@ export class SubscriptionComponent {
     private authService: AuthService,
     private router: Router,
     private subscriptionService: SubscriptionService,
+    private cd: ChangeDetectorRef,
   ) {
     const user = this.authService.getCurrentUser();
     this.isWaterManager = user?.roles?.includes('ROLE_WATER_MANAGER') ?? false;
@@ -56,12 +58,14 @@ export class SubscriptionComponent {
             : ['Up to 10 farms', 'Up to 10 IoT nodes', 'Predictive irrigation', 'Priority alerts and reports'],
         };
         this.authService.setCurrentUser(user);
+        this.cd.markForCheck();
         this.router.navigate(['/profile']);
       },
       error: (err) => {
         console.error('INITIAL SUBSCRIPTION ERROR:', err);
         this.errorMessage = 'Unable to create subscription. Please try again.';
         this.savingPlan = null;
+        this.cd.markForCheck();
       },
     });
   }
