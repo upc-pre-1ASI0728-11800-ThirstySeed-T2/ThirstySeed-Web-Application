@@ -174,4 +174,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+  trackByPlanName(_: number, plan: {name: string}): string { return plan.name; }
+  trackByValue(_: number, item: string): string { return item; }
 }
