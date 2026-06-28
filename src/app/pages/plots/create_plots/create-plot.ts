@@ -201,7 +201,6 @@ export class CreatePlotComponent implements OnInit {
         });
       },
       error: (err) => {
-        console.error('CREATE PLOT ERROR:', err);
         this.errorMessage = err?.error?.message || 'Failed to create plot';
         this.cd.markForCheck();
       },
