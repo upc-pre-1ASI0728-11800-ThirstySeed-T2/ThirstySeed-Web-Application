@@ -296,4 +296,7 @@ export class TelemetryComponent implements OnInit {
 
     this.cd.detectChanges();
   }
+
+  trackById(_: number, item: {id: number}): number { return item.id; }
+  trackByTimestamp(_: number, item: {timestamp: string}): string { return item.timestamp; }
 }

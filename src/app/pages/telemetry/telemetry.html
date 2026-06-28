@@ -6,7 +6,7 @@
       <label>{{ 'TELEMETRY.FILTER.FARM' | translate }}</label>
       <select [value]="selectedFarmId ?? ''" (change)="onFarmChange($event)">
         <option value="">{{ 'TELEMETRY.FILTER.SELECT_FARM' | translate }}</option>
-        <option *ngFor="let farm of farms" [value]="farm.id">{{ farm.name }}</option>
+        <option *ngFor="let farm of farms; trackBy: trackById" [value]="farm.id">{{ farm.name }}</option>
       </select>
     </div>
     <div class="filter-group">
@@ -16,7 +16,7 @@
         [value]="selectedPlotId ?? ''"
         (change)="onPlotChange($event)">
         <option value="">{{ 'TELEMETRY.FILTER.SELECT_PLOT' | translate }}</option>
-        <option *ngFor="let plot of filteredPlots" [value]="plot.id">{{ plot.name }}</option>
+        <option *ngFor="let plot of filteredPlots; trackBy: trackById" [value]="plot.id">{{ plot.name }}</option>
       </select>
     </div>
     <div class="filter-group">
@@ -189,7 +189,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let reading of readings">
+          <tr *ngFor="let reading of readings; trackBy: trackByTimestamp">
             <td>{{ reading.timestamp }}</td>
             <td>{{ reading.soilMoisture }}%</td>
             <td>{{ reading.temperature }}°C</td>
