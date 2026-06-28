@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -26,6 +27,8 @@ export class CreateWaterZoneComponent {
     description: '',
   };
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private authService: AuthService,
     private waterZoneService: WaterZoneService,
@@ -50,7 +53,7 @@ export class CreateWaterZoneComponent {
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.waterZoneService.createZone(this.form).subscribe({
+    this.waterZoneService.createZone(this.form).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (zone: WaterZone) => {
         this.waterZoneService.saveZoneId(user.id, zone.id);
         this.successMessage = `Zona "${zone.name}" creada correctamente.`;
