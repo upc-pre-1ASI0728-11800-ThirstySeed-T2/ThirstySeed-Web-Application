@@ -234,8 +234,6 @@ export class FarmCreateComponent implements OnInit {
         error: (err) => {
           this.errorMessage = err?.error?.message || err?.error?.detail || 'Failed to create farm.';
           this.loading = false;
-          console.error('CREATE FARM ERROR:', err);
-          console.error('CREATE FARM PAYLOAD:', payload);
           this.cd.markForCheck();
         },
       });

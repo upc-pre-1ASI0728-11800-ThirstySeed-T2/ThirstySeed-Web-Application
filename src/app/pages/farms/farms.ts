@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
@@ -25,6 +26,8 @@ export class FarmsComponent implements OnInit {
   subscriptionPlan: string | null = null;
   maxFarms: number | null = null;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private farmService: FarmService,
     private authService: AuthService,
@@ -40,19 +43,17 @@ export class FarmsComponent implements OnInit {
 
     this.loading = true;
 
-    this.subscriptionService.getByUserId(user.id).subscribe({
+    this.subscriptionService.getByUserId(user.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (sub) => {
         this.subscriptionPlan = sub.planType;
         this.maxFarms = sub.maxFarms;
 
-        this.plotService.getPlotsByUser(user.id).subscribe({
+        this.plotService.getPlotsByUser(user.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (plots) => {
-            console.log('Plots:', plots);
             this.allPlots = this.plotService.mergeWithStoredPlots(user.id, plots);
             this.loadFarms(user.id);
           },
-          error: (err) => {
-            console.error('Error obteniendo plots', err);
+          error: () => {
             this.allPlots = [];
             this.loadFarms(user.id);
           },
@@ -69,7 +70,7 @@ export class FarmsComponent implements OnInit {
   loadFarms(userId: number): void {
     this.loading = true;
 
-    this.farmService.getMyFarms().subscribe({
+    this.farmService.getMyFarms().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (farms) => {
         this.farms = farms;
         // Sync IDs to localStorage so other components can use them
@@ -87,7 +88,7 @@ export class FarmsComponent implements OnInit {
           this.cd.detectChanges();
           return;
         }
-        this.farmService.getFarmsByIds(ids).subscribe({
+        this.farmService.getFarmsByIds(ids).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (farms) => {
             this.farms = farms;
             this.loading = false;
