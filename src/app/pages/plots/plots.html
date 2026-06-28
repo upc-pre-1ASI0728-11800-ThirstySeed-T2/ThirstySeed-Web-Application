@@ -111,7 +111,7 @@
           <div *ngFor="let plot of plots; trackBy: trackById" class="plot-card">
             <div class="plot-card-header">
               <div class="plot-thumb">
-                <img *ngIf="plot.imageUrl" [src]="plot.imageUrl" alt="plot" />
+                <img *ngIf="plot.imageUrl" [src]="plot.imageUrl" alt="plot" loading="lazy" />
                 <span *ngIf="!plot.imageUrl">🌿</span>
               </div>
               <div class="plot-title">

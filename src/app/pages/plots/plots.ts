@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -37,6 +38,8 @@ export class PlotsComponent implements OnInit {
     imageUrl: '',
   };
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private plotService: PlotService,
     private authService: AuthService,
@@ -47,8 +50,6 @@ export class PlotsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('🟢 PlotsComponent INIT');
-
     const user = this.authService.getCurrentUser();
     if (!user) return;
     this.userId = user.id;
@@ -56,7 +57,7 @@ export class PlotsComponent implements OnInit {
 
     this.loading = true;
 
-    this.subscriptionService.getByUserId(user.id).subscribe({
+    this.subscriptionService.getByUserId(user.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (sub) => {
         this.planType = sub.planType;
         this.maxNodes = sub.maxNodes;
@@ -77,14 +78,13 @@ export class PlotsComponent implements OnInit {
   loadPlots(userId: number): void {
     this.loading = true;
 
-    this.plotService.getPlotsByUser(userId).subscribe({
+    this.plotService.getPlotsByUser(userId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (plots) => {
         this.plots = this.plotService.mergeWithStoredPlots(userId, plots);
         this.loading = false;
         this.cd.detectChanges();
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.plots = this.plotService.getStoredPlots(userId);
         this.errorMessage = this.plots.length > 0 ? '' : 'Could not load plots.';
         this.loading = false;
@@ -157,11 +157,7 @@ export class PlotsComponent implements OnInit {
       location: updatedPlot.location,
       extension: updatedPlot.extension,
       imageUrl: updatedPlot.imageUrl,
-    }).subscribe({
-      error: (err) => {
-        console.error('UPDATE PLOT ERROR:', err);
-      },
-    });
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ error: () => {} });
   }
 
   deletePlot(plot: Plot): void {
@@ -177,11 +173,7 @@ export class PlotsComponent implements OnInit {
       return;
     }
 
-    this.plotService.deletePlot(plot.id).subscribe({
-      error: (err) => {
-        console.error('DELETE PLOT ERROR:', err);
-      },
-    });
+    this.plotService.deletePlot(plot.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ error: () => {} });
   }
 
   openPlot(plot: Plot): void {
@@ -208,12 +200,12 @@ export class PlotsComponent implements OnInit {
     const farmIds = this.farmService.getSavedFarmIds(userId);
     if (!farmIds.length) return;
 
-    this.farmService.getFarmsByIds(farmIds).subscribe({
+    this.farmService.getFarmsByIds(farmIds).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (farms) => {
         this.farms = farms;
         this.cd.detectChanges();
       },
-      error: (err) => console.error('LOAD FARMS ERROR:', err),
+      error: () => {},
     });
   }
 

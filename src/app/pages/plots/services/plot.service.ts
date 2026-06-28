@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, shareReplay, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Plot } from '../model/plot.model';
 
@@ -29,6 +29,7 @@ export interface ConfigurePlotRequest {
 export class PlotService {
   private baseUrl = `${environment.apiBaseUrl}/api/v1`;
   private readonly LOCAL_PLOTS_KEY = 'configuredPlots';
+  private plotsByUser$ = new Map<number, Observable<Plot[]>>();
 
   constructor(private http: HttpClient) {}
 
@@ -59,9 +60,13 @@ export class PlotService {
   // GET BY USER
   // =========================
   getPlotsByUser(userId: number): Observable<Plot[]> {
-    return this.http.get<Plot[]>(`${this.baseUrl}/plots/user/${userId}`, {
-      headers: this.getHeaders(),
-    });
+    if (!this.plotsByUser$.has(userId)) {
+      const obs$ = this.http
+        .get<Plot[]>(`${this.baseUrl}/plots/user/${userId}`, { headers: this.getHeaders() })
+        .pipe(shareReplay(1));
+      this.plotsByUser$.set(userId, obs$);
+    }
+    return this.plotsByUser$.get(userId)!;
   }
 
   // =========================
@@ -75,7 +80,9 @@ export class PlotService {
   // CREATE PLOT
   // =========================
   createPlot(payload: CreatePlotRequest): Observable<number> {
-    return this.http.post<number>(`${this.baseUrl}/plots`, payload, { headers: this.getHeaders() });
+    return this.http
+      .post<number>(`${this.baseUrl}/plots`, payload, { headers: this.getHeaders() })
+      .pipe(tap(() => this.plotsByUser$.clear()));
   }
 
   // =========================
@@ -118,9 +125,9 @@ export class PlotService {
   }
 
   deletePlot(plotId: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/plots/${plotId}`, {
-      headers: this.getHeaders(),
-    });
+    return this.http
+      .delete<void>(`${this.baseUrl}/plots/${plotId}`, { headers: this.getHeaders() })
+      .pipe(tap(() => this.plotsByUser$.clear()));
   }
 
   updateStoredPlot(userId: number, updatedPlot: Plot): void {
