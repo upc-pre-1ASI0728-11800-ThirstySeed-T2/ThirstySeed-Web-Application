@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
@@ -50,6 +51,8 @@ export class DigitalTwinComponent implements OnInit {
   latestAssessment: WaterStressAssessment | null = null;
   latestRecommendation: IrrigationRecommendation | null = null;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private authService: AuthService,
     private plotService: PlotService,
@@ -63,7 +66,7 @@ export class DigitalTwinComponent implements OnInit {
     if (!user) return;
     this.currentUser = user;
 
-    this.farmService.getMyFarms().subscribe({
+    this.farmService.getMyFarms().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (farms) => {
         this.farms = farms;
         this.farmService.replaceSavedFarmIds(user.id, farms.map((f) => f.id));
@@ -71,7 +74,7 @@ export class DigitalTwinComponent implements OnInit {
       },
     });
 
-    this.plotService.getPlotsByUser(user.id).subscribe({
+    this.plotService.getPlotsByUser(user.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (plots) => {
         this.plots = this.plotService.mergeWithStoredPlots(user.id, plots);
         this.cd.detectChanges();
@@ -212,6 +215,7 @@ export class DigitalTwinComponent implements OnInit {
           this.cd.detectChanges();
         }),
         switchMap(() => this.telemetryService.getRecommendationsByPlot(plotId)),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (recommendations) => {
@@ -229,7 +233,7 @@ export class DigitalTwinComponent implements OnInit {
 
   acceptRecommendation(): void {
     if (!this.latestRecommendation || this.latestRecommendation.status === 'ACCEPTED') return;
-    this.telemetryService.acceptRecommendation(this.latestRecommendation.id).subscribe({
+    this.telemetryService.acceptRecommendation(this.latestRecommendation.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.latestRecommendation!.status = 'ACCEPTED';
         this.cd.detectChanges();
