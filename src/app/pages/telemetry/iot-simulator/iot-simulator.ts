@@ -289,4 +289,7 @@ export class IotSimulatorComponent implements OnInit {
     };
     return map[this.moistureLevel];
   }
+
+  trackById(_: number, item: {id: number}): number { return item.id; }
+  trackByTimestamp(_: number, item: {timestamp: string}): string { return item.timestamp; }
 }
