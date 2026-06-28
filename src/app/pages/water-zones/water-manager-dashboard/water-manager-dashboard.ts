@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../iam/services/auth.service';
@@ -21,6 +22,8 @@ export class WaterManagerDashboardComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private authService: AuthService,
     private waterZoneService: WaterZoneService,
@@ -36,7 +39,7 @@ export class WaterManagerDashboardComponent implements OnInit {
     this.errorMessage = '';
 
     // Fuente de verdad: API (no localStorage)
-    this.waterZoneService.getZoneByWMUserId(user.id).subscribe({
+    this.waterZoneService.getZoneByWMUserId(user.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (zone) => {
         this.zone = zone;
         this.loadConsumption(zone.id);
@@ -51,7 +54,7 @@ export class WaterManagerDashboardComponent implements OnInit {
   }
 
   loadConsumption(zoneId: number): void {
-    this.waterZoneService.getWaterConsumption(zoneId).subscribe({
+    this.waterZoneService.getWaterConsumption(zoneId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.consumption = data;
         this.isLoading = false;
@@ -66,7 +69,7 @@ export class WaterManagerDashboardComponent implements OnInit {
   }
 
   loadDashboard(userId: number): void {
-    this.waterZoneService.getWMDashboard(userId).subscribe({
+    this.waterZoneService.getWMDashboard(userId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (dashboard) => {
         this.wmDashboard = dashboard;
         this.cd.detectChanges();
