@@ -211,4 +211,7 @@ export class CreatePlotComponent implements OnInit {
   goBack(): void {
     this.router.navigate(['/plots']);
   }
+
+  trackById(_: number, item: {id: number}): number { return item.id; }
+  trackByValue(_: number, item: string): string { return item; }
 }
