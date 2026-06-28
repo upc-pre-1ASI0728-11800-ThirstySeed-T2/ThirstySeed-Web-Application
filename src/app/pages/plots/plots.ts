@@ -220,4 +220,6 @@ export class PlotsComponent implements OnInit {
   private findFarmIdByName(name: string): number | null {
     return this.farms.find((farm) => farm.name === name)?.id ?? null;
   }
+
+  trackById(_: number, item: {id: number}): number { return item.id; }
 }
