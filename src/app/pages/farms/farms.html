@@ -99,7 +99,7 @@
         <div *ngIf="farms.length === 0" class="state-msg">{{ 'FARMS.NO_FARMS' | translate }}</div>
 
         <div class="farms-grid">
-          <div *ngFor="let farm of farms" class="farm-card">
+          <div *ngFor="let farm of farms; trackBy: trackById" class="farm-card">
             <div class="farm-card-header">
               <div class="farm-thumb">🌾</div>
               <div class="farm-title">
@@ -180,7 +180,7 @@
           <div *ngIf="farms.length === 0" class="activity-empty">{{ 'FARMS.ACTIVITY.NO_ACTIVITY' | translate }}</div>
 
           <div class="activity-list">
-            <div *ngFor="let farm of farms.slice(0, 3)" class="activity-row">
+            <div *ngFor="let farm of recentFarms; trackBy: trackById" class="activity-row">
               <div class="activity-icon">🌾</div>
               <div class="activity-body">
                 <strong>{{ farm.name }}</strong>

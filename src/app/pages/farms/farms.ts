@@ -149,4 +149,7 @@ export class FarmsComponent implements OnInit {
     this.successMessage = 'Farm removed successfully.';
     this.cd.detectChanges();
   }
+
+  get recentFarms(): Farm[] { return this.farms.slice(0, 3); }
+  trackById(_: number, item: {id: number}): number { return item.id; }
 }
