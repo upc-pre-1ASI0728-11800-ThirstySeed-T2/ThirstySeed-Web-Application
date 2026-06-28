@@ -215,4 +215,7 @@ export class SupportComponent implements OnInit, AfterViewChecked {
       this.chatEnd?.nativeElement?.scrollIntoView({ behavior: 'smooth' });
     } catch { /* noop */ }
   }
+
+  trackById(_: number, item: {id: number}): number { return item.id; }
+  trackByValue(_: number, item: string): string { return item; }
 }

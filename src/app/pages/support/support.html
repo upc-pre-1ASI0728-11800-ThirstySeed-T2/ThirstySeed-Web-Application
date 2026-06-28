@@ -57,7 +57,7 @@
 
       <!-- Ticket cards -->
       <div class="ticket-item"
-           *ngFor="let t of tickets"
+           *ngFor="let t of tickets; trackBy: trackById"
            [class.selected]="selectedTicket?.id === t.id"
            (click)="openDetail(t)">
         <div class="ticket-item-top">
@@ -109,14 +109,14 @@
           <div class="form-group">
             <label>{{ 'SUPPORT.FORM.CATEGORY' | translate }} <span class="required">*</span></label>
             <select [(ngModel)]="newCategory" [disabled]="creating">
-              <option *ngFor="let c of categories" [value]="c">{{ ('SUPPORT.CATEGORY.' + c) | translate }}</option>
+              <option *ngFor="let c of categories; trackBy: trackByValue" [value]="c">{{ ('SUPPORT.CATEGORY.' + c) | translate }}</option>
             </select>
           </div>
 
           <div class="form-group">
             <label>{{ 'SUPPORT.FORM.PRIORITY' | translate }} <span class="required">*</span></label>
             <select [(ngModel)]="newPriority" [disabled]="creating">
-              <option *ngFor="let p of priorities" [value]="p">{{ ('SUPPORT.PRIORITY.' + p) | translate }}</option>
+              <option *ngFor="let p of priorities; trackBy: trackByValue" [value]="p">{{ ('SUPPORT.PRIORITY.' + p) | translate }}</option>
             </select>
           </div>
 
@@ -184,7 +184,7 @@
             </div>
 
             <div class="message-bubble"
-                 *ngFor="let msg of messages"
+                 *ngFor="let msg of messages; trackBy: trackById"
                  [class.own]="isOwnMessage(msg)"
                  [class.admin]="!isOwnMessage(msg)">
               <div class="bubble-meta">
