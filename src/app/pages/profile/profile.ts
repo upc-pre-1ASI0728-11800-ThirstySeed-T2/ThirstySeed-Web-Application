@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -30,6 +31,8 @@ export class ProfileComponent implements OnInit {
 
   private userId = 0;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private authService: AuthService,
     private profileService: ProfileService,
@@ -43,7 +46,7 @@ export class ProfileComponent implements OnInit {
     this.userId = user.id;
     this.email = user.email ?? user.username ?? '';
 
-    this.profileService.getProfileByUserId(user.id).subscribe({
+    this.profileService.getProfileByUserId(user.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (profile) => {
         if (profile) {
           this.existingProfile = profile;
@@ -100,7 +103,7 @@ export class ProfileComponent implements OnInit {
       ? this.profileService.createProfile(payload)
       : this.profileService.updateProfile(this.existingProfile!.id, payload);
 
-    request$.subscribe({
+    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (profile) => {
         this.existingProfile = profile;
         this.saving = false;
