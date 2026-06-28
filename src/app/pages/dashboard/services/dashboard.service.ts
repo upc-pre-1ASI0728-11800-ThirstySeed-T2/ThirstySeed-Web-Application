@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, map, Observable, of, switchMap, tap, catchError } from 'rxjs';
+import { forkJoin, map, Observable, of, switchMap, catchError } from 'rxjs';
 import { AuthService } from '../../../iam/services/auth.service';
 import { PlotService } from '../../plots/services/plot.service';
 import { FarmService } from '../../farms/services/farm.service';
@@ -218,7 +218,6 @@ export class DashboardService {
     }
 
     return this.getUserPlots().pipe(
-      tap((plots) => console.log('PLOTS FROM API', plots)),
       switchMap((plots) => {
         if (!plots.length) {
           return of([0, 0, 0, 0, 0, 0, 0]);
@@ -260,9 +259,6 @@ export class DashboardService {
     return this.plotService.getPlotsByUser(user.id).pipe(
       map((plots) => {
         const merged = this.plotService.mergeWithStoredPlots(user.id, plots);
-
-        console.log('BACKEND PLOTS', plots);
-        console.log('MERGED PLOTS', merged);
 
         return merged;
       }),

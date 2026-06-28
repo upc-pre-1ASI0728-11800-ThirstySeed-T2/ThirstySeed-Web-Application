@@ -111,10 +111,10 @@
           <p>{{ 'DASHBOARD.MONITORING.NO_PLOTS' | translate }}</p>
         </div>
 
-        <div class="plot-row" *ngFor="let plot of plotMonitoring; trackBy: trackById">
+        <div class="plot-row" *ngFor="let plot of plotMonitoring; trackBy: trackByPlotId">
           <div class="plot-info">
             <div class="plot-icon">
-              <img *ngIf="plot.imageUrl" [src]="plot.imageUrl" alt="plot"/>
+              <img *ngIf="plot.imageUrl" [src]="plot.imageUrl" alt="plot" loading="lazy"/>
               <span *ngIf="!plot.imageUrl">🌱</span>
             </div>
             <div>

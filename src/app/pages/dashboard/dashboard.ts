@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { DashboardService } from './services/dashboard.service';
@@ -97,6 +98,8 @@ export class DashboardComponent implements OnInit {
     return this.latestAlerts.filter(a => a.status !== 'CRITICAL');
   }
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private dashboardService: DashboardService,
     private alertService: AlertService,
@@ -113,7 +116,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadMetrics(): void {
-    this.dashboardService.getMetrics().subscribe({
+    this.dashboardService.getMetrics().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (metrics) => {
         this.metrics = metrics;
         this.loading = false;
@@ -128,22 +131,18 @@ export class DashboardComponent implements OnInit {
   }
 
   loadPlotMonitoring(): void {
-    this.dashboardService.getPlotMonitoring().subscribe({
+    this.dashboardService.getPlotMonitoring().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (plots) => {
-        console.log('PLOT MONITORING', plots);
-
         this.plotMonitoring = plots;
 
         this.cd.detectChanges();
       },
-      error: (err) => {
-        console.error('PLOT ERROR', err);
-      },
+      error: () => {},
     });
   }
 
   loadLatestAlerts(): void {
-    this.dashboardService.getLatestAlerts().subscribe({
+    this.dashboardService.getLatestAlerts().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (alerts) => {
         this.latestAlerts = alerts;
         this.cd.detectChanges();
@@ -152,7 +151,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadWaterStress(): void {
-    this.dashboardService.getWaterStressCard().subscribe({
+    this.dashboardService.getWaterStressCard().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (stress) => {
         this.waterStress = stress;
         this.cd.detectChanges();
@@ -161,10 +160,8 @@ export class DashboardComponent implements OnInit {
   }
 
   loadMoistureTrend(): void {
-    this.dashboardService.getMoistureTrend().subscribe({
+    this.dashboardService.getMoistureTrend().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (trend) => {
-        console.log('TREND', trend);
-
         this.moistureTrend = trend;
 
         this.lineChartData = {
@@ -179,16 +176,14 @@ export class DashboardComponent implements OnInit {
 
         this.cd.detectChanges();
       },
-      error: (err) => {
-        console.error('TREND ERROR', err);
-      },
+      error: () => {},
     });
   }
 
   acknowledgeAlert(alertId: number): void {
     if (this.acknowledgingId === alertId) return;
     this.acknowledgingId = alertId;
-    this.alertService.acknowledgeAlert(alertId).subscribe({
+    this.alertService.acknowledgeAlert(alertId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.latestAlerts = this.latestAlerts.filter((a) => a.id !== alertId);
         this.acknowledgingId = null;
@@ -209,5 +204,6 @@ export class DashboardComponent implements OnInit {
 
   moistureTrend: number[] = [];
 
+  trackByPlotId(_: number, item: PlotCard): number { return item.plotId; }
   trackById(_: number, item: {id: number}): number { return item.id; }
 }
