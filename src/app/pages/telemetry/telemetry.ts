@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
@@ -57,6 +58,8 @@ export class TelemetryComponent implements OnInit {
 
   readings: TelemetryReading[] = [];
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private authService: AuthService,
     private farmService: FarmService,
@@ -69,16 +72,12 @@ export class TelemetryComponent implements OnInit {
   ngOnInit(): void {
     const user = this.authService.getCurrentUser();
 
-    console.log('USER', user);
-
     if (!user) return;
 
     const farmIds = this.farmService.getSavedFarmIds(user.id);
 
-    console.log('FARM IDS', farmIds);
-
     if (farmIds.length > 0) {
-      this.farmService.getFarmsByIds(farmIds).subscribe({
+      this.farmService.getFarmsByIds(farmIds).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (farms) => {
           this.farms = farms;
           setTimeout(() => {
@@ -88,7 +87,7 @@ export class TelemetryComponent implements OnInit {
       });
     }
 
-    this.plotService.getPlotsByUser(user.id).subscribe({
+    this.plotService.getPlotsByUser(user.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (plots) => {
         this.plots = this.plotService.mergeWithStoredPlots(user.id, plots);
         this.filteredPlots = [];
@@ -105,7 +104,7 @@ export class TelemetryComponent implements OnInit {
   loadTelemetryCharts() {
     if (!this.selectedPlotId) return;
 
-    this.telemetryService.getTelemetryHistory(this.selectedPlotId).subscribe({
+    this.telemetryService.getTelemetryHistory(this.selectedPlotId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (history) => {
         if (!history.length) {
           this.useMockTelemetry();
@@ -233,7 +232,7 @@ export class TelemetryComponent implements OnInit {
     if (!this.selectedPlotId) return;
 
     this.loadTelemetryCharts();
-    this.telemetryService.getAssessmentsByPlot(this.selectedPlotId).subscribe({
+    this.telemetryService.getAssessmentsByPlot(this.selectedPlotId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (assessments) => {
         this.latestAssessment = assessments[0] ?? null;
         this.cd.detectChanges();
@@ -243,7 +242,7 @@ export class TelemetryComponent implements OnInit {
       },
     });
 
-    this.telemetryService.getNodesByPlot(this.selectedPlotId).subscribe({
+    this.telemetryService.getNodesByPlot(this.selectedPlotId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (nodes) => {
         this.nodes = nodes;
         this.cd.detectChanges();
