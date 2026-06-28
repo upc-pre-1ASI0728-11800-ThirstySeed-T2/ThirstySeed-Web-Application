@@ -117,7 +117,7 @@
                 <select [(ngModel)]="manualCountry" (ngModelChange)="onManualLocationChange()"
                         class="manual-select">
                   <option value="" disabled>Select a country</option>
-                  <option *ngFor="let c of countries" [value]="c">{{ c }}</option>
+                  <option *ngFor="let c of countries; trackBy: trackByValue" [value]="c">{{ c }}</option>
                 </select>
               </div>
 
@@ -202,7 +202,7 @@
             <option [ngValue]="undefined" disabled selected>
               {{ loadingZones ? 'Loading zones...' : 'Select a water management zone' }}
             </option>
-            <option *ngFor="let z of zones" [value]="z.id">{{ z.name }} — {{ z.location }}</option>
+            <option *ngFor="let z of zones; trackBy: trackById" [value]="z.id">{{ z.name }} — {{ z.location }}</option>
           </select>
         </div>
 

@@ -266,4 +266,7 @@ export class FarmCreateComponent implements OnInit {
   cancel(): void {
     this.router.navigate(['/farms']);
   }
+
+  trackById(_: number, item: {id: number}): number { return item.id; }
+  trackByValue(_: number, item: string): string { return item; }
 }
