@@ -236,4 +236,7 @@ export class DigitalTwinComponent implements OnInit {
       },
     });
   }
+
+  trackById(_: number, item: {id: number}): number { return item.id; }
+  trackByIndex(index: number): number { return index; }
 }

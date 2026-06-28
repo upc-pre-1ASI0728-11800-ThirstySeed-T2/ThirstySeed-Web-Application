@@ -24,14 +24,14 @@
       <label>Farm</label>
       <select (change)="onFarmChange($event)">
         <option value="">All farms</option>
-        <option *ngFor="let farm of farms" [value]="farm.id">{{ farm.name }}</option>
+        <option *ngFor="let farm of farms; trackBy: trackById" [value]="farm.id">{{ farm.name }}</option>
       </select>
     </div>
     <div class="selector-group">
       <label>Plot</label>
       <select (change)="onPlotChange($event)">
         <option value="">Select plot to simulate</option>
-        <option *ngFor="let plot of filteredPlots" [value]="plot.id">{{ plot.name }}</option>
+        <option *ngFor="let plot of filteredPlots; trackBy: trackById" [value]="plot.id">{{ plot.name }}</option>
       </select>
     </div>
     <div class="selector-chip" *ngIf="selectedPlot">
@@ -63,7 +63,7 @@
           <!-- Sun -->
           <div class="sun-wrap" [ngClass]="tempLevel">
             <div class="sun">
-              <div class="ray" *ngFor="let r of [0,45,90,135,180,225,270,315]"
+              <div class="ray" *ngFor="let r of [0,45,90,135,180,225,270,315]; trackBy: trackByIndex"
                    [style.transform]="'rotate(' + r + 'deg)'"></div>
             </div>
           </div>
@@ -80,7 +80,7 @@
 
           <!-- Wind streaks -->
           <div class="wind-layer" *ngIf="windSpeed > 10">
-            <div class="wind-streak" *ngFor="let i of [0,1,2,3,4,5,6]"
+            <div class="wind-streak" *ngFor="let i of [0,1,2,3,4,5,6]; trackBy: trackByIndex"
                  [style.top]="(i * 14 + 4) + '%'"
                  [style.animation-delay]="(i * 0.18) + 's'"
                  [style.opacity]="windSpeed > 30 ? 0.55 : 0.28"
@@ -94,7 +94,7 @@
 
         <!-- PLANTS STRIP -->
         <div class="arena-plants">
-          <div class="plant-group" [ngClass]="plantHealth" *ngFor="let p of [1,2,3,4,5]">
+          <div class="plant-group" [ngClass]="plantHealth" *ngFor="let p of [1,2,3,4,5]; trackBy: trackByIndex">
             <div class="p-stem">
               <div class="p-leaf l"></div>
               <div class="p-leaf r"></div>
@@ -114,7 +114,7 @@
         <div class="arena-soil" [ngClass]="moistureLevel">
           <!-- Water molecules -->
           <div class="water-molecule"
-               *ngFor="let d of waterDots"
+               *ngFor="let d of waterDots; trackBy: trackByIndex"
                [style.left]="d.x + '%'"
                [style.top]="d.y + '%'"
                [style.width]="d.size + 'px'"
