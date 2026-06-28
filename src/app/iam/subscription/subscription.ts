@@ -62,7 +62,6 @@ export class SubscriptionComponent {
         this.router.navigate(['/profile']);
       },
       error: (err) => {
-        console.error('INITIAL SUBSCRIPTION ERROR:', err);
         this.errorMessage = 'Unable to create subscription. Please try again.';
         this.savingPlan = null;
         this.cd.markForCheck();
