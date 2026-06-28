@@ -111,10 +111,10 @@
           <p>{{ 'DASHBOARD.MONITORING.NO_PLOTS' | translate }}</p>
         </div>
 
-        <div class="plot-row" *ngFor="let plot of plotMonitoring">
+        <div class="plot-row" *ngFor="let plot of plotMonitoring; trackBy: trackByPlotId">
           <div class="plot-info">
             <div class="plot-icon">
-              <img *ngIf="plot.imageUrl" [src]="plot.imageUrl" alt="plot"/>
+              <img *ngIf="plot.imageUrl" [src]="plot.imageUrl" alt="plot" loading="lazy"/>
               <span *ngIf="!plot.imageUrl">🌱</span>
             </div>
             <div>
@@ -215,7 +215,7 @@
             <span class="pulse-dot-red"></span>
             {{ 'DASHBOARD.ALERTS.CRITICAL' | translate }}
           </div>
-          <div class="alert-item alert-critical" *ngFor="let alert of criticalAlerts">
+          <div class="alert-item alert-critical" *ngFor="let alert of criticalAlerts; trackBy: trackById">
             <div class="alert-sev-icon critical">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
@@ -241,7 +241,7 @@
           <div class="alert-group-label" *ngIf="criticalAlerts.length > 0">
             {{ 'DASHBOARD.ALERTS.OTHER' | translate }}
           </div>
-          <div class="alert-item" *ngFor="let alert of otherAlerts">
+          <div class="alert-item" *ngFor="let alert of otherAlerts; trackBy: trackById">
             <div class="alert-sev-icon warn">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>

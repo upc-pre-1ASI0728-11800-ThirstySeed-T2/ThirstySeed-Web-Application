@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { Router } from '@angular/router';
@@ -12,6 +13,7 @@ import { SettingsService, ProfilePayload } from './services/settings.service';
   imports: [CommonModule, ReactiveFormsModule, TranslatePipe, TranslateDirective],
   templateUrl: './settings.html',
   styleUrls: ['./settings.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsComponent implements OnInit {
   private readonly LOCAL_PROFILE_KEY = 'settingsProfile';
@@ -29,6 +31,8 @@ export class SettingsComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
   profileMissing = false;
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -109,7 +113,7 @@ export class SettingsComponent implements OnInit {
       ? this.settingsService.updateProfile(this.profileId, payload)
       : this.settingsService.createProfile(payload);
 
-    request.subscribe({
+    request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (profile: any) => {
         this.profileId = String(profile?.id ?? this.profileId);
         this.profileMissing = false;
@@ -121,8 +125,7 @@ export class SettingsComponent implements OnInit {
           : 'Profile saved successfully.';
         this.saving = false;
       },
-      error: (err) => {
-        console.error('PROFILE SAVE ERROR:', err);
+      error: () => {
         this.errorMessage = 'Profile could not be saved. Please try again.';
         this.saving = false;
       },
@@ -133,13 +136,12 @@ export class SettingsComponent implements OnInit {
     if (!confirm('Delete account? This action cannot be undone.')) return;
 
     const deleteUser = () => {
-      this.settingsService.deleteUser(this.userId).subscribe({
+      this.settingsService.deleteUser(this.userId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
           localStorage.clear();
           this.router.navigate(['/login']);
         },
-        error: (err) => {
-          console.error('USER DELETE ERROR:', err);
+        error: () => {
           this.errorMessage = 'User could not be deleted.';
         },
       });
@@ -150,10 +152,9 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-    this.settingsService.deleteProfile(this.profileId).subscribe({
+    this.settingsService.deleteProfile(this.profileId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: deleteUser,
-      error: (err) => {
-        console.error('PROFILE DELETE ERROR:', err);
+      error: () => {
         this.errorMessage = 'Profile could not be deleted.';
       },
     });
@@ -167,7 +168,7 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-    this.settingsService.getProfileByUserId(this.userId).subscribe({
+    this.settingsService.getProfileByUserId(this.userId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.profileId = String(res.id ?? '');
         this.storeProfile(res);
@@ -188,13 +189,12 @@ export class SettingsComponent implements OnInit {
   }
 
   private loadSubscription(): void {
-    this.settingsService.getSubscriptionByUserId(this.userId).subscribe({
+    this.settingsService.getSubscriptionByUserId(this.userId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.subscription = res;
         this.cd.detectChanges();
       },
-      error: (err) => {
-        console.error('SUBSCRIPTION ERROR:', err);
+      error: () => {
         this.subscription = this.currentUser?.subscription
           ? {
               planType: this.currentUser.subscription.name.toUpperCase(),

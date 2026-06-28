@@ -19,7 +19,7 @@
   <div class="plans-grid" *ngIf="!loading">
     <article
       class="plan-card"
-      *ngFor="let plan of planOptions"
+      *ngFor="let plan of planOptions; trackBy: trackByPlanType"
       [ngClass]="{
         active: isCurrentPlan(plan),
         premium: plan.name === 'Premium'
@@ -62,7 +62,7 @@
       </div>
 
       <ul>
-        <li *ngFor="let feature of plan.features">{{ feature }}</li>
+        <li *ngFor="let feature of plan.features; trackBy: trackByValue">{{ feature }}</li>
       </ul>
 
       <button

@@ -108,10 +108,10 @@
         <h2>{{ 'PLOTS.TITLE' | translate }} — {{ selectedFarmName }}</h2>
         <p class="section-sub">{{ 'PLOTS.SHOWING_PLOTS' | translate: { farm: selectedFarmName } }}</p>
         <div class="plots-grid">
-          <div *ngFor="let plot of plots" class="plot-card">
+          <div *ngFor="let plot of plots; trackBy: trackById" class="plot-card">
             <div class="plot-card-header">
               <div class="plot-thumb">
-                <img *ngIf="plot.imageUrl" [src]="plot.imageUrl" alt="plot" />
+                <img *ngIf="plot.imageUrl" [src]="plot.imageUrl" alt="plot" loading="lazy" />
                 <span *ngIf="!plot.imageUrl">🌿</span>
               </div>
               <div class="plot-title">
@@ -145,7 +145,7 @@
                   {{ 'PLOTS.CARD.FARM' | translate }}
                   <select [(ngModel)]="editForm.farmId" name="editFarm{{ plot.id }}">
                     <option [ngValue]="null" disabled>{{ 'PLOTS.CARD.SELECT_FARM' | translate }}</option>
-                    <option *ngFor="let farm of farms" [ngValue]="farm.id">{{ farm.name }}</option>
+                    <option *ngFor="let farm of farms; trackBy: trackById" [ngValue]="farm.id">{{ farm.name }}</option>
                   </select>
                 </label>
                 <label>
@@ -209,7 +209,7 @@
       <div class="other-farms-card" *ngIf="plots.length > 0">
         <h3>{{ 'PLOTS.OVERVIEW.TITLE' | translate }}</h3>
         <p class="section-sub">{{ 'PLOTS.OVERVIEW.SUBTITLE' | translate }}</p>
-        <div *ngFor="let plot of plots" class="other-farm-row">
+        <div *ngFor="let plot of plots; trackBy: trackById" class="other-farm-row">
           <span>{{ plot.name }}</span>
           <span class="plots-count" [ngClass]="(plot.status || 'no-data').toLowerCase()">
             {{ plot.status || ('PLOTS.CARD.NO_DATA' | translate) }}

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { AuthService } from '../../iam/services/auth.service';
 import { Subscription, SubscriptionService } from '../../iam/services/subscription.service';
@@ -23,6 +24,7 @@ interface PlanOption {
   imports: [CommonModule],
   templateUrl: './profile-rol.html',
   styleUrl: './profile-rol.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileRol implements OnInit {
   userId!: number;
@@ -83,6 +85,8 @@ export class ProfileRol implements OnInit {
     return this.isProducer ? this.producerPlans : this.waterManagerPlans;
   }
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -131,7 +135,7 @@ export class ProfileRol implements OnInit {
       this.subscriptionService.createSubscription({
         userId: this.userId,
         planType: plan.type,
-      }).subscribe({
+      }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (subscription) => {
           this.applySubscription(subscription, plan);
           this.savingPlan = null;
@@ -139,8 +143,7 @@ export class ProfileRol implements OnInit {
           const target = this.isProducer ? '/dashboard' : '/water-manager/dashboard';
           this.router.navigate([target]);
         },
-        error: (err) => {
-          console.error('SUBSCRIPTION UPDATE ERROR:', err);
+        error: () => {
           this.errorMessage = 'The plan could not be changed. Please try again.';
           this.savingPlan = null;
           this.cd.detectChanges();
@@ -149,10 +152,9 @@ export class ProfileRol implements OnInit {
     };
 
     if (this.currentSubscription?.id) {
-      this.subscriptionService.delete(this.currentSubscription.id).subscribe({
+      this.subscriptionService.delete(this.currentSubscription.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: createPlan,
-        error: (err) => {
-          console.error('SUBSCRIPTION DELETE BEFORE UPDATE ERROR:', err);
+        error: () => {
           this.errorMessage = 'The current plan could not be replaced.';
           this.savingPlan = null;
           this.cd.detectChanges();
@@ -165,7 +167,7 @@ export class ProfileRol implements OnInit {
   }
 
   private loadSubscription(): void {
-    this.subscriptionService.getByUserId(this.userId).subscribe({
+    this.subscriptionService.getByUserId(this.userId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.currentSubscription = res;
         this.loading = false;
@@ -193,9 +195,6 @@ export class ProfileRol implements OnInit {
       active: true,
     };
 
-    // Cache subscription locally so main-layout can verify it when the GET endpoint returns 405
-    localStorage.setItem(`subscription_${this.userId}`, JSON.stringify(this.currentSubscription));
-
     const user = this.authService.getCurrentUser();
     if (!user) return;
 
@@ -208,4 +207,7 @@ export class ProfileRol implements OnInit {
 
     this.authService.setCurrentUser(user);
   }
+
+  trackByPlanType(_: number, plan: PlanOption): string { return plan.type; }
+  trackByValue(_: number, item: string): string { return item; }
 }

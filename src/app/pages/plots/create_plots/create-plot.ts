@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { Farm } from '../../farms/model/farm.model';
   imports: [CommonModule, FormsModule],
   templateUrl: './create-plot.html',
   styleUrl: './create-plot.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreatePlotComponent implements OnInit {
 
@@ -67,6 +68,7 @@ export class CreatePlotComponent implements OnInit {
     private router: Router,
     private subscriptionService: SubscriptionService,
     private farmService: FarmService,
+    private cd: ChangeDetectorRef,
   ) {}
 
   // ======================
@@ -81,6 +83,7 @@ export class CreatePlotComponent implements OnInit {
       next: (sub) => {
         this.planType = sub.planType;
         this.maxNodes = sub.maxNodes;
+        this.cd.markForCheck();
       },
       error: () => {
         const cached = localStorage.getItem(`subscription_${user.id}`);
@@ -91,15 +94,18 @@ export class CreatePlotComponent implements OnInit {
             this.maxNodes = sub.maxNodes ?? 0;
           } catch { /* leave defaults */ }
         }
+        this.cd.markForCheck();
       },
     });
 
     this.plotService.getPlotsByUser(user.id).subscribe({
       next: (plots) => {
         this.currentNodes = this.plotService.mergeWithStoredPlots(user.id, plots).length;
+        this.cd.markForCheck();
       },
       error: () => {
         this.currentNodes = this.plotService.getStoredPlots(user.id).length;
+        this.cd.markForCheck();
       },
     });
 
@@ -107,17 +113,17 @@ export class CreatePlotComponent implements OnInit {
       next: (farms) => {
         this.farms = farms;
         if (farms.length > 0) this.selectedFarmId = farms[0].id!;
-        // Sync to localStorage for offline fallback
         this.farmService.replaceSavedFarmIds(user.id, farms.map((f) => f.id));
+        this.cd.markForCheck();
       },
       error: () => {
-        // Fallback to saved IDs
         const ids = this.farmService.getSavedFarmIds(user.id);
         if (ids.length > 0) {
           this.farmService.getFarmsByIds(ids).subscribe({
             next: (farms) => {
               this.farms = farms;
               if (farms.length > 0) this.selectedFarmId = farms[0].id!;
+              this.cd.markForCheck();
             },
           });
         }
@@ -189,13 +195,14 @@ export class CreatePlotComponent implements OnInit {
             });
 
             this.successMessage = 'Plot created successfully';
+            this.cd.markForCheck();
             this.router.navigate(['/plots']);
           },
         });
       },
       error: (err) => {
-        console.error('CREATE PLOT ERROR:', err);
         this.errorMessage = err?.error?.message || 'Failed to create plot';
+        this.cd.markForCheck();
       },
     });
   }
@@ -203,4 +210,7 @@ export class CreatePlotComponent implements OnInit {
   goBack(): void {
     this.router.navigate(['/plots']);
   }
+
+  trackById(_: number, item: {id: number}): number { return item.id; }
+  trackByValue(_: number, item: string): string { return item; }
 }

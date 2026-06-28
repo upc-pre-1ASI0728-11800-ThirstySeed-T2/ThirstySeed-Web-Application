@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { switchMap, tap, delay } from 'rxjs/operators';
 import { AuthService, User } from '../../iam/services/auth.service';
@@ -21,9 +21,10 @@ export type WindLevel = 'calm' | 'breezy' | 'strong' | 'gale';
 @Component({
   selector: 'app-digital-twin',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslatePipe],
+  imports: [CommonModule, FormsModule],
   templateUrl: './digital-twin.html',
   styleUrl: './digital-twin.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DigitalTwinComponent implements OnInit {
 
@@ -50,6 +51,8 @@ export class DigitalTwinComponent implements OnInit {
   latestAssessment: WaterStressAssessment | null = null;
   latestRecommendation: IrrigationRecommendation | null = null;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private authService: AuthService,
     private plotService: PlotService,
@@ -63,7 +66,7 @@ export class DigitalTwinComponent implements OnInit {
     if (!user) return;
     this.currentUser = user;
 
-    this.farmService.getMyFarms().subscribe({
+    this.farmService.getMyFarms().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (farms) => {
         this.farms = farms;
         this.farmService.replaceSavedFarmIds(user.id, farms.map((f) => f.id));
@@ -71,7 +74,7 @@ export class DigitalTwinComponent implements OnInit {
       },
     });
 
-    this.plotService.getPlotsByUser(user.id).subscribe({
+    this.plotService.getPlotsByUser(user.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (plots) => {
         this.plots = this.plotService.mergeWithStoredPlots(user.id, plots);
         this.cd.detectChanges();
@@ -126,10 +129,7 @@ export class DigitalTwinComponent implements OnInit {
 
   get moistureLabel(): string {
     const map: Record<MoistureLevel, string> = {
-      optimal: 'DIGITAL_TWIN.MOISTURE.OPTIMAL',
-      normal: 'DIGITAL_TWIN.MOISTURE.NORMAL',
-      low: 'DIGITAL_TWIN.MOISTURE.LOW',
-      critical: 'DIGITAL_TWIN.MOISTURE.CRITICAL',
+      optimal: 'Optimal', normal: 'Normal', low: 'Low', critical: 'Critical',
     };
     return map[this.moistureLevel];
   }
@@ -150,10 +150,7 @@ export class DigitalTwinComponent implements OnInit {
 
   get windLabel(): string {
     const map: Record<WindLevel, string> = {
-      calm: 'DIGITAL_TWIN.WIND.CALM',
-      breezy: 'DIGITAL_TWIN.WIND.BREEZY',
-      strong: 'DIGITAL_TWIN.WIND.STRONG',
-      gale: 'DIGITAL_TWIN.WIND.GALE',
+      calm: 'Calm', breezy: 'Breezy', strong: 'Strong', gale: 'Gale Force',
     };
     return map[this.windLevel];
   }
@@ -218,6 +215,7 @@ export class DigitalTwinComponent implements OnInit {
           this.cd.detectChanges();
         }),
         switchMap(() => this.telemetryService.getRecommendationsByPlot(plotId)),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (recommendations) => {
@@ -227,7 +225,7 @@ export class DigitalTwinComponent implements OnInit {
         },
         error: () => {
           this.simState = 'error';
-          this.errorMessage = 'DIGITAL_TWIN.ERROR.SIM_FAILED';
+          this.errorMessage = 'Simulation failed. Verify that the plot has an active IoT node and try again.';
           this.cd.detectChanges();
         },
       });
@@ -235,11 +233,14 @@ export class DigitalTwinComponent implements OnInit {
 
   acceptRecommendation(): void {
     if (!this.latestRecommendation || this.latestRecommendation.status === 'ACCEPTED') return;
-    this.telemetryService.acceptRecommendation(this.latestRecommendation.id).subscribe({
+    this.telemetryService.acceptRecommendation(this.latestRecommendation.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.latestRecommendation!.status = 'ACCEPTED';
         this.cd.detectChanges();
       },
     });
   }
+
+  trackById(_: number, item: {id: number}): number { return item.id; }
+  trackByIndex(index: number): number { return index; }
 }

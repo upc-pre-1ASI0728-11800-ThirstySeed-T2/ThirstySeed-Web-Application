@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -24,6 +25,7 @@ import { User } from '../../../iam/services/auth.service';
   imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './iot-simulator.html',
   styleUrl: './iot-simulator.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IotSimulatorComponent implements OnInit {
   // ── Selectors ──────────────────────────────────────────────
@@ -56,6 +58,8 @@ export class IotSimulatorComponent implements OnInit {
   transmissionLog: TransmissionLogEntry[] = [];
   transmissionCount = 0;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private authService: AuthService,
     private plotService: PlotService,
@@ -69,7 +73,7 @@ export class IotSimulatorComponent implements OnInit {
     if (!user) return;
     this.currentUser = user;
 
-    this.farmService.getMyFarms().subscribe({
+    this.farmService.getMyFarms().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (farms) => {
         this.farms = farms;
         this.farmService.replaceSavedFarmIds(user.id, farms.map((f) => f.id));
@@ -78,14 +82,14 @@ export class IotSimulatorComponent implements OnInit {
       error: () => {
         const ids = this.farmService.getSavedFarmIds(user.id);
         if (ids.length > 0) {
-          this.farmService.getFarmsByIds(ids).subscribe({
+          this.farmService.getFarmsByIds(ids).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (farms) => { this.farms = farms; this.cd.detectChanges(); },
           });
         }
       },
     });
 
-    this.plotService.getPlotsByUser(user.id).subscribe({
+    this.plotService.getPlotsByUser(user.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (plots) => {
         this.plots = this.plotService.mergeWithStoredPlots(user.id, plots);
         this.cd.detectChanges();
@@ -121,7 +125,7 @@ export class IotSimulatorComponent implements OnInit {
   }
 
   private loadNodes(plotId: number): void {
-    this.telemetryService.getNodesByPlot(plotId).subscribe({
+    this.telemetryService.getNodesByPlot(plotId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (nodes) => {
         this.plotNodes = nodes;
         this.cd.detectChanges();
@@ -144,6 +148,7 @@ export class IotSimulatorComponent implements OnInit {
 
     this.telemetryService.createNode(this.selectedPlotId, this.nodeLocation.trim()).pipe(
       switchMap(() => this.telemetryService.getNodesByPlot(this.selectedPlotId!)),
+      takeUntilDestroyed(this.destroyRef),
     ).subscribe({
       next: (nodes) => {
         this.plotNodes = nodes;
@@ -213,6 +218,7 @@ export class IotSimulatorComponent implements OnInit {
         }),
 
         switchMap(() => this.telemetryService.getRecommendationsByPlot(plotId)),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (recommendations) => {
@@ -226,8 +232,7 @@ export class IotSimulatorComponent implements OnInit {
           this.cd.detectChanges();
         },
 
-        error: (err) => {
-          console.error('TRANSMISSION ERROR', err);
+        error: () => {
           this.errorMessage = 'IOT_SIMULATOR.TRANSMIT.ERROR';
           this.isSimulating = false;
           this.cd.detectChanges();
@@ -243,7 +248,10 @@ export class IotSimulatorComponent implements OnInit {
 
     this.telemetryService
       .acceptRecommendation(this.latestRecommendation.id)
-      .pipe(switchMap(() => this.telemetryService.getSchedulesByPlot(plotId)))
+      .pipe(
+        switchMap(() => this.telemetryService.getSchedulesByPlot(plotId)),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (schedules) => {
           this.latestRecommendation!.status = 'ACCEPTED';
@@ -288,4 +296,7 @@ export class IotSimulatorComponent implements OnInit {
     };
     return map[this.moistureLevel];
   }
+
+  trackById(_: number, item: {id: number}): number { return item.id; }
+  trackByTimestamp(_: number, item: {timestamp: string}): string { return item.timestamp; }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
@@ -10,6 +10,7 @@ import { AuthService } from '../services/auth.service';
   imports: [FormsModule, TranslatePipe, TranslateDirective],
   templateUrl: './register.html',
   styleUrl: './register.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent {
   fullName = '';
@@ -31,6 +32,7 @@ export class RegisterComponent {
   constructor(
     private router: Router,
     private authService: AuthService,
+    private cd: ChangeDetectorRef,
   ) {}
 
   handleRegister(): void {
@@ -94,11 +96,13 @@ export class RegisterComponent {
             localStorage.setItem('userId', String(user.id));
             this.isLoading = false;
             this.successMessage = 'Account created successfully. Choose your plan.';
+            this.cd.markForCheck();
             this.router.navigate(['/subscription']);
           },
           error: () => {
             this.isLoading = false;
             this.successMessage = 'Account created successfully. Please log in to choose your plan.';
+            this.cd.markForCheck();
             setTimeout(() => this.router.navigate(['/login']), 1500);
           },
         });
@@ -106,6 +110,7 @@ export class RegisterComponent {
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = err?.error?.message ?? 'Failed to create account. Please try again.';
+        this.cd.markForCheck();
       },
     });
   }

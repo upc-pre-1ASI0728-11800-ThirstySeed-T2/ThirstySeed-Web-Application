@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -14,6 +14,7 @@ import { WaterZone } from '../../water-zones/model/water-zone.model';
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './farm-create.html',
   styleUrl: './farm-create.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FarmCreateComponent implements OnInit {
   farm = {
@@ -33,12 +34,48 @@ export class FarmCreateComponent implements OnInit {
   loadingZones = false;
   errorMessage = '';
 
+  // ── Location mode ──────────────────────
+  locationMode: 'gps' | 'manual' = 'gps';
+
+  // ── GPS geolocation ────────────────────
+  geoState: 'idle' | 'detecting' | 'done' | 'error' = 'idle';
+  geoError = '';
+  latitude: number | null = null;
+  longitude: number | null = null;
+
+  // ── Manual location ────────────────────
+  manualCountry = '';
+  manualCity = '';
+  manualDetails = '';
+
+  readonly countries: string[] = [
+    'Afghanistan','Albania','Algeria','Angola','Argentina','Armenia','Australia',
+    'Austria','Azerbaijan','Bangladesh','Belgium','Bolivia','Bosnia and Herzegovina',
+    'Brazil','Bulgaria','Burkina Faso','Cambodia','Cameroon','Canada','Chile',
+    'China','Colombia','Congo','Costa Rica','Croatia','Cuba','Czech Republic',
+    'Denmark','Dominican Republic','Ecuador','Egypt','El Salvador','Ethiopia',
+    'Finland','France','Georgia','Germany','Ghana','Greece','Guatemala','Haiti',
+    'Honduras','Hungary','India','Indonesia','Iran','Iraq','Ireland','Israel',
+    'Italy','Ivory Coast','Jamaica','Japan','Jordan','Kazakhstan','Kenya',
+    'Kosovo','Kyrgyzstan','Laos','Lebanon','Libya','Lithuania','Madagascar',
+    'Malawi','Malaysia','Mali','Mexico','Moldova','Mongolia','Morocco','Mozambique',
+    'Myanmar','Nepal','Netherlands','New Zealand','Nicaragua','Niger','Nigeria',
+    'North Korea','Norway','Pakistan','Panama','Paraguay','Peru','Philippines',
+    'Poland','Portugal','Romania','Russia','Rwanda','Saudi Arabia','Senegal',
+    'Serbia','Sierra Leone','Slovakia','Somalia','South Africa','South Korea',
+    'South Sudan','Spain','Sri Lanka','Sudan','Sweden','Switzerland','Syria',
+    'Taiwan','Tajikistan','Tanzania','Thailand','Tunisia','Turkey','Turkmenistan',
+    'Uganda','Ukraine','United Kingdom','United States','Uruguay','Uzbekistan',
+    'Venezuela','Vietnam','Yemen','Zambia','Zimbabwe',
+  ];
+
   constructor(
     private farmService: FarmService,
     private authService: AuthService,
     private router: Router,
     private subscriptionService: SubscriptionService,
     private waterZoneService: WaterZoneService,
+    private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -51,10 +88,12 @@ export class FarmCreateComponent implements OnInit {
       next: (zones) => {
         this.zones = zones;
         this.loadingZones = false;
+        this.cd.markForCheck();
       },
       error: () => {
         this.zones = [];
         this.loadingZones = false;
+        this.cd.markForCheck();
       },
     });
   }
@@ -62,6 +101,80 @@ export class FarmCreateComponent implements OnInit {
   onZoneChange(): void {
     this.selectedZone =
       this.zones.find((z) => z.id === this.farm.waterManagementZoneId) ?? null;
+  }
+
+  switchLocationMode(mode: 'gps' | 'manual'): void {
+    this.locationMode = mode;
+    if (mode === 'manual') {
+      this.geoState = 'idle';
+      this.geoError = '';
+      this.latitude = null;
+      this.longitude = null;
+      this.farm.location = '';
+      this.onManualLocationChange();
+    } else {
+      this.manualCountry = '';
+      this.manualCity = '';
+      this.manualDetails = '';
+      this.farm.location = '';
+    }
+  }
+
+  onManualLocationChange(): void {
+    const parts = [
+      this.manualDetails.trim(),
+      this.manualCity.trim(),
+      this.manualCountry.trim(),
+    ].filter(Boolean);
+    this.farm.location = parts.join(', ');
+  }
+
+  detectLocation(): void {
+    if (!navigator.geolocation) {
+      this.geoState = 'error';
+      this.geoError = 'Geolocation is not supported by your browser.';
+      return;
+    }
+    this.geoState = 'detecting';
+    this.geoError = '';
+
+    new Promise<GeolocationPosition>((resolve, reject) =>
+      navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 10000 }),
+    )
+      .then(async (pos) => {
+        this.latitude = pos.coords.latitude;
+        this.longitude = pos.coords.longitude;
+        await this.reverseGeocode(this.latitude, this.longitude);
+      })
+      .catch((err: GeolocationPositionError) => {
+        this.geoState = 'error';
+        this.geoError =
+          err.code === 1
+            ? 'Location access denied. Please allow location in your browser.'
+            : 'Could not determine location. Try again.';
+        this.cd.markForCheck();
+      });
+  }
+
+  private async reverseGeocode(lat: number, lon: number): Promise<void> {
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=en`;
+      const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+      const data = await res.json();
+      const a = data.address ?? {};
+      const parts = [
+        a.city || a.town || a.village || a.county,
+        a.state,
+        a.country,
+      ].filter(Boolean);
+      this.farm.location = parts.length
+        ? parts.join(', ')
+        : (data.display_name ?? `${lat.toFixed(5)}, ${lon.toFixed(5)}`);
+    } catch {
+      this.farm.location = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+    }
+    this.geoState = 'done';
+    this.cd.markForCheck();
   }
 
   createFarm(): void {
@@ -91,13 +204,14 @@ export class FarmCreateComponent implements OnInit {
     const doCreate = (maxFarms: number, planType: string, currentFarmCount: number) => {
       if (maxFarms > 0 && currentFarmCount >= maxFarms) {
         this.errorMessage = `Your ${planType} plan only allows ${maxFarms} farm(s).`;
+        this.cd.markForCheck();
         return;
       }
 
       this.loading = true;
       this.errorMessage = '';
 
-      const payload = {
+      const payload: Record<string, unknown> = {
         name: this.farm.name.trim(),
         totalArea: Number(this.farm.totalArea) || 0,
         waterManagementZoneId: Number(this.farm.waterManagementZoneId),
@@ -107,18 +221,20 @@ export class FarmCreateComponent implements OnInit {
         mainCrop: this.farm.mainCrop.trim(),
         description: this.farm.description.trim(),
       };
+      if (this.latitude !== null)  payload['latitude']  = this.latitude;
+      if (this.longitude !== null) payload['longitude'] = this.longitude;
 
       this.farmService.createFarm(payload).subscribe({
         next: (farmId: number) => {
           this.farmService.saveFarmId(user.id, farmId);
           this.loading = false;
+          this.cd.markForCheck();
           this.router.navigate(['/farms']);
         },
         error: (err) => {
           this.errorMessage = err?.error?.message || err?.error?.detail || 'Failed to create farm.';
           this.loading = false;
-          console.error('CREATE FARM ERROR:', err);
-          console.error('CREATE FARM PAYLOAD:', payload);
+          this.cd.markForCheck();
         },
       });
     };
@@ -140,18 +256,7 @@ export class FarmCreateComponent implements OnInit {
         verifyFarmUsageAndCreate(subscription.maxFarms, subscription.planType);
       },
       error: () => {
-        // Fallback: use locally cached subscription when GET endpoint returns 405
-        const cached = localStorage.getItem(`subscription_${user.id}`);
-        if (cached) {
-          try {
-            const sub = JSON.parse(cached);
-            verifyFarmUsageAndCreate(sub.maxFarms ?? 0, sub.planType ?? '');
-          } catch {
-            verifyFarmUsageAndCreate(0, '');
-          }
-        } else {
-          this.errorMessage = 'Could not verify your subscription. Please try again.';
-        }
+        verifyFarmUsageAndCreate(0, '');
       },
     });
   }
@@ -159,4 +264,7 @@ export class FarmCreateComponent implements OnInit {
   cancel(): void {
     this.router.navigate(['/farms']);
   }
+
+  trackById(_: number, item: {id: number}): number { return item.id; }
+  trackByValue(_: number, item: string): string { return item; }
 }

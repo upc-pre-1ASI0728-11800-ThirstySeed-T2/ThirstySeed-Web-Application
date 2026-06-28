@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, forkJoin, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, forkJoin, of, shareReplay } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Farm } from '../model/farm.model';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class FarmService {
   private baseUrl = `${environment.apiBaseUrl}/api/v1/farms`;
+  private myFarms$?: Observable<Farm[]>;
 
   constructor(private http: HttpClient) {}
 
@@ -16,28 +17,33 @@ export class FarmService {
     return new HttpHeaders({ Authorization: `Bearer ${token}` });
   }
 
-  // GET /api/v1/farms/producer/me — farms del productor autenticado (JWT)
   getMyFarms(): Observable<Farm[]> {
-    return this.http.get<Farm[]>(`${this.baseUrl}/producer/me`, { headers: this.getHeaders() });
+    if (!this.myFarms$) {
+      this.myFarms$ = this.http
+        .get<Farm[]>(`${this.baseUrl}/producer/me`, { headers: this.getHeaders() })
+        .pipe(shareReplay(1));
+    }
+    return this.myFarms$;
   }
 
-  // GET /api/v1/farms
   getAllFarms(): Observable<Farm[]> {
     return this.http.get<Farm[]>(this.baseUrl, { headers: this.getHeaders() });
   }
 
-  // GET /api/v1/farms/{farmId}
   getFarmById(farmId: number): Observable<Farm> {
     return this.http.get<Farm>(`${this.baseUrl}/${farmId}`, { headers: this.getHeaders() });
   }
 
-  // POST /api/v1/farms — devuelve el ID (number)
   createFarm(farm: Partial<Farm>): Observable<number> {
-    return this.http.post<number>(this.baseUrl, farm, { headers: this.getHeaders() });
+    return this.http.post<number>(this.baseUrl, farm, { headers: this.getHeaders() }).pipe(
+      tap(() => { this.myFarms$ = undefined; }),
+    );
   }
 
   deleteFarm(farmId: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${farmId}`, { headers: this.getHeaders() });
+    return this.http.delete<void>(`${this.baseUrl}/${farmId}`, { headers: this.getHeaders() }).pipe(
+      tap(() => { this.myFarms$ = undefined; }),
+    );
   }
 
   // Guarda el ID de la farm en localStorage

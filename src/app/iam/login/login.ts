@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
@@ -12,6 +12,7 @@ import { AuthService } from '../services/auth.service';
   imports: [FormsModule, NgIf, TranslatePipe, TranslateDirective],
   templateUrl: './login.html',
   styleUrl: './login.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit {
   username = '';
@@ -27,6 +28,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
+    private cd: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
@@ -63,11 +65,13 @@ export class LoginComponent implements OnInit {
 
         this.isLoading = false;
         this.successMessage = 'Login successful.';
+        this.cd.markForCheck();
         this.router.navigate([this.authService.getRouteForCurrentUser()]);
       },
       error: () => {
         this.isLoading = false;
         this.errorMessage = 'Invalid username or password.';
+        this.cd.markForCheck();
       },
     });
   }

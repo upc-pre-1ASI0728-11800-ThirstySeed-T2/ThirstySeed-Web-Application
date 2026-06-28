@@ -41,9 +41,115 @@
           <input type="text" [(ngModel)]="farm.name" placeholder="Example: Farm Santa Rosa" />
         </div>
 
-        <div class="form-group">
-          <label>Location</label>
-          <input type="text" [(ngModel)]="farm.location" placeholder="City, region or rural area" />
+        <div class="form-group full-width">
+          <label>Location
+            <span class="geo-optional">— precise location improves weather accuracy</span>
+          </label>
+
+          <!-- Mode toggle -->
+          <div class="loc-tabs">
+            <button type="button" class="loc-tab" [class.active]="locationMode === 'gps'"
+                    (click)="switchLocationMode('gps')">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="10" r="3"/>
+                <path d="M12 2a8 8 0 018 8c0 5.25-8 14-8 14S4 15.25 4 10a8 8 0 018-8z"/>
+              </svg>
+              GPS detection
+            </button>
+            <button type="button" class="loc-tab" [class.active]="locationMode === 'manual'"
+                    (click)="switchLocationMode('manual')">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+              </svg>
+              Enter manually
+            </button>
+          </div>
+
+          <!-- ── GPS mode ── -->
+          <ng-container *ngIf="locationMode === 'gps'">
+            <div class="geo-bar">
+              <button type="button" class="btn-detect"
+                      (click)="detectLocation()"
+                      [disabled]="geoState === 'detecting'">
+                <span class="detect-spinner" *ngIf="geoState === 'detecting'"></span>
+                <svg *ngIf="geoState !== 'detecting'" viewBox="0 0 24 24" fill="none"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="10" r="3"/>
+                  <path d="M12 2a8 8 0 018 8c0 5.25-8 14-8 14S4 15.25 4 10a8 8 0 018-8z"/>
+                </svg>
+                {{ geoState === 'detecting' ? 'Detecting…' : 'Use my location' }}
+              </button>
+
+              <div class="geo-coords" *ngIf="geoState === 'done' && latitude !== null">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                {{ latitude | number:'1.4-4' }}°, {{ longitude | number:'1.4-4' }}°
+              </div>
+
+              <div class="geo-error-chip" *ngIf="geoState === 'error'">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                {{ geoError }}
+              </div>
+            </div>
+
+            <input type="text" [(ngModel)]="farm.location"
+                   placeholder="Detected address will appear here — you can edit it"
+                   [class.geo-filled]="geoState === 'done'"/>
+          </ng-container>
+
+          <!-- ── Manual mode ── -->
+          <ng-container *ngIf="locationMode === 'manual'">
+            <div class="manual-location-grid">
+
+              <div class="manual-field">
+                <label class="manual-label">Country <span class="required-mark">*</span></label>
+                <select [(ngModel)]="manualCountry" (ngModelChange)="onManualLocationChange()"
+                        class="manual-select">
+                  <option value="" disabled>Select a country</option>
+                  <option *ngFor="let c of countries; trackBy: trackByValue" [value]="c">{{ c }}</option>
+                </select>
+              </div>
+
+              <div class="manual-field">
+                <label class="manual-label">City / Region <span class="required-mark">*</span></label>
+                <input type="text" [(ngModel)]="manualCity"
+                       (ngModelChange)="onManualLocationChange()"
+                       placeholder="e.g. Lima, Cusco, Arequipa"
+                       class="manual-input"/>
+              </div>
+
+              <div class="manual-field full">
+                <label class="manual-label">Additional details</label>
+                <input type="text" [(ngModel)]="manualDetails"
+                       (ngModelChange)="onManualLocationChange()"
+                       placeholder="e.g. Km 42 Pan-American Highway, Valle del Chillón"
+                       class="manual-input"/>
+              </div>
+
+            </div>
+
+            <!-- Assembled preview -->
+            <div class="loc-assembled" *ngIf="farm.location">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="10" r="3"/>
+                <path d="M12 2a8 8 0 018 8c0 5.25-8 14-8 14S4 15.25 4 10a8 8 0 018-8z"/>
+              </svg>
+              {{ farm.location }}
+            </div>
+          </ng-container>
+
         </div>
 
         <div class="form-group">
@@ -96,7 +202,7 @@
             <option [ngValue]="undefined" disabled selected>
               {{ loadingZones ? 'Loading zones...' : 'Select a water management zone' }}
             </option>
-            <option *ngFor="let z of zones" [value]="z.id">{{ z.name }} — {{ z.location }}</option>
+            <option *ngFor="let z of zones; trackBy: trackById" [value]="z.id">{{ z.name }} — {{ z.location }}</option>
           </select>
         </div>
 
@@ -166,6 +272,10 @@
         </div>
         <div class="preview-row">
           <span>LOCATION</span><strong>{{ farm.location || '—' }}</strong>
+        </div>
+        <div class="preview-row" *ngIf="latitude !== null">
+          <span>GPS</span>
+          <strong class="gps-preview">{{ latitude | number:'1.4-4' }}°, {{ longitude | number:'1.4-4' }}°</strong>
         </div>
         <div class="preview-row">
           <span>ZONE</span>

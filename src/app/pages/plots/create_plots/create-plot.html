@@ -23,7 +23,7 @@
             <label>Farm *</label>
             <select [(ngModel)]="selectedFarmId" name="farmId" required>
               <option [ngValue]="null" disabled>Select a farm</option>
-              <option *ngFor="let farm of farms" [ngValue]="farm.id">{{ farm.name }}</option>
+              <option *ngFor="let farm of farms; trackBy: trackById" [ngValue]="farm.id">{{ farm.name }}</option>
             </select>
             <small *ngIf="farms.length === 0">No farms found. Create a farm first.</small>
           </div>
@@ -43,7 +43,7 @@
             <label>Crop type</label>
             <select [(ngModel)]="selectedCrop" name="crop">
               <option value="">Select crop</option>
-              <option *ngFor="let crop of cropOptions" [value]="crop">{{ crop }}</option>
+              <option *ngFor="let crop of cropOptions; trackBy: trackByValue" [value]="crop">{{ crop }}</option>
             </select>
           </div>
 
@@ -64,7 +64,7 @@
             <label>Soil type</label>
             <select [(ngModel)]="selectedSoilType" name="soil">
               <option value="">Select soil</option>
-              <option *ngFor="let soil of soilTypes" [value]="soil">{{ soil }}</option>
+              <option *ngFor="let soil of soilTypes; trackBy: trackByValue" [value]="soil">{{ soil }}</option>
             </select>
           </div>
 
@@ -73,7 +73,7 @@
             <label>Irrigation system</label>
             <select [(ngModel)]="selectedIrrigation" name="irrigation">
               <option value="">Select system</option>
-              <option *ngFor="let irrigation of irrigationSystems" [value]="irrigation">{{ irrigation }}</option>
+              <option *ngFor="let irrigation of irrigationSystems; trackBy: trackByValue" [value]="irrigation">{{ irrigation }}</option>
             </select>
           </div>
 
@@ -81,7 +81,7 @@
           <div class="field">
             <label>Water demand level</label>
             <select [(ngModel)]="selectedWaterDemand" name="waterDemand">
-              <option *ngFor="let demand of waterDemandOptions" [value]="demand">{{ demand }}</option>
+              <option *ngFor="let demand of waterDemandOptions; trackBy: trackByValue" [value]="demand">{{ demand }}</option>
             </select>
           </div>
 
@@ -89,7 +89,7 @@
           <div class="field">
             <label>IoT node assignment</label>
             <select [(ngModel)]="selectedNode" name="node">
-              <option *ngFor="let node of nodeOptions" [value]="node">{{ node }}</option>
+              <option *ngFor="let node of nodeOptions; trackBy: trackByValue" [value]="node">{{ node }}</option>
             </select>
           </div>
 

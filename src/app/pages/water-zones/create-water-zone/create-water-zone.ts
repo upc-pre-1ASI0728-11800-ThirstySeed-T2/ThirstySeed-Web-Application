@@ -1,4 +1,5 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,6 +13,7 @@ import { CreateWaterZoneRequest, WaterZone } from '../model/water-zone.model';
   imports: [CommonModule, FormsModule],
   templateUrl: './create-water-zone.html',
   styleUrl: './create-water-zone.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateWaterZoneComponent {
   isLoading = false;
@@ -24,6 +26,8 @@ export class CreateWaterZoneComponent {
     location: '',
     description: '',
   };
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private authService: AuthService,
@@ -49,7 +53,7 @@ export class CreateWaterZoneComponent {
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.waterZoneService.createZone(this.form).subscribe({
+    this.waterZoneService.createZone(this.form).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (zone: WaterZone) => {
         this.waterZoneService.saveZoneId(user.id, zone.id);
         this.successMessage = `Zona "${zone.name}" creada correctamente.`;

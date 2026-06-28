@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, AfterViewChecked, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
@@ -14,6 +15,7 @@ type Panel = 'empty' | 'new' | 'detail';
   imports: [CommonModule, FormsModule, TranslatePipe, TranslateDirective],
   templateUrl: './support.html',
   styleUrl: './support.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SupportComponent implements OnInit, AfterViewChecked {
   @ViewChild('chatEnd') chatEnd!: ElementRef;
@@ -43,6 +45,8 @@ export class SupportComponent implements OnInit, AfterViewChecked {
   private currentUserId = 0;
   private shouldScrollChat = false;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private authService: AuthService,
     private supportService: SupportService,
@@ -65,7 +69,7 @@ export class SupportComponent implements OnInit, AfterViewChecked {
   loadTickets(): void {
     this.loadingTickets = true;
     this.ticketError = '';
-    this.supportService.getMyTickets().subscribe({
+    this.supportService.getMyTickets().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (tickets) => {
         this.tickets = tickets.sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
@@ -108,7 +112,7 @@ export class SupportComponent implements OnInit, AfterViewChecked {
       category: this.newCategory,
       priority: this.newPriority,
       attachmentUrls: [],
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (ticket) => {
         this.tickets.unshift(ticket);
         this.creating = false;
@@ -128,7 +132,7 @@ export class SupportComponent implements OnInit, AfterViewChecked {
     this.panel = 'detail';
     this.messages = [];
     this.loadingMessages = true;
-    this.supportService.getMessages(ticket.id).subscribe({
+    this.supportService.getMessages(ticket.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (msgs) => {
         this.messages = msgs;
         this.loadingMessages = false;
@@ -150,7 +154,7 @@ export class SupportComponent implements OnInit, AfterViewChecked {
     this.supportService.sendMessage(this.selectedTicket.id, {
       content,
       attachmentUrls: [],
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (msg) => {
         this.messages.push(msg);
         this.sending = false;
@@ -214,4 +218,7 @@ export class SupportComponent implements OnInit, AfterViewChecked {
       this.chatEnd?.nativeElement?.scrollIntoView({ behavior: 'smooth' });
     } catch { /* noop */ }
   }
+
+  trackById(_: number, item: {id: number}): number { return item.id; }
+  trackByValue(_: number, item: string): string { return item; }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, shareReplay, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface Subscription {
@@ -27,6 +27,7 @@ export interface CreateSubscriptionRequest {
 export class SubscriptionService {
 
   private apiUrl = `${environment.apiBaseUrl}/api/v1/subscriptions`;
+  private cache$ = new Map<number, Observable<Subscription>>();
 
   constructor(private http: HttpClient) {}
 
@@ -36,15 +37,22 @@ export class SubscriptionService {
   }
 
   getByUserId(userId: number): Observable<Subscription> {
-    return this.http
-      .get<Subscription>(`${this.apiUrl}/user/${userId}`, { headers: this.headers() })
-      .pipe(catchError((err) => throwError(() => err)));
+    if (!this.cache$.has(userId)) {
+      const obs$ = this.http
+        .get<Subscription>(`${this.apiUrl}/user/${userId}`, { headers: this.headers() })
+        .pipe(catchError((err) => throwError(() => err)), shareReplay(1));
+      this.cache$.set(userId, obs$);
+    }
+    return this.cache$.get(userId)!;
   }
 
   createSubscription(payload: CreateSubscriptionRequest): Observable<Subscription> {
     return this.http
       .post<Subscription>(this.apiUrl, payload, { headers: this.headers() })
-      .pipe(catchError((err) => throwError(() => err)));
+      .pipe(
+        tap(() => this.cache$.clear()),
+        catchError((err) => throwError(() => err)),
+      );
   }
 
   getById(subscriptionId: number): Observable<Subscription> {
@@ -56,6 +64,9 @@ export class SubscriptionService {
   delete(subscriptionId: number): Observable<void> {
     return this.http
       .delete<void>(`${this.apiUrl}/${subscriptionId}`, { headers: this.headers() })
-      .pipe(catchError((err) => throwError(() => err)));
+      .pipe(
+        tap(() => this.cache$.clear()),
+        catchError((err) => throwError(() => err)),
+      );
   }
 }

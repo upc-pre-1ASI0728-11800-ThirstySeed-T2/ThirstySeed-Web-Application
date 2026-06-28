@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil, filter } from 'rxjs';
@@ -12,6 +12,7 @@ import { SubscriptionService } from '../iam/services/subscription.service';
   imports: [RouterOutlet, SidebarComponent, CommonModule],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainLayoutComponent implements OnInit, OnDestroy {
   subscriptionChecked = false;
@@ -108,7 +109,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   get showChecking(): boolean {
     return (
       !this.subscriptionChecked &&
-      this.currentUrl !== '/profile-rol'
+      this.currentUrl !== '/profile-rol' &&
+      this.currentUrl !== '/profile'
     );
   }
 
@@ -130,14 +132,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       next: (sub) => {
         clearTimeout(this.fallbackTimer);
         if (this.destroyed) return;
-        const active = sub?.active === true;
-        this.hasSubscription = active;
-        // Keep local cache in sync with server response
-        if (active) {
-          localStorage.setItem(`subscription_${this.userId}`, JSON.stringify(sub));
-        } else {
-          localStorage.removeItem(`subscription_${this.userId}`);
-        }
+        this.hasSubscription = sub?.active === true;
         this.subscriptionChecked = true;
         this.redirectToInitialSubscriptionIfNeeded();
         this.cd.detectChanges();
@@ -157,6 +152,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     if (
       !this.hasSubscription &&
       this.currentUrl !== '/profile-rol' &&
+      this.currentUrl !== '/profile' &&
       this.currentUrl !== '/subscription'
     ) {
       this.router.navigate(['/subscription']);
@@ -178,4 +174,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+  trackByPlanName(_: number, plan: {name: string}): string { return plan.name; }
+  trackByValue(_: number, item: string): string { return item; }
 }
