@@ -208,4 +208,6 @@ export class DashboardComponent implements OnInit {
   waterStress?: WaterStressCard;
 
   moistureTrend: number[] = [];
+
+  trackById(_: number, item: {id: number}): number { return item.id; }
 }
