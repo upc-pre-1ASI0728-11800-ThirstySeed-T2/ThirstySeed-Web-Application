@@ -206,4 +206,7 @@ export class ProfileRol implements OnInit {
 
     this.authService.setCurrentUser(user);
   }
+
+  trackByPlanType(_: number, plan: PlanOption): string { return plan.type; }
+  trackByValue(_: number, item: string): string { return item; }
 }
