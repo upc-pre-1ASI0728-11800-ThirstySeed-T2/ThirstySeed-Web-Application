@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, AfterViewChecked, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
@@ -44,6 +45,8 @@ export class SupportComponent implements OnInit, AfterViewChecked {
   private currentUserId = 0;
   private shouldScrollChat = false;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private authService: AuthService,
     private supportService: SupportService,
@@ -66,7 +69,7 @@ export class SupportComponent implements OnInit, AfterViewChecked {
   loadTickets(): void {
     this.loadingTickets = true;
     this.ticketError = '';
-    this.supportService.getMyTickets().subscribe({
+    this.supportService.getMyTickets().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (tickets) => {
         this.tickets = tickets.sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
@@ -109,7 +112,7 @@ export class SupportComponent implements OnInit, AfterViewChecked {
       category: this.newCategory,
       priority: this.newPriority,
       attachmentUrls: [],
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (ticket) => {
         this.tickets.unshift(ticket);
         this.creating = false;
@@ -129,7 +132,7 @@ export class SupportComponent implements OnInit, AfterViewChecked {
     this.panel = 'detail';
     this.messages = [];
     this.loadingMessages = true;
-    this.supportService.getMessages(ticket.id).subscribe({
+    this.supportService.getMessages(ticket.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (msgs) => {
         this.messages = msgs;
         this.loadingMessages = false;
@@ -151,7 +154,7 @@ export class SupportComponent implements OnInit, AfterViewChecked {
     this.supportService.sendMessage(this.selectedTicket.id, {
       content,
       attachmentUrls: [],
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (msg) => {
         this.messages.push(msg);
         this.sending = false;
