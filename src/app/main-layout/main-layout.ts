@@ -84,6 +84,12 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.isProducer = user.roles?.includes('ROLE_PRODUCER') ?? false;
     this.currentUrl = this.router.url;
 
+    if (user.roles?.includes('ROLE_ADMIN')) {
+      this.hasSubscription = true;
+      this.subscriptionChecked = true;
+      return;
+    }
+
     // Re-check when leaving /profile-rol (user just picked a plan)
     this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd),
