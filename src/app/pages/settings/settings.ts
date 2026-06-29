@@ -2,15 +2,16 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../../iam/services/auth.service';
-import { SettingsService, ProfilePayload } from './services/settings.service';
+import { ProfileService, ProfilePayload } from '../../iam/services/profile.service';
+import { SubscriptionService } from '../../iam/services/subscription.service';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './settings.html',
   styleUrls: ['./settings.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,7 +37,8 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private settingsService: SettingsService,
+    private profileService: ProfileService,
+    private subscriptionService: SubscriptionService,
     private router: Router,
     private authService: AuthService,
     private cd: ChangeDetectorRef,
@@ -110,8 +112,8 @@ export class SettingsComponent implements OnInit {
     this.saving = true;
 
     const request = this.profileId
-      ? this.settingsService.updateProfile(this.profileId, payload)
-      : this.settingsService.createProfile(payload);
+      ? this.profileService.updateProfile(Number(this.profileId), payload)
+      : this.profileService.createProfile(payload);
 
     request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (profile: any) => {
@@ -136,7 +138,7 @@ export class SettingsComponent implements OnInit {
     if (!confirm('Delete account? This action cannot be undone.')) return;
 
     const deleteUser = () => {
-      this.settingsService.deleteUser(this.userId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      this.profileService.deleteUser(this.userId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
           localStorage.clear();
           this.router.navigate(['/login']);
@@ -152,7 +154,7 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-    this.settingsService.deleteProfile(this.profileId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    this.profileService.deleteProfile(Number(this.profileId)).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: deleteUser,
       error: () => {
         this.errorMessage = 'Profile could not be deleted.';
@@ -168,8 +170,15 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-    this.settingsService.getProfileByUserId(this.userId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: any) => {
+    this.profileService.getProfileByUserId(Number(this.userId)).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (res) => {
+        if (!res) {
+          localStorage.setItem(this.getProfileMissingKey(), 'true');
+          this.profileMissing = true;
+          this.loading = false;
+          this.cd.detectChanges();
+          return;
+        }
         this.profileId = String(res.id ?? '');
         this.storeProfile(res);
         this.form.patchValue({
@@ -179,17 +188,11 @@ export class SettingsComponent implements OnInit {
         this.loading = false;
         this.cd.detectChanges();
       },
-      error: () => {
-        localStorage.setItem(this.getProfileMissingKey(), 'true');
-        this.profileMissing = true;
-        this.loading = false;
-        this.cd.detectChanges();
-      },
     });
   }
 
   private loadSubscription(): void {
-    this.settingsService.getSubscriptionByUserId(this.userId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    this.subscriptionService.getByUserId(Number(this.userId)).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.subscription = res;
         this.cd.detectChanges();

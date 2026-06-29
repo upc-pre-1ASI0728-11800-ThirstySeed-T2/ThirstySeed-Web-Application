@@ -84,7 +84,7 @@ export class TelemetryService {
     return this.http
       .post<number>(
         `${this.apiUrl}/api/v1/nodes`,
-        { plotId, location, moisture: 0 },
+        { plotId, location, moisture: 0, isActive: true },
         { headers: this.getHeaders() },
       )
       .pipe(catchError((err) => throwError(() => err)));
