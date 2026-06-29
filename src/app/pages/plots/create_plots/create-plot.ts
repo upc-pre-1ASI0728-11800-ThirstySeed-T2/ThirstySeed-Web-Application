@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { PlotService } from '../services/plot.service';
+import { PlotService, ConfigurePlotRequest } from '../services/plot.service';
 import { AuthService } from '../../../iam/services/auth.service';
 import { SubscriptionService } from '../../../iam/services/subscription.service';
 import { FarmService } from '../../farms/services/farm.service';
@@ -34,6 +34,12 @@ export class CreatePlotComponent implements OnInit {
   selectedWaterDemand: 'HIGH' | 'MODERATE' | 'LOW' = 'MODERATE';
 
   selectedFarmId: number | null = null;
+
+  // GEOLOCATION
+  latitude: number | null = null;
+  longitude: number | null = null;
+  geoState: 'idle' | 'detecting' | 'done' | 'error' = 'idle';
+  geoError = '';
 
   // NODE (UI)
   selectedNode = 'Assign later';
@@ -85,17 +91,7 @@ export class CreatePlotComponent implements OnInit {
         this.maxNodes = sub.maxNodes;
         this.cd.markForCheck();
       },
-      error: () => {
-        const cached = localStorage.getItem(`subscription_${user.id}`);
-        if (cached) {
-          try {
-            const sub = JSON.parse(cached);
-            this.planType = sub.planType ?? '';
-            this.maxNodes = sub.maxNodes ?? 0;
-          } catch { /* leave defaults */ }
-        }
-        this.cd.markForCheck();
-      },
+      error: () => { this.cd.markForCheck(); },
     });
 
     this.plotService.getPlotsByUser(user.id).subscribe({
@@ -164,7 +160,7 @@ export class CreatePlotComponent implements OnInit {
       return;
     }
 
-    const payload = {
+    const payload: ConfigurePlotRequest = {
       name: this.plotName,
       cropName: this.selectedCrop || this.plotName,
       waterDemand: this.selectedWaterDemand,
@@ -173,6 +169,8 @@ export class CreatePlotComponent implements OnInit {
       irrigationSystem: this.selectedIrrigation || undefined,
       coordinatesJson: '{}',
     };
+    if (this.latitude !== null)  payload.latitude  = this.latitude;
+    if (this.longitude !== null) payload.longitude = this.longitude;
 
     this.plotService.createPlotInFarm(this.selectedFarmId, payload).subscribe({
       next: () => {
@@ -205,6 +203,29 @@ export class CreatePlotComponent implements OnInit {
         this.cd.markForCheck();
       },
     });
+  }
+
+  detectLocation(): void {
+    if (!navigator.geolocation) {
+      this.geoState = 'error';
+      this.geoError = 'Geolocation not supported by this browser';
+      return;
+    }
+    this.geoState = 'detecting';
+    this.cd.markForCheck();
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        this.latitude = pos.coords.latitude;
+        this.longitude = pos.coords.longitude;
+        this.geoState = 'done';
+        this.cd.markForCheck();
+      },
+      () => {
+        this.geoState = 'error';
+        this.geoError = 'Could not get location. Please allow location access.';
+        this.cd.markForCheck();
+      },
+    );
   }
 
   goBack(): void {

@@ -85,6 +85,32 @@
             </select>
           </div>
 
+          <!-- GPS LOCATION (optional — improves weather accuracy) -->
+          <div class="field full-width">
+            <label>GPS coordinates <span style="font-weight:400;color:#6B7280">(optional — improves irrigation accuracy)</span></label>
+            <div class="geo-bar">
+              <button type="button" class="btn-detect"
+                      (click)="detectLocation()"
+                      [disabled]="geoState === 'detecting'">
+                <span class="detect-spinner" *ngIf="geoState === 'detecting'"></span>
+                <svg *ngIf="geoState !== 'detecting'" viewBox="0 0 24 24" fill="none"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="10" r="3"/>
+                  <path d="M12 2a8 8 0 018 8c0 5.25-8 14-8 14S4 15.25 4 10a8 8 0 018-8z"/>
+                </svg>
+                {{ geoState === 'detecting' ? 'Detecting…' : 'Use my location' }}
+              </button>
+              <div class="geo-coords" *ngIf="geoState === 'done' && latitude !== null">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                {{ latitude | number:'1.4-4' }}°, {{ longitude | number:'1.4-4' }}°
+              </div>
+              <div class="geo-error-chip" *ngIf="geoState === 'error'">{{ geoError }}</div>
+            </div>
+          </div>
+
           <!-- NODE -->
           <div class="field">
             <label>IoT node assignment</label>
