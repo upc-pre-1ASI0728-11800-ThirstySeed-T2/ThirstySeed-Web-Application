@@ -8,6 +8,7 @@ import { AuthService } from '../../iam/services/auth.service';
 import { PlotService } from '../../pages/plots/services/plot.service';
 import { AlertService } from '../../pages/dashboard/services/alert.service';
 import { SubscriptionService } from '../../iam/services/subscription.service';
+import { TelemetryService } from '../../pages/telemetry/services/telemetry.service';
 import { LanguageSwitcherComponent } from '../language/language-switcher';
 
 export interface MenuItem {
@@ -15,6 +16,8 @@ export interface MenuItem {
   route: string;
   translateKey: string;
 }
+
+const STRESS_ORDER = ['LOW', 'MEDIUM', 'MODERATE', 'HIGH', 'CRITICAL', 'EXTREME'];
 
 @Component({
   selector: 'app-sidebar',
@@ -41,6 +44,8 @@ export class SidebarComponent implements OnInit {
   usedNodes = 0;
   totalNodes = 0;
   pendingAlertCount = 0;
+  pendingRecommendationCount = 0;
+  highestStressLevel = '';
 
   constructor(
     private authService: AuthService,
@@ -48,8 +53,16 @@ export class SidebarComponent implements OnInit {
     private plotService: PlotService,
     private alertService: AlertService,
     private subscriptionService: SubscriptionService,
+    private telemetryService: TelemetryService,
     private cd: ChangeDetectorRef,
   ) {}
+
+  get alertBadgeSeverityClass(): string {
+    if (this.highestStressLevel === 'EXTREME' || this.highestStressLevel === 'CRITICAL') return 'critical';
+    if (this.highestStressLevel === 'HIGH') return 'high';
+    if (this.highestStressLevel === 'MODERATE') return 'moderate';
+    return '';
+  }
 
   logout(): void {
     this.authService.logout();
@@ -72,12 +85,12 @@ export class SidebarComponent implements OnInit {
     } else if (user.roles?.includes('ROLE_WATER_MANAGER')) {
       this.panelTitle = 'SIDEBAR.WATER_MANAGER_PANEL';
       this.menuItems = [
-        { label: 'Dashboard',    route: '/water-manager/dashboard',   translateKey: 'SIDEBAR.DASHBOARD'    },
-        { label: 'Zones',        route: '/water-manager/zones/create',translateKey: 'SIDEBAR.ZONES'        },
-        { label: 'Producers',    route: '/water-manager/producers',   translateKey: 'SIDEBAR.PRODUCERS'    },
-        { label: 'Distribution', route: '/water-manager/distribution',translateKey: 'SIDEBAR.DISTRIBUTION' },
-        { label: 'Support',      route: '/support',                   translateKey: 'SIDEBAR.SUPPORT'      },
-        { label: 'Settings',     route: '/settings',                  translateKey: 'SIDEBAR.SETTINGS'     },
+        { label: 'Dashboard',    route: '/water-manager/dashboard',    translateKey: 'SIDEBAR.DASHBOARD'    },
+        { label: 'Zones',        route: '/water-manager/zones/create', translateKey: 'SIDEBAR.ZONES'        },
+        { label: 'Producers',    route: '/water-manager/producers',    translateKey: 'SIDEBAR.PRODUCERS'    },
+        { label: 'Distribution', route: '/water-manager/distribution', translateKey: 'SIDEBAR.DISTRIBUTION' },
+        { label: 'Support',      route: '/support',                    translateKey: 'SIDEBAR.SUPPORT'      },
+        { label: 'Settings',     route: '/settings',                   translateKey: 'SIDEBAR.SETTINGS'     },
       ];
       this.showPremiumCard = false;
 
@@ -98,6 +111,7 @@ export class SidebarComponent implements OnInit {
       this.showPremiumCard = true;
       this.loadProducerPlanSummary(user.id);
       this.loadAlertCount(user.id);
+      this.loadRecommendationCount(user.id);
     }
   }
 
@@ -127,20 +141,53 @@ export class SidebarComponent implements OnInit {
     this.plotService.getPlotsByUser(userId).pipe(
       catchError(() => of(this.plotService.getStoredPlots(userId))),
       switchMap((plots) => {
-        if (!plots.length) return of([]);
-        const requests = plots.map((p) =>
-          this.alertService.getAlertsByPlot(p.id).pipe(catchError(() => of([]))),
-        );
-        return forkJoin(requests);
+        if (!plots.length) {
+          return of({ alerts: [] as any[][], assessments: [] as any[][] });
+        }
+        return forkJoin({
+          alerts: forkJoin(
+            plots.map((p) => this.alertService.getAlertsByPlot(p.id).pipe(catchError(() => of([])))),
+          ),
+          assessments: forkJoin(
+            plots.map((p) => this.telemetryService.getAssessmentsByPlot(p.id).pipe(catchError(() => of([])))),
+          ),
+        });
       }),
     ).subscribe({
-      next: (allAlerts) => {
-        const flat = (allAlerts as any[]).flat();
-        this.pendingAlertCount = flat.filter(
-          (a: any) => a.status !== 'ACKNOWLEDGED',
-        ).length;
+      next: ({ alerts, assessments }) => {
+        const flatAlerts = (alerts as any[][]).flat();
+        this.pendingAlertCount = flatAlerts.filter((a: any) => a.status === 'PENDING').length;
+
+        const flatAssessments = (assessments as any[][]).flat();
+        this.highestStressLevel = this.resolveHighestStressLevel(
+          flatAssessments.map((a: any) => String(a.stressLevel ?? '').toUpperCase()),
+        );
         this.cd.markForCheck();
       },
     });
+  }
+
+  private loadRecommendationCount(userId: number): void {
+    this.plotService.getPlotsByUser(userId).pipe(
+      catchError(() => of(this.plotService.getStoredPlots(userId))),
+      switchMap((plots) => {
+        if (!plots.length) return of([]);
+        return forkJoin(
+          plots.map((p) => this.telemetryService.getRecommendationsByPlot(p.id).pipe(catchError(() => of([])))),
+        );
+      }),
+    ).subscribe({
+      next: (allRecs) => {
+        const flat = (allRecs as any[]).flat();
+        this.pendingRecommendationCount = flat.filter((r: any) => r.status === 'PENDING').length;
+        this.cd.markForCheck();
+      },
+    });
+  }
+
+  private resolveHighestStressLevel(levels: string[]): string {
+    return levels.reduce((highest, level) => {
+      return STRESS_ORDER.indexOf(level) > STRESS_ORDER.indexOf(highest) ? level : highest;
+    }, '');
   }
 }
