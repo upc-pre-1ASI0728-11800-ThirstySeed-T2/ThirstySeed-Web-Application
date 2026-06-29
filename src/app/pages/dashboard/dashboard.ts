@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { DashboardService } from './services/dashboard.service';
 import { AlertService } from './services/alert.service';
 import { AlertCard, DashboardMetrics, PlotCard, WaterStressCard } from './model/dashboard.model';
@@ -14,7 +14,7 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective, RouterLink, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, BaseChartDirective, RouterLink, TranslatePipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -91,11 +91,11 @@ export class DashboardComponent implements OnInit {
   }
 
   get criticalAlerts(): AlertCard[] {
-    return this.latestAlerts.filter(a => a.status === 'CRITICAL');
+    return this.latestAlerts.filter(a => a.status === 'PENDING');
   }
 
   get otherAlerts(): AlertCard[] {
-    return this.latestAlerts.filter(a => a.status !== 'CRITICAL');
+    return this.latestAlerts.filter(a => a.status === 'ACKNOWLEDGED');
   }
 
   private destroyRef = inject(DestroyRef);
