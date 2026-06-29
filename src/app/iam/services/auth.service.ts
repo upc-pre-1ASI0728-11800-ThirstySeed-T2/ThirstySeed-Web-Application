@@ -109,6 +109,7 @@ export class AuthService {
   getRouteForCurrentUser(): string {
     const roles = this.getCurrentUser()?.roles ?? [];
 
+    if (roles.includes('ROLE_ADMIN')) return '/admin/dashboard';
     if (roles.includes('ROLE_WATER_MANAGER')) return '/water-manager/dashboard';
     return '/dashboard';
   }

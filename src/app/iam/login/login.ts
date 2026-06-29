@@ -3,13 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { NgIf } from '@angular/common';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, NgIf, TranslatePipe, TranslateDirective],
+  imports: [FormsModule, NgIf, TranslatePipe],
   templateUrl: './login.html',
   styleUrl: './login.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
 
     this.authService.signIn(this.username, this.password).subscribe({
       next: (user: any) => {
-        localStorage.setItem('userId', user.id);
+        localStorage.setItem('userId', String(user.id));
 
         if (this.rememberMe) {
           localStorage.setItem('rememberedUsername', this.username);

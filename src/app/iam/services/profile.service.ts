@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, of } from 'rxjs';
+import { Observable, catchError, of, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface UserProfile {
@@ -53,5 +53,19 @@ export class ProfileService {
     return this.http.put<UserProfile>(`${this.apiUrl}/${profileId}`, payload, {
       headers: this.getHeaders(),
     });
+  }
+
+  // DELETE /api/v1/profiles/{profileId}
+  deleteProfile(profileId: number): Observable<void> {
+    return this.http
+      .delete<void>(`${this.apiUrl}/${profileId}`, { headers: this.getHeaders() })
+      .pipe(catchError((err) => throwError(() => err)));
+  }
+
+  // DELETE /api/v1/users/{userId}
+  deleteUser(userId: string | number): Observable<void> {
+    return this.http
+      .delete<void>(`${environment.apiBaseUrl}/api/v1/users/${userId}`, { headers: this.getHeaders() })
+      .pipe(catchError((err) => throwError(() => err)));
   }
 }

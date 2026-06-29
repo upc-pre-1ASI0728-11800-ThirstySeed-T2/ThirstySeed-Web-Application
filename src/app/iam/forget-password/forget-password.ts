@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthService } from '../services/auth.service';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -15,17 +14,17 @@ import { environment } from '../../../environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForgetPasswordComponent {
-  email = '';
+  username = '';
   newPassword = '';
   confirmPassword = '';
 
   errorMessage = '';
   successMessage = '';
+  isLoading = false;
 
-  private backendUrl = `${environment.apiBaseUrl}/api/v1/profiles`;
+  private changePasswordUrl = `${environment.apiBaseUrl}/api/v1/authentication/change-password`;
 
   constructor(
-    private authService: AuthService,
     private router: Router,
     private http: HttpClient,
     private cd: ChangeDetectorRef,
@@ -34,6 +33,11 @@ export class ForgetPasswordComponent {
   resetPassword(): void {
     this.errorMessage = '';
     this.successMessage = '';
+
+    if (!this.username.trim()) {
+      this.errorMessage = 'Username is required.';
+      return;
+    }
 
     if (!this.newPassword.trim()) {
       this.errorMessage = 'Password is required.';
@@ -53,36 +57,21 @@ export class ForgetPasswordComponent {
       return;
     }
 
-    const token = this.authService.getToken();
-    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-
-    this.http.get<any[]>(`${this.backendUrl}`).subscribe({
-      next: (profiles) => {
-        const profile = profiles.find(p => p.email.toLowerCase() === this.email.toLowerCase());
-        if (!profile) {
-          this.errorMessage = 'No account was found with that email.';
+    this.isLoading = true;
+    this.http
+      .put(this.changePasswordUrl, { username: this.username.trim(), newPassword: this.newPassword })
+      .subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.successMessage = 'Password updated successfully.';
           this.cd.markForCheck();
-          return;
-        }
-
-        this.http.put(`${this.backendUrl}/${profile.id}/password`, { newPassword: this.newPassword }, { headers }).subscribe({
-          next: () => {
-            this.successMessage = 'Password updated successfully.';
-            this.cd.markForCheck();
-            setTimeout(() => {
-              this.router.navigate(['/login']);
-            }, 1500);
-          },
-          error: () => {
-            this.errorMessage = 'Unable to update password.';
-            this.cd.markForCheck();
-          }
-        });
-      },
-      error: () => {
-        this.errorMessage = 'Unable to fetch profiles.';
-        this.cd.markForCheck();
-      }
-    });
+          setTimeout(() => this.router.navigate(['/login']), 1500);
+        },
+        error: () => {
+          this.isLoading = false;
+          this.errorMessage = 'Unable to update password. Please check your username.';
+          this.cd.markForCheck();
+        },
+      });
   }
 }

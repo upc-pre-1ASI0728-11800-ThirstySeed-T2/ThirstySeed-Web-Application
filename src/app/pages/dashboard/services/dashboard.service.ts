@@ -64,7 +64,7 @@ export class DashboardService {
 
             const criticalAlerts = allAlerts
               .flat()
-              .filter((alert) => alert.status === 'CRITICAL').length;
+              .filter((alert) => alert.status === 'PENDING').length;
 
             return {
               farms,
@@ -101,7 +101,7 @@ export class DashboardService {
               imageUrl: plot.imageUrl,
               moisture: snapshot.soilMoisture,
               temperature: snapshot.temperature,
-              status: snapshot.stressRisk as 'LOW' | 'MODERATE' | 'CRITICAL',
+              status: snapshot.stressRisk as PlotCard['status'],
             })),
             catchError(() =>
               of({
@@ -145,7 +145,7 @@ export class DashboardService {
               .slice(0, 3)
               .map((alert) => ({
                 id: alert.id,
-                title: alert.status === 'CRITICAL' ? 'Critical moisture drop' : 'Irrigation alert',
+                title: `Water stress — moisture at ${alert.moistureLevel}%`,
 
                 description: alert.description,
 

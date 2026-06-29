@@ -259,6 +259,32 @@ nav {
   line-height: 1;
   border: 1.5px solid #1d9148;
   pointer-events: none;
+  transition: background 0.3s;
+}
+
+/* StressLevel severity colours */
+.alert-badge.moderate {
+  background: #f59e0b;
+}
+
+.alert-badge.high {
+  background: #ea580c;
+}
+
+.alert-badge.critical {
+  background: #dc2626;
+  animation: badge-pulse 1.2s ease-in-out infinite;
+}
+
+/* AI recommendations badge */
+.alert-badge.rec-badge {
+  background: #7c3aed;
+  right: -8px;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { transform: scale(1);   opacity: 1;   }
+  50%       { transform: scale(1.3); opacity: 0.8; }
 }
 
 .lang-switcher-wrap {

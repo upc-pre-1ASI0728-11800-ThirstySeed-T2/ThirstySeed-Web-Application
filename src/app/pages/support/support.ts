@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, ViewChil
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../iam/services/auth.service';
 import { SupportService } from './services/support.service';
 import { SupportTicket, TicketMessage } from './model/support.model';
@@ -12,7 +12,7 @@ type Panel = 'empty' | 'new' | 'detail';
 @Component({
   selector: 'app-support',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './support.html',
   styleUrl: './support.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

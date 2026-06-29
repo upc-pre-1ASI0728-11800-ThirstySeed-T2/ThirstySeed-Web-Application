@@ -2,24 +2,25 @@ import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, DestroyR
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FarmService } from './services/farm.service';
 import { Farm } from './model/farm.model';
 import { AuthService } from '../../iam/services/auth.service';
 import { SubscriptionService } from '../../iam/services/subscription.service';
 import { PlotService } from '../plots/services/plot.service';
+import { Plot } from '../plots/model/plot.model';
 
 @Component({
   selector: 'app-farms',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, RouterModule, TranslatePipe],
   templateUrl: './farms.html',
   styleUrl: './farms.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FarmsComponent implements OnInit {
   farms: Farm[] = [];
-  allPlots: any[] = [];
+  allPlots: Plot[] = [];
   loading = false;
   errorMessage = '';
   successMessage = '';

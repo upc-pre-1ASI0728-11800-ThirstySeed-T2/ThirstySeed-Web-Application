@@ -1,0 +1,197 @@
+<div class="admin-page">
+
+  <!-- TOP NAV -->
+  <header class="admin-nav">
+    <div class="nav-left">
+      <span class="nav-badge">Admin Panel</span>
+      <h1>Thirsty Seed — Administration</h1>
+    </div>
+    <div class="nav-right">
+      <span class="admin-user">{{ currentUser?.username }}</span>
+      <button class="btn-logout" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <nav class="tab-bar">
+    <button class="tab-btn" [class.active]="activeTab === 'tickets'"    (click)="setTab('tickets')">Support Tickets</button>
+    <button class="tab-btn" [class.active]="activeTab === 'users'"      (click)="setTab('users')">Users</button>
+    <button class="tab-btn" [class.active]="activeTab === 'operations'" (click)="setTab('operations')">Operations</button>
+  </nav>
+
+  <div class="admin-body">
+
+    <!-- LOADING -->
+    <div *ngIf="loading" class="state-msg">Loading...</div>
+    <div *ngIf="errorMessage && !loading" class="state-msg error">{{ errorMessage }}</div>
+
+    <!-- ══════════════════════════════════════
+         TAB 1 — SUPPORT TICKETS
+    ══════════════════════════════════════ -->
+    <div *ngIf="activeTab === 'tickets' && !loading">
+
+      <!-- Detail panel -->
+      <div *ngIf="selectedTicket" class="ticket-detail">
+        <button class="btn-back" (click)="closeTicketDetail()">← Back to list</button>
+
+        <div class="detail-header">
+          <div>
+            <h2>{{ selectedTicket.title }}</h2>
+            <p class="detail-meta">
+              <span class="pill pill-{{ selectedTicket.priority | lowercase }}">{{ selectedTicket.priority }}</span>
+              <span class="pill pill-cat">{{ selectedTicket.category }}</span>
+              <span>by <strong>{{ selectedTicket.requesterUsername }}</strong></span>
+              <span>· {{ selectedTicket.createdAt | date:'dd MMM yyyy · HH:mm' }}</span>
+            </p>
+            <p class="detail-desc">{{ selectedTicket.description }}</p>
+          </div>
+          <div class="status-control">
+            <label>Status</label>
+            <select
+              [ngModel]="selectedTicket.status"
+              (ngModelChange)="updateTicketStatus(selectedTicket!.id, $event)"
+              [disabled]="updatingStatusId === selectedTicket.id"
+            >
+              <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="messages-section">
+          <h3>Thread</h3>
+          <div class="message-list">
+            <div *ngFor="let msg of messages" class="message-item">
+              <div class="msg-sender">{{ msg.senderUsername }}</div>
+              <div class="msg-content">{{ msg.content }}</div>
+              <span class="msg-time">{{ msg.createdAt | date:'dd MMM · HH:mm' }}</span>
+            </div>
+            <div *ngIf="!messages.length" class="no-messages">No messages yet.</div>
+          </div>
+          <div class="reply-box">
+            <textarea [(ngModel)]="newMessage" placeholder="Write a reply..." rows="3"></textarea>
+            <button class="btn-send" (click)="sendMessage()" [disabled]="!newMessage.trim()">Send</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- List panel -->
+      <div *ngIf="!selectedTicket">
+        <!-- Filters -->
+        <div class="filters-bar">
+          <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()" placeholder="Search by username..." class="filter-input" />
+          <select [(ngModel)]="statusFilter"   (ngModelChange)="applyFilters()" class="filter-select">
+            <option value="">All statuses</option>
+            <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+          </select>
+          <select [(ngModel)]="priorityFilter" (ngModelChange)="applyFilters()" class="filter-select">
+            <option value="">All priorities</option>
+            <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+          </select>
+          <select [(ngModel)]="categoryFilter" (ngModelChange)="applyFilters()" class="filter-select">
+            <option value="">All categories</option>
+            <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+          </select>
+          <button class="btn-refresh" (click)="loadTickets()">Refresh</button>
+        </div>
+
+        <!-- Count -->
+        <p class="result-count">{{ filteredTickets.length }} ticket{{ filteredTickets.length === 1 ? '' : 's' }}</p>
+
+        <!-- Table -->
+        <div class="table-wrap">
+          <table class="data-table" *ngIf="filteredTickets.length; else emptyTickets">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>User</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let t of filteredTickets">
+                <td>{{ t.id }}</td>
+                <td class="col-title">{{ t.title }}</td>
+                <td>{{ t.requesterUsername }}</td>
+                <td><span class="pill pill-cat">{{ t.category }}</span></td>
+                <td><span class="pill pill-{{ t.priority | lowercase }}">{{ t.priority }}</span></td>
+                <td><span class="pill pill-status-{{ t.status | lowercase }}">{{ t.status }}</span></td>
+                <td class="col-date">{{ t.createdAt | date:'dd MMM yy' }}</td>
+                <td><button class="btn-open" (click)="openTicket(t)">Open</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #emptyTickets>
+            <div class="empty-state">No tickets match the current filters.</div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         TAB 2 — USERS
+    ══════════════════════════════════════ -->
+    <div *ngIf="activeTab === 'users' && !loading">
+      <!-- Role summary -->
+      <div class="role-cards">
+        <div class="role-card" *ngFor="let entry of userRoleCounts | keyvalue">
+          <strong>{{ entry.value }}</strong>
+          <span>{{ getRoleLabel(entry.key) }}</span>
+        </div>
+        <div class="role-card total">
+          <strong>{{ users.length }}</strong>
+          <span>Total users</span>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <table class="data-table" *ngIf="users.length; else emptyUsers">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Username</th>
+              <th>Roles</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let u of users">
+              <td>{{ u.id }}</td>
+              <td>{{ u.username }}</td>
+              <td>
+                <span *ngFor="let r of u.roles" class="pill pill-role">{{ getRoleLabel(r) }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <ng-template #emptyUsers>
+          <div class="empty-state">No users found.</div>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         TAB 3 — OPERATIONS (placeholder)
+    ══════════════════════════════════════ -->
+    <div *ngIf="activeTab === 'operations' && !loading" class="ops-placeholder">
+      <div class="ops-card">
+        <h3>Active Subscriptions</h3>
+        <p>Subscription monitoring coming soon.</p>
+      </div>
+      <div class="ops-card">
+        <h3>Water Zones</h3>
+        <p>Zone overview coming soon.</p>
+      </div>
+      <div class="ops-card">
+        <h3>System Alerts</h3>
+        <p>Alert monitoring coming soon.</p>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -305,9 +305,12 @@
   white-space: nowrap;
 }
 
-.status-pill.low      { background: #d1fae5; color: #065f46; }
-.status-pill.moderate { background: #fef3c7; color: #92400e; }
-.status-pill.critical { background: #fee2e2; color: #991b1b; }
+.status-pill.low      { background: #dcfce7; color: #166534; }
+.status-pill.medium   { background: #f0fdf4; color: #15803d; }
+.status-pill.moderate { background: #fff7ed; color: #c2410c; }
+.status-pill.high     { background: #fee2e2; color: #991b1b; }
+.status-pill.critical { background: #f3e8ff; color: #7e22ce; }
+.status-pill.extreme  { background: #1f2937; color: #f9fafb; }
 
 .open-btn {
   background: #047857;

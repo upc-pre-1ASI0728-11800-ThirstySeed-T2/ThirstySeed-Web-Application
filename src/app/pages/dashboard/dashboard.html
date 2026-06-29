@@ -133,7 +133,14 @@
             <strong>{{ plot.temperature }}°C</strong>
           </div>
 
-          <span class="status-pill" [ngClass]="{ low: plot.status==='LOW', moderate: plot.status==='MODERATE', critical: plot.status==='CRITICAL' }">
+          <span class="status-pill" [ngClass]="{
+              low:      plot.status === 'LOW',
+              medium:   plot.status === 'MEDIUM',
+              moderate: plot.status === 'MODERATE',
+              high:     plot.status === 'HIGH',
+              critical: plot.status === 'CRITICAL',
+              extreme:  plot.status === 'EXTREME'
+            }">
             {{ plot.status }}
           </span>
 
