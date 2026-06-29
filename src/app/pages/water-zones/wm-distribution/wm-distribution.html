@@ -1,0 +1,121 @@
+<section class="distribution-page">
+
+  <div class="page-header">
+    <h1>Water Distribution Plan</h1>
+    <p class="subtitle">Create and manage water allocation across linked farms.</p>
+  </div>
+
+  <div *ngIf="loading" class="state-msg">Loading plan...</div>
+  <div *ngIf="errorMessage && !loading" class="state-msg error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="state-msg success">{{ successMessage }}</div>
+
+  <!-- CREATE FORM (no plan yet) -->
+  <div *ngIf="!loading && !plan" class="create-card">
+    <h2>No plan created yet</h2>
+    <p>Set the total available water to generate a distribution plan for your linked farms.</p>
+
+    <div class="create-form">
+      <label>Total available water (litres)</label>
+      <input
+        type="number"
+        [(ngModel)]="totalAvailableWater"
+        placeholder="e.g. 50000"
+        min="1"
+        class="water-input"
+      />
+      <button class="btn-create" (click)="createPlan()" [disabled]="creating">
+        {{ creating ? 'Creating...' : 'Create plan' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- PLAN DETAIL -->
+  <div *ngIf="!loading && plan">
+
+    <!-- Summary banner -->
+    <div class="plan-summary">
+      <div class="summary-stat">
+        <label>Total available</label>
+        <strong>{{ plan.totalAvailableWater | number:'1.0-0' }} L</strong>
+      </div>
+      <div class="summary-stat">
+        <label>Assigned</label>
+        <strong>{{ plan.totalAssignedWater | number:'1.0-0' }} L</strong>
+      </div>
+      <div class="summary-stat">
+        <label>Remaining</label>
+        <strong [class.warn]="plan.remainingWater < 0">{{ plan.remainingWater | number:'1.0-0' }} L</strong>
+      </div>
+      <div class="summary-stat">
+        <label>Coverage</label>
+        <strong>{{ plan.coveragePercentage | number:'1.0-1' }}%</strong>
+      </div>
+      <span class="plan-status-pill" [ngClass]="plan.status?.toLowerCase()">{{ plan.status }}</span>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="coverage-bar-wrap">
+      <div class="coverage-bar">
+        <div
+          class="coverage-fill"
+          [style.width.%]="plan.coveragePercentage > 100 ? 100 : plan.coveragePercentage"
+          [class.over]="plan.coveragePercentage > 100"
+        ></div>
+      </div>
+      <span>{{ plan.coveragePercentage | number:'1.0-1' }}% coverage</span>
+    </div>
+
+    <!-- Items table -->
+    <div class="table-card">
+      <div class="table-header">
+        <h3>Farm allocations</h3>
+        <button class="btn-refresh" (click)="loadPlan()">Refresh</button>
+      </div>
+
+      <table class="dist-table">
+        <thead>
+          <tr>
+            <th>Farm</th>
+            <th>Area (ha)</th>
+            <th>Suggested (L)</th>
+            <th>Assigned (L)</th>
+            <th>Coverage</th>
+            <th>Edited</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of plan.items; trackBy: trackById">
+            <td class="farm-name">{{ item.farmName }}</td>
+            <td>{{ item.farmArea | number:'1.0-1' }}</td>
+            <td class="suggested">{{ item.suggestedWaterAmount | number:'1.0-0' }}</td>
+            <td class="assign-cell">
+              <input
+                type="number"
+                [(ngModel)]="editAmounts[item.id]"
+                min="0"
+                class="assign-input"
+              />
+            </td>
+            <td>{{ item.coveragePercentage | number:'1.0-1' }}%</td>
+            <td>
+              <span *ngIf="item.editedManually" class="edited-badge">Manual</span>
+              <span *ngIf="!item.editedManually" class="auto-badge">Auto</span>
+            </td>
+            <td>
+              <button
+                class="btn-save"
+                (click)="saveItem(item)"
+                [disabled]="savingItemId === item.id"
+              >
+                {{ savingItemId === item.id ? '...' : 'Save' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</section>

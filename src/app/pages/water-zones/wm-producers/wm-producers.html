@@ -1,0 +1,70 @@
+<section class="producers-page">
+
+  <div class="page-header">
+    <h1>Linked Producers</h1>
+    <p class="subtitle">Farms and producers associated with your management zone.</p>
+  </div>
+
+  <div *ngIf="loading" class="state-msg">Loading producers...</div>
+  <div *ngIf="errorMessage && !loading" class="state-msg error">{{ errorMessage }}</div>
+
+  <div *ngIf="!loading && !errorMessage">
+
+    <!-- Summary cards -->
+    <div class="summary-cards" *ngIf="dashboard">
+      <div class="stat-card">
+        <strong>{{ dashboard.activeProducers }}</strong>
+        <span>Active producers</span>
+      </div>
+      <div class="stat-card">
+        <strong>{{ dashboard.monitoredFarms }}</strong>
+        <span>Monitored farms</span>
+      </div>
+      <div class="stat-card">
+        <strong>{{ dashboard.monitoredPlots }}</strong>
+        <span>Monitored plots</span>
+      </div>
+      <div class="stat-card">
+        <strong>{{ dashboard.totalMonitoredArea | number:'1.0-1' }} ha</strong>
+        <span>Total area</span>
+      </div>
+    </div>
+
+    <!-- Farm table -->
+    <div class="table-card" *ngIf="farms.length; else emptyFarms">
+      <table class="farm-table">
+        <thead>
+          <tr>
+            <th>Farm</th>
+            <th>Producer ID</th>
+            <th>Plots</th>
+            <th>Area (ha)</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let farm of farms; trackBy: trackByFarmId">
+            <td class="farm-name">{{ farm.farmName }}</td>
+            <td>#{{ farm.producerId }}</td>
+            <td>{{ farm.plotCount }}</td>
+            <td>{{ farm.totalArea | number:'1.0-1' }}</td>
+            <td>
+              <span class="status-pill" [ngClass]="farm.status?.toLowerCase()">
+                {{ farm.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #emptyFarms>
+      <div class="empty-state">
+        <span>🌾</span>
+        <p>No farms linked to your zone yet.</p>
+      </div>
+    </ng-template>
+
+  </div>
+
+</section>
