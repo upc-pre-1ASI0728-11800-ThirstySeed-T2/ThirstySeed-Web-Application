@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './iam/guards/auth.guard';
 import { waterManagerGuard } from './iam/guards/water-manager.guard';
+import { adminGuard } from './iam/guards/admin.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -29,8 +30,18 @@ export const routes: Routes = [
         path: 'water-manager',
         canActivate: [waterManagerGuard],
         children: [
-          { path: 'dashboard', loadComponent: () => import('./pages/water-zones/water-manager-dashboard/water-manager-dashboard').then(m => m.WaterManagerDashboardComponent) },
-          { path: 'zones/create', loadComponent: () => import('./pages/water-zones/create-water-zone/create-water-zone').then(m => m.CreateWaterZoneComponent) },
+          { path: 'dashboard',     loadComponent: () => import('./pages/water-zones/water-manager-dashboard/water-manager-dashboard').then(m => m.WaterManagerDashboardComponent) },
+          { path: 'zones/create',  loadComponent: () => import('./pages/water-zones/create-water-zone/create-water-zone').then(m => m.CreateWaterZoneComponent) },
+          { path: 'producers',     loadComponent: () => import('./pages/water-zones/wm-producers/wm-producers').then(m => m.WmProducersComponent) },
+          { path: 'distribution',  loadComponent: () => import('./pages/water-zones/wm-distribution/wm-distribution').then(m => m.WmDistributionComponent) },
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+        ],
+      },
+      {
+        path: 'admin',
+        canActivate: [adminGuard],
+        children: [
+          { path: 'dashboard', loadComponent: () => import('./pages/admin/admin-dashboard/admin-dashboard').then(m => m.AdminDashboardComponent) },
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         ],
       },
