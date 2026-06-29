@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { PlotService } from '../../pages/plots/services/plot.service';
 import { Plot } from '../../pages/plots/model/plot.model';
 import { AuthService } from '../../iam/services/auth.service';
@@ -14,7 +14,7 @@ import { Farm } from '../farms/model/farm.model';
 @Component({
   selector: 'app-plots',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, RouterModule, FormsModule, TranslatePipe],
   templateUrl: './plots.html',
   styleUrl: './plots.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
