@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { SupportService } from '../../support/services/support.service';
 import { SupportTicket, TicketMessage, SendMessageRequest } from '../../support/model/support.model';
 import { AuthService } from '../../../iam/services/auth.service';
@@ -20,7 +21,7 @@ type Tab = 'tickets' | 'users' | 'operations';
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
