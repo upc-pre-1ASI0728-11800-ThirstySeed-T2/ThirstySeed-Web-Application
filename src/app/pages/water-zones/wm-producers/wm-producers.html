@@ -1,11 +1,11 @@
 <section class="producers-page">
 
   <div class="page-header">
-    <h1>Linked Producers</h1>
-    <p class="subtitle">Farms and producers associated with your management zone.</p>
+    <h1>{{ 'WM_PRODUCERS.TITLE' | translate }}</h1>
+    <p class="subtitle">{{ 'WM_PRODUCERS.SUBTITLE' | translate }}</p>
   </div>
 
-  <div *ngIf="loading" class="state-msg">Loading producers...</div>
+  <div *ngIf="loading" class="state-msg">{{ 'WM_PRODUCERS.LOADING' | translate }}</div>
   <div *ngIf="errorMessage && !loading" class="state-msg error">{{ errorMessage }}</div>
 
   <div *ngIf="!loading && !errorMessage">
@@ -14,19 +14,19 @@
     <div class="summary-cards" *ngIf="dashboard">
       <div class="stat-card">
         <strong>{{ dashboard.activeProducers }}</strong>
-        <span>Active producers</span>
+        <span>{{ 'WM_PRODUCERS.STAT_ACTIVE_PRODUCERS' | translate }}</span>
       </div>
       <div class="stat-card">
         <strong>{{ dashboard.monitoredFarms }}</strong>
-        <span>Monitored farms</span>
+        <span>{{ 'WM_PRODUCERS.STAT_MONITORED_FARMS' | translate }}</span>
       </div>
       <div class="stat-card">
         <strong>{{ dashboard.monitoredPlots }}</strong>
-        <span>Monitored plots</span>
+        <span>{{ 'WM_PRODUCERS.STAT_MONITORED_PLOTS' | translate }}</span>
       </div>
       <div class="stat-card">
         <strong>{{ dashboard.totalMonitoredArea | number:'1.0-1' }} ha</strong>
-        <span>Total area</span>
+        <span>{{ 'WM_PRODUCERS.STAT_TOTAL_AREA' | translate }}</span>
       </div>
     </div>
 
@@ -35,11 +35,11 @@
       <table class="farm-table">
         <thead>
           <tr>
-            <th>Farm</th>
-            <th>Producer ID</th>
-            <th>Plots</th>
-            <th>Area (ha)</th>
-            <th>Status</th>
+            <th>{{ 'WM_PRODUCERS.COL_FARM' | translate }}</th>
+            <th>{{ 'WM_PRODUCERS.COL_PRODUCER_ID' | translate }}</th>
+            <th>{{ 'WM_PRODUCERS.COL_PLOTS' | translate }}</th>
+            <th>{{ 'WM_PRODUCERS.COL_AREA' | translate }}</th>
+            <th>{{ 'WM_PRODUCERS.COL_STATUS' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -61,7 +61,7 @@
     <ng-template #emptyFarms>
       <div class="empty-state">
         <span>🌾</span>
-        <p>No farms linked to your zone yet.</p>
+        <p>{{ 'WM_PRODUCERS.EMPTY' | translate }}</p>
       </div>
     </ng-template>
 

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, DestroyR
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../iam/services/auth.service';
 import { WaterZoneService } from '../services/water-zone.service';
 import { WaterDistributionPlan, WaterDistributionItem } from '../model/water-zone.model';
@@ -9,7 +10,7 @@ import { WaterDistributionPlan, WaterDistributionItem } from '../model/water-zon
 @Component({
   selector: 'app-wm-distribution',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './wm-distribution.html',
   styleUrl: './wm-distribution.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

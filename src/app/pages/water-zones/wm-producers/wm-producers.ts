@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../iam/services/auth.service';
 import { WaterZoneService } from '../services/water-zone.service';
 import { WaterManagerDashboard, WaterManagerFarmSummary } from '../model/water-zone.model';
@@ -8,7 +9,7 @@ import { WaterManagerDashboard, WaterManagerFarmSummary } from '../model/water-z
 @Component({
   selector: 'app-wm-producers',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './wm-producers.html',
   styleUrl: './wm-producers.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { TranslatePipe } from '@ngx-translate/core';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-forget-password',
   standalone: true,
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule, NgIf, RouterModule, TranslatePipe],
   templateUrl: './forget-password.html',
   styleUrl: './forget-password.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
