@@ -1,30 +1,30 @@
 <section class="distribution-page">
 
   <div class="page-header">
-    <h1>Water Distribution Plan</h1>
-    <p class="subtitle">Create and manage water allocation across linked farms.</p>
+    <h1>{{ 'WM_DISTRIBUTION.TITLE' | translate }}</h1>
+    <p class="subtitle">{{ 'WM_DISTRIBUTION.SUBTITLE' | translate }}</p>
   </div>
 
-  <div *ngIf="loading" class="state-msg">Loading plan...</div>
+  <div *ngIf="loading" class="state-msg">{{ 'WM_DISTRIBUTION.LOADING' | translate }}</div>
   <div *ngIf="errorMessage && !loading" class="state-msg error">{{ errorMessage }}</div>
   <div *ngIf="successMessage" class="state-msg success">{{ successMessage }}</div>
 
   <!-- CREATE FORM (no plan yet) -->
   <div *ngIf="!loading && !plan" class="create-card">
-    <h2>No plan created yet</h2>
-    <p>Set the total available water to generate a distribution plan for your linked farms.</p>
+    <h2>{{ 'WM_DISTRIBUTION.NO_PLAN_TITLE' | translate }}</h2>
+    <p>{{ 'WM_DISTRIBUTION.NO_PLAN_DESC' | translate }}</p>
 
     <div class="create-form">
-      <label>Total available water (litres)</label>
+      <label>{{ 'WM_DISTRIBUTION.FORM_LABEL' | translate }}</label>
       <input
         type="number"
         [(ngModel)]="totalAvailableWater"
-        placeholder="e.g. 50000"
+        [placeholder]="'WM_DISTRIBUTION.FORM_PLACEHOLDER' | translate"
         min="1"
         class="water-input"
       />
       <button class="btn-create" (click)="createPlan()" [disabled]="creating">
-        {{ creating ? 'Creating...' : 'Create plan' }}
+        {{ creating ? ('WM_DISTRIBUTION.CREATING' | translate) : ('WM_DISTRIBUTION.CREATE' | translate) }}
       </button>
     </div>
   </div>
@@ -35,19 +35,19 @@
     <!-- Summary banner -->
     <div class="plan-summary">
       <div class="summary-stat">
-        <label>Total available</label>
+        <label>{{ 'WM_DISTRIBUTION.STAT_TOTAL' | translate }}</label>
         <strong>{{ plan.totalAvailableWater | number:'1.0-0' }} L</strong>
       </div>
       <div class="summary-stat">
-        <label>Assigned</label>
+        <label>{{ 'WM_DISTRIBUTION.STAT_ASSIGNED' | translate }}</label>
         <strong>{{ plan.totalAssignedWater | number:'1.0-0' }} L</strong>
       </div>
       <div class="summary-stat">
-        <label>Remaining</label>
+        <label>{{ 'WM_DISTRIBUTION.STAT_REMAINING' | translate }}</label>
         <strong [class.warn]="plan.remainingWater < 0">{{ plan.remainingWater | number:'1.0-0' }} L</strong>
       </div>
       <div class="summary-stat">
-        <label>Coverage</label>
+        <label>{{ 'WM_DISTRIBUTION.STAT_COVERAGE' | translate }}</label>
         <strong>{{ plan.coveragePercentage | number:'1.0-1' }}%</strong>
       </div>
       <span class="plan-status-pill" [ngClass]="plan.status?.toLowerCase()">{{ plan.status }}</span>
@@ -62,25 +62,25 @@
           [class.over]="plan.coveragePercentage > 100"
         ></div>
       </div>
-      <span>{{ plan.coveragePercentage | number:'1.0-1' }}% coverage</span>
+      <span>{{ plan.coveragePercentage | number:'1.0-1' }}% {{ 'WM_DISTRIBUTION.COVERAGE_SUFFIX' | translate }}</span>
     </div>
 
     <!-- Items table -->
     <div class="table-card">
       <div class="table-header">
-        <h3>Farm allocations</h3>
-        <button class="btn-refresh" (click)="loadPlan()">Refresh</button>
+        <h3>{{ 'WM_DISTRIBUTION.TABLE_TITLE' | translate }}</h3>
+        <button class="btn-refresh" (click)="loadPlan()">{{ 'WM_DISTRIBUTION.REFRESH' | translate }}</button>
       </div>
 
       <table class="dist-table">
         <thead>
           <tr>
-            <th>Farm</th>
-            <th>Area (ha)</th>
-            <th>Suggested (L)</th>
-            <th>Assigned (L)</th>
-            <th>Coverage</th>
-            <th>Edited</th>
+            <th>{{ 'WM_DISTRIBUTION.COL_FARM' | translate }}</th>
+            <th>{{ 'WM_DISTRIBUTION.COL_AREA' | translate }}</th>
+            <th>{{ 'WM_DISTRIBUTION.COL_SUGGESTED' | translate }}</th>
+            <th>{{ 'WM_DISTRIBUTION.COL_ASSIGNED' | translate }}</th>
+            <th>{{ 'WM_DISTRIBUTION.COL_COVERAGE' | translate }}</th>
+            <th>{{ 'WM_DISTRIBUTION.COL_EDITED' | translate }}</th>
             <th></th>
           </tr>
         </thead>
@@ -99,8 +99,8 @@
             </td>
             <td>{{ item.coveragePercentage | number:'1.0-1' }}%</td>
             <td>
-              <span *ngIf="item.editedManually" class="edited-badge">Manual</span>
-              <span *ngIf="!item.editedManually" class="auto-badge">Auto</span>
+              <span *ngIf="item.editedManually" class="edited-badge">{{ 'WM_DISTRIBUTION.BADGE_MANUAL' | translate }}</span>
+              <span *ngIf="!item.editedManually" class="auto-badge">{{ 'WM_DISTRIBUTION.BADGE_AUTO' | translate }}</span>
             </td>
             <td>
               <button
@@ -108,7 +108,7 @@
                 (click)="saveItem(item)"
                 [disabled]="savingItemId === item.id"
               >
-                {{ savingItemId === item.id ? '...' : 'Save' }}
+                {{ savingItemId === item.id ? '...' : ('WM_DISTRIBUTION.SAVE' | translate) }}
               </button>
             </td>
           </tr>
