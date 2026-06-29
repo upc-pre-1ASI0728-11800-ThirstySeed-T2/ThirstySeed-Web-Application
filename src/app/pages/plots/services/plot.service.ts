@@ -21,6 +21,8 @@ export interface ConfigurePlotRequest {
   irrigationSystem?: string;
   description?: string;
   coordinatesJson?: string | null;
+  latitude?: number;
+  longitude?: number;
 }
 
 @Injectable({
@@ -37,11 +39,7 @@ export class PlotService {
   // HEADERS CENTRALIZADOS
   // =========================
   private getHeaders(): HttpHeaders {
-    const token =
-      localStorage.getItem('jwtToken') ||
-      localStorage.getItem('access_token') ||
-      localStorage.getItem('token') ||
-      '';
+    const token = localStorage.getItem('jwtToken') ?? '';
 
     return new HttpHeaders({
       Authorization: `Bearer ${token}`,

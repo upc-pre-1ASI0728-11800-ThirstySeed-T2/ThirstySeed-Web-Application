@@ -19,6 +19,10 @@ export class SupportService {
     return this.http.get<SupportTicket[]>(`${this.base}/tickets/me`);
   }
 
+  getAllTickets(): Observable<SupportTicket[]> {
+    return this.http.get<SupportTicket[]>(`${this.base}/tickets`);
+  }
+
   createTicket(payload: CreateTicketRequest): Observable<SupportTicket> {
     return this.http.post<SupportTicket>(`${this.base}/tickets`, payload);
   }

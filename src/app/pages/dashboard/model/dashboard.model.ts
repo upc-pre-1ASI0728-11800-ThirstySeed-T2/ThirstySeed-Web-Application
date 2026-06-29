@@ -13,7 +13,7 @@ export interface PlotCard {
   imageUrl?: string;
   moisture: number;
   temperature: number;
-  status: 'LOW' | 'MODERATE' | 'CRITICAL';
+  status: 'LOW' | 'MEDIUM' | 'MODERATE' | 'HIGH' | 'CRITICAL' | 'EXTREME';
 }
 
 export interface AlertCard {

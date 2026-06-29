@@ -3,7 +3,7 @@ import { CommonModule, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/
 import { Router, RouterModule } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../iam/services/auth.service';
 import { PlotService } from '../../pages/plots/services/plot.service';
 import { AlertService } from '../../pages/dashboard/services/alert.service';
@@ -25,7 +25,7 @@ export interface MenuItem {
     NgSwitch,
     NgSwitchCase,
     NgSwitchDefault,
-    TranslatePipe, TranslateDirective,
+    TranslatePipe,
     LanguageSwitcherComponent,
   ],
   templateUrl: './sidebar.html',
@@ -60,17 +60,24 @@ export class SidebarComponent implements OnInit {
     const user = this.authService.getCurrentUser();
     if (!user) return;
 
-    if (user.roles?.includes('ROLE_WATER_MANAGER')) {
+    if (user.roles?.includes('ROLE_ADMIN')) {
+      this.panelTitle = 'SIDEBAR.ADMIN_PANEL';
+      this.menuItems = [
+        { label: 'Dashboard', route: '/admin/dashboard', translateKey: 'SIDEBAR.DASHBOARD' },
+        { label: 'Support',   route: '/support',         translateKey: 'SIDEBAR.SUPPORT'   },
+        { label: 'Settings',  route: '/settings',        translateKey: 'SIDEBAR.SETTINGS'  },
+      ];
+      this.showPremiumCard = false;
+
+    } else if (user.roles?.includes('ROLE_WATER_MANAGER')) {
       this.panelTitle = 'SIDEBAR.WATER_MANAGER_PANEL';
       this.menuItems = [
-        { label: 'Dashboard',       route: '/water-manager/dashboard',    translateKey: 'SIDEBAR.DASHBOARD'        },
-        { label: 'Zones',           route: '/water-manager/zones/create', translateKey: 'SIDEBAR.ZONES'            },
-        { label: 'Water Demand',    route: '/water-demand',               translateKey: 'SIDEBAR.WATER_DEMAND'     },
-        { label: 'Critical Areas',  route: '/critical-areas',             translateKey: 'SIDEBAR.CRITICAL_AREAS'   },
-        { label: 'Reports',         route: '/reports',                    translateKey: 'SIDEBAR.REPORTS'          },
-        { label: 'Regional Alerts', route: '/regional-alerts',            translateKey: 'SIDEBAR.REGIONAL_ALERTS'  },
-        { label: 'Support',         route: '/support',                    translateKey: 'SIDEBAR.SUPPORT'          },
-        { label: 'Settings',        route: '/settings',                   translateKey: 'SIDEBAR.SETTINGS'         },
+        { label: 'Dashboard',    route: '/water-manager/dashboard',   translateKey: 'SIDEBAR.DASHBOARD'    },
+        { label: 'Zones',        route: '/water-manager/zones/create',translateKey: 'SIDEBAR.ZONES'        },
+        { label: 'Producers',    route: '/water-manager/producers',   translateKey: 'SIDEBAR.PRODUCERS'    },
+        { label: 'Distribution', route: '/water-manager/distribution',translateKey: 'SIDEBAR.DISTRIBUTION' },
+        { label: 'Support',      route: '/support',                   translateKey: 'SIDEBAR.SUPPORT'      },
+        { label: 'Settings',     route: '/settings',                  translateKey: 'SIDEBAR.SETTINGS'     },
       ];
       this.showPremiumCard = false;
 
@@ -101,17 +108,7 @@ export class SidebarComponent implements OnInit {
         this.totalNodes = sub.maxNodes ?? 3;
         this.cd.markForCheck();
       },
-      error: () => {
-        const cached = localStorage.getItem(`subscription_${userId}`);
-        if (cached) {
-          try {
-            const sub = JSON.parse(cached);
-            this.planName = sub.planType?.includes('PREMIUM') ? 'Premium' : 'Plus';
-            this.totalNodes = sub.maxNodes ?? 3;
-          } catch { /* defaults */ }
-        }
-        this.cd.markForCheck();
-      },
+      error: () => { this.cd.markForCheck(); },
     });
 
     this.plotService.getPlotsByUser(userId).subscribe({
