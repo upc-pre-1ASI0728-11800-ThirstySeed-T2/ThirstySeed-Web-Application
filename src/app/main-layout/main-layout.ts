@@ -155,6 +155,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   private redirectToInitialSubscriptionIfNeeded(): void {
+    const user = this.authService.getCurrentUser();
+    if (user?.roles?.includes('ROLE_ADMIN')) return;
+
     if (
       !this.hasSubscription &&
       this.currentUrl !== '/profile-rol' &&
